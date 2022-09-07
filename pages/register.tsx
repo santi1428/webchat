@@ -1,7 +1,16 @@
 import Head from "next/head";
 import { useFormik } from "formik";
-import * as Yup from "yup";
+import axios from 'axios';
+import validationScheme from '../utils/validation-scheme';
 
+const registerUser = async (user) => {
+  try {
+    const res = await axios.post('/api/register', user);
+    console.log(res);
+  } catch (err) {
+    console.log(err.message);
+  }
+}
 
 export default function Register() {
   const formik = useFormik({
@@ -12,31 +21,13 @@ export default function Register() {
       password: "",
       confirmPassword: "",
     },
-    validationSchema: Yup.object({
-      name: Yup.string()
-        .max(30, "The name is too large.")
-        .required("The name field is required."),
-      lastName: Yup.string()
-        .max(40, "The last name is too large.")
-        .required("The last name field is required."),
-      email: Yup.string()
-        .email('Email is not valid')
-        .max(255, "The email is too large.")
-        .required("The email field is required."),
-      password: Yup.string()
-        .min(6, "Password is too short - should be 6 chars minimum.")
-        .max(40, "The password should not exceed 50 characters")
-        .required("The password field is required."),
-      confirmPassword: Yup.string()
-          .oneOf([Yup.ref('password'), null], 'Passwords must match').required('You need to confirm your password')
-    }),
+    validationSchema: validationScheme,
     onSubmit: (values) => {
       console.log(values);
+      registerUser(values);
     }
   });
 
-  // console.log(formik.values);
-  console.log(formik.touched);
 
   return (
     <>
