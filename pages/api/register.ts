@@ -1,22 +1,14 @@
 import validationScheme from "../../utils/validation-scheme";
 import { prisma } from "../../lib/prisma";
 import { NextApiRequest, NextApiResponse } from "next";
-import bcrypt from '../../lib/bcrypt';
-
-type User = {
-  name: string;
-  lastName: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
-  profilePhotoName: string;
-};
+import bcrypt from "../../lib/bcrypt";
+import { User } from "../../types/types";
 
 const validateFields = async (
   newUser: User
 ): Promise<[boolean, null | { errors: string[] }]> => {
   try {
-    await validationScheme.validate(newUser);
+    validationScheme.validate(newUser);
     return [true, null];
   } catch (errors: any) {
     console.log(errors.message);
@@ -24,27 +16,30 @@ const validateFields = async (
   }
 };
 
-const doesEmailExist = async (email: string) : Promise<boolean> => {
-  const userCount : number = await prisma.user.count({
+const doesEmailExist = async (email: string): Promise<boolean> => {
+  const userCount: number = await prisma.user.count({
     where: {
-      email
-    }
-  })
+      email,
+    },
+  });
   return userCount > 0;
-}
+};
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
   if (req.method == "POST") {
-    let newUser: User = {...req.body, profilePhotoName: 'default-profile-photo'};
+    let newUser: User = {
+      ...req.body,
+      profilePhotoName: "default-profile-photo",
+    };
     const fieldsValidation = await validateFields(newUser);
     if (fieldsValidation[0]) {
       try {
-        const emailExists : boolean = await doesEmailExist(newUser.email);
-        if (emailExists){
-          return res.status(400).json(["Email already exists."]);
+        const emailExists: boolean = await doesEmailExist(newUser.email);
+        if (emailExists) {
+          return res.status(422).json(["This email is already in use."]);
         }
         const hashedPassword = await bcrypt(newUser.password);
         await prisma.user.create({
