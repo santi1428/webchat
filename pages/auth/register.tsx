@@ -5,6 +5,9 @@ import validationScheme from "../../utils/validation-scheme";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
+import { unstable_getServerSession } from "next-auth";
+import { authOptions } from "../api/auth/[...nextauth]";
+import {signIn} from "next-auth/react";
 
 const registerUser = async (user): Promise<[boolean, null | AxiosError]> => {
   try {
@@ -15,6 +18,8 @@ const registerUser = async (user): Promise<[boolean, null | AxiosError]> => {
     return [false, error as AxiosError];
   }
 };
+
+
 
 export default function Register() {
   const router = useRouter();
@@ -27,14 +32,19 @@ export default function Register() {
       confirmPassword: "",
     },
     validationSchema: validationScheme,
+
     onSubmit: async (values) => {
-      console.log(values);
-      const [res, error] = await registerUser(values);
+      const [ res, error] = await registerUser(values);
       if (!res) {
         if (error.response.status === 422) {
-          formik.errors.email = error.response.data[0];
+          formik.errors.email = error.response.data[0] as string;
         }
       } else {
+         await signIn("credentials", {
+          email: values.email,
+          password: values.password,
+          redirect: false,
+        });
         await router.push("/auth/login");
       }
     },
@@ -45,9 +55,7 @@ export default function Register() {
       <Head>
         <title>Sign Up</title>
       </Head>
-      <div
-          className="flex flex-col justify-center items-center min-h-[calc(100vh-73px)] text-base"
-      >
+      <div className="flex flex-col justify-center items-center min-h-[calc(100vh-73px)] text-base">
         <form className="w-80" onSubmit={formik.handleSubmit}>
           <div className="flex flex-col">
             <label htmlFor="name" className="text-bell text-base mb-2">
@@ -212,4 +220,22 @@ export default function Register() {
   );
 }
 
+export async function getServerSideProps(context) {
+  const session = await unstable_getServerSession(
+    context.req,
+    context.res,
+    authOptions as any
+  );
+  if (session) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
 
+  return {
+    props: {},
+  };
+}

@@ -10,10 +10,13 @@ import Link from "next/link";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
 import { signOut } from "next-auth/react";
+import { useRouter } from "next/router";
+import { User } from "../utils/types";
 
 export default function Navbar() {
   const { data: session, status } = useSession();
-
+  console.log(session);
+  const router = useRouter();
   return (
     <div className="flex flex-row justify-between pt-4 pb-3 border-b-1 border-customBorderColor ">
       <div className="ml-5">
@@ -32,7 +35,7 @@ export default function Navbar() {
           </a>
         </Link>
       </div>
-      {status !== 'loading' && (
+      {status !== "loading" && (
         <div className="flex flex-row mr-5">
           {status === "unauthenticated" ? (
             <>
@@ -65,17 +68,27 @@ export default function Navbar() {
                 <FontAwesomeIcon icon={faBell} size="lg" />
               </a>
               <div className="ml-5 mr-3 inline-block h-10 w-10 relative">
-                <Image
-                  layout="fill"
-                  src="/images/selfie.webp"
-                  className="rounded-full"
-                />
+                <Link href="/profilephoto">
+                  <a>
+                    <Image
+                      layout="fill"
+                      src="/images/selfie.webp"
+                      className="rounded-full"
+                    />
+                  </a>
+                </Link>
               </div>
               <div className="flex flex-col">
-                <p className="text-bell font-semibold">Charles Machado</p>
-                <p className="text-xs text-bell">charlesmachado@gmail.com</p>
+                <p className="text-bell font-semibold">{`${session.user.name} ${session.user.lastName}`}</p>
+                <p className="text-xs text-bell">{session.user.email}</p>
               </div>
-              <button className="ml-10" onClick={() => signOut()}>
+              <button
+                className="ml-10"
+                onClick={async () => {
+                  await signOut({ redirect: false });
+                  await router.push("/auth/login");
+                }}
+              >
                 <FontAwesomeIcon
                   className="text-bell mr-2"
                   icon={faRightFromBracket}

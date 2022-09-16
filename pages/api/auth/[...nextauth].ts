@@ -4,16 +4,24 @@ import { comparePassword } from "../../../lib/bcrypt";
 import { prisma } from "../../../lib/prisma";
 import { User } from "../../../utils/types";
 
-const checkLoginCredentials = async (email: string, password: string) : Promise<boolean> => {
+const checkLoginCredentials = async (
+  email: string,
+  password: string
+): Promise<[boolean, null | User]> => {
   const user: User = await prisma.user.findUnique({
     where: {
       email,
     },
   });
   if (!user) {
-    return false;
+    return [false, null];
   }
-  return await comparePassword(password, user.password);
+  const isPasswordCorrect = await comparePassword(password, user.password);
+  if (isPasswordCorrect) {
+    return [true, user];
+  } else {
+    return [false, null];
+  }
 };
 
 export const authOptions: NextAuthOptions = {
@@ -36,20 +44,42 @@ export const authOptions: NextAuthOptions = {
       },
       type: "credentials",
       async authorize(credentials, req) {
-        const isLoggedIn = await checkLoginCredentials(credentials.email, credentials.password);
-        if (isLoggedIn){
+        const [isLoggedIn, user] = await checkLoginCredentials(
+          credentials.email,
+          credentials.password
+        );
+        if (isLoggedIn) {
           return {
-            email: credentials.email,
-
-          }
-        }else{
+            id: user.id,
+            name: user.name,
+            lastName: user.lastName,
+            email: user.email,
+            profilePhotoName: user.profilePhotoName
+          };
+        } else {
           return null;
         }
-      },
+      }
     }),
   ],
   pages: {
     signIn: "/auth/login",
+  },
+  callbacks: {
+    jwt: async ({ token, user }) => {
+      user && (token.user = user);
+      return token;
+    },
+    async session({ session, token }) {
+      // Send properties to the client, like an access_token from a provider.
+      // session.accessToken = token.accessToken
+      // session.name = user.name
+      // return session
+      session.user = token.user;
+      console.log("token", token);
+      console.log("session", session);
+      return session;
+    },
   },
 };
 

@@ -1,8 +1,8 @@
 import validationScheme from "../../utils/validation-scheme";
 import { prisma } from "../../lib/prisma";
 import { NextApiRequest, NextApiResponse } from "next";
-import bcrypt from "../../lib/bcrypt";
-import { User } from "../../types/types";
+import { hashPassword } from "../../lib/bcrypt";
+import { User } from "../../utils/types";
 
 const validateFields = async (
   newUser: User
@@ -41,7 +41,7 @@ export default async function handler(
         if (emailExists) {
           return res.status(422).json(["This email is already in use."]);
         }
-        const hashedPassword = await bcrypt(newUser.password);
+        const hashedPassword = await hashPassword(newUser.password);
         await prisma.user.create({
           data: {
             name: newUser.name,

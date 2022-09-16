@@ -5,6 +5,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { signIn } from "next-auth/react";
 import * as Yup from "yup";
 import {useRouter} from "next/router";
+import {unstable_getServerSession} from "next-auth";
+import {authOptions} from "../api/auth/[...nextauth]";
 
 export default function Login() {
   const router = useRouter();
@@ -122,4 +124,22 @@ export default function Login() {
       </div>
     </>
   );
+}
+
+export async function getServerSideProps(context) {
+  const session = await unstable_getServerSession(context.req, context.res, authOptions as any)
+  if(session) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false
+      }
+    }
+  }
+
+  return {
+    props: {
+
+    }
+  }
 }

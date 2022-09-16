@@ -1,6 +1,6 @@
 import Head from "next/head";
 import Image from "next/image";
-import { faBell, faEllipsisVertical } from "@fortawesome/free-solid-svg-icons";
+import { faEllipsisVertical } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {unstable_getServerSession} from "next-auth";
 import {authOptions} from './api/auth/[...nextauth]';
@@ -17,11 +17,13 @@ export default function Home() {
       <div className="grid grid-cols-2">
         {/*left side */}
         <div className="flex flex-col border-r border-customBorderColor ">
-          <input
-            type="text"
-            className="ml-7 rounded-2xl w-96 mt-6 pl-4 pt-2 pb-2 pr-2 bg-background2 border-solid border border-customBorderColor text-bell"
-            placeholder="Search"
-          />
+          <div className='ml-7 w-full'>
+            <input
+              type="text"
+              className="rounded-2xl w-4/5 mt-6 pl-4 pt-2 pb-2 pr-2 bg-background2 border-solid border border-customBorderColor text-bell"
+              placeholder="Search"
+            />
+          </div>
           <h3 className="ml-7 mt-6 text-bell text-lg font-semibold">
             Active now
           </h3>
@@ -211,7 +213,7 @@ export default function Home() {
 }
 
 export async function getServerSideProps(context) {
-  const session = await unstable_getServerSession(context.req, context.res, authOptions)
+  const session = await unstable_getServerSession(context.req, context.res, authOptions as any)
   if(!session) {
     return {
       redirect: {
