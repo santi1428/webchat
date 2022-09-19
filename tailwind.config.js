@@ -19,6 +19,7 @@ module.exports = {
         bermuda: "#78dcca",
         background: "#17181F",
         bell: "#99C1C4",
+        disabledButton: '#1e2627',
         customBorderColor: "#2d393a",
         background2: "#1C1C25",
       },

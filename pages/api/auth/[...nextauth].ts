@@ -1,13 +1,14 @@
-import NextAuth, { NextAuthOptions } from "next-auth";
+import NextAuth, {NextAuthOptions} from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { comparePassword } from "../../../lib/bcrypt";
-import { prisma } from "../../../lib/prisma";
-import { User } from "../../../utils/types";
+import {comparePassword} from "../../../lib/bcrypt";
+import {prisma} from "../../../lib/prisma";
+import {User} from "../../../utils/types";
 
 const checkLoginCredentials = async (
   email: string,
   password: string
 ): Promise<[boolean, null | User]> => {
+  console.log("querying database checkLoginCredentials");
   const user: User = await prisma.user.findUnique({
     where: {
       email,
@@ -23,6 +24,23 @@ const checkLoginCredentials = async (
     return [false, null];
   }
 };
+
+const getUserByID = async (id) => {
+  console.log("querying database getUserByID");
+  const user: User = await prisma.user.findUnique({
+    where: {
+      id,
+    },
+  });
+  return {
+    id: user.id,
+    name: user.name,
+    lastName: user.lastName,
+    email: user.email,
+    profilePhotoName: user.profilePhotoName
+  };
+};
+// @ts-ignore
 
 export const authOptions: NextAuthOptions = {
   session: {
@@ -43,41 +61,38 @@ export const authOptions: NextAuthOptions = {
         },
       },
       type: "credentials",
-      async authorize(credentials, req) {
-        const [isLoggedIn, user] = await checkLoginCredentials(
-          credentials.email,
-          credentials.password
-        );
+      async authorize(credentials) {
+        const [isLoggedIn, user]: [isLoggedIn: boolean, user: User] =
+          await checkLoginCredentials(credentials.email, credentials.password);
         if (isLoggedIn) {
           return {
             id: user.id,
             name: user.name,
             lastName: user.lastName,
             email: user.email,
-            profilePhotoName: user.profilePhotoName
-          };
+            profilePhotoName: user.profilePhotoName,
+          } as User;
         } else {
           return null;
         }
-      }
+      },
     }),
   ],
   pages: {
-    signIn: "/auth/login",
+    signIn: "/aut h/login",
   },
+
   callbacks: {
     jwt: async ({ token, user }) => {
+      // @ts-ignore
+
       user && (token.user = user);
       return token;
     },
     async session({ session, token }) {
-      // Send properties to the client, like an access_token from a provider.
-      // session.accessToken = token.accessToken
-      // session.name = user.name
-      // return session
-      session.user = token.user;
-      console.log("token", token);
-      console.log("session", session);
+      // @ts-ignore
+
+      session.user = await getUserByID(token.user.id);
       return session;
     },
   },

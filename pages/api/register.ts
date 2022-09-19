@@ -25,6 +25,7 @@ const doesEmailExist = async (email: string): Promise<boolean> => {
   return userCount > 0;
 };
 
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
@@ -32,7 +33,7 @@ export default async function handler(
   if (req.method == "POST") {
     let newUser: User = {
       ...req.body,
-      profilePhotoName: "default-profile-photo",
+      profilePhotoName: "default-profile-photo.png",
     };
     const fieldsValidation = await validateFields(newUser);
     if (fieldsValidation[0]) {

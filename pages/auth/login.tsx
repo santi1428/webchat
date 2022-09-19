@@ -4,9 +4,9 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { signIn } from "next-auth/react";
 import * as Yup from "yup";
-import {useRouter} from "next/router";
-import {unstable_getServerSession} from "next-auth";
-import {authOptions} from "../api/auth/[...nextauth]";
+import { useRouter } from "next/router";
+import { unstable_getServerSession } from "next-auth";
+import { authOptions } from "../api/auth/[...nextauth]";
 
 export default function Login() {
   const router = useRouter();
@@ -27,17 +27,17 @@ export default function Login() {
     }),
     onSubmit: async (values) => {
       const { email, password } = values;
-        const res = await signIn("credentials", {
-          email,
-          password,
-          redirect: false,
-        });
-        console.log(res);
-        if (!res.ok && res.status == 401){
-          formik.errors.email = 'Email or password is not correct.';
-        }else if (res.ok && res.status == 200){
-          router.push('/');
-        }
+      const res = await signIn("credentials", {
+        email,
+        password,
+        redirect: false,
+      });
+      console.log(res);
+      if (!res.ok && res.status == 401) {
+        formik.errors.email = "Email or password is not correct.";
+      } else if (res.ok && res.status == 200) {
+        router.push("/");
+      }
     },
   });
 
@@ -108,7 +108,7 @@ export default function Login() {
             </AnimatePresence>
           </div>
           <p className="mt-4 text-bell">
-            Don't you have an account?
+            Don&apos;t you have an account?
             <Link href="/auth/register">
               <a className="font-bold cursor-pointer ml-2">Sign Up here.</a>
             </Link>
@@ -127,19 +127,21 @@ export default function Login() {
 }
 
 export async function getServerSideProps(context) {
-  const session = await unstable_getServerSession(context.req, context.res, authOptions as any)
-  if(session) {
+  const session = await unstable_getServerSession(
+    context.req,
+    context.res,
+    authOptions as any
+  );
+  if (session) {
     return {
       redirect: {
         destination: "/",
-        permanent: false
-      }
-    }
+        permanent: false,
+      },
+    };
   }
 
   return {
-    props: {
-
-    }
-  }
+    props: {},
+  };
 }

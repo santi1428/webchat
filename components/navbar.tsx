@@ -11,11 +11,11 @@ import Image from "next/image";
 import { useSession } from "next-auth/react";
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/router";
-import { User } from "../utils/types";
+import { AnimatePresence, motion } from "framer-motion";
 
 export default function Navbar() {
   const { data: session, status } = useSession();
-  console.log(session);
+
   const router = useRouter();
   return (
     <div className="flex flex-row justify-between pt-4 pb-3 border-b-1 border-customBorderColor ">
@@ -23,12 +23,14 @@ export default function Navbar() {
         <Link href="/">
           <a>
             <div className="flex flex-row">
-              <img
+              <Image
                 className="inline self-center"
                 src="/images/icons8-chat-48.png"
+                height={40}
+                width={40}
                 alt="Logo"
               />
-              <h5 className="self-center text-xl ml-3 text-bell inline">
+              <h5 className="self-center text-xl ml-3 text-bell inline capitalize">
                 Open source chat
               </h5>
             </div>
@@ -64,23 +66,45 @@ export default function Navbar() {
             </>
           ) : (
             <>
-              <a href="/" className="button mt-2 text-bell mr-1">
-                <FontAwesomeIcon icon={faBell} size="lg" />
-              </a>
-              <div className="ml-5 mr-3 inline-block h-10 w-10 relative">
-                <Link href="/profilephoto">
-                  <a>
-                    <Image
-                      layout="fill"
-                      src="/images/selfie.webp"
-                      className="rounded-full"
-                    />
+              <Link href="/">
+                <a className="button mt-2 text-bell mr-1">
+                  <FontAwesomeIcon icon={faBell} size="lg" />
+                </a>
+              </Link>
+
+              {session.user && (
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={session.user.profilePhotoName}
+                    initial={{ opacity: 0, scale: 0 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.3 }}
+                    exit={{ scale: 0 }}
+                    className="ml-5 mr-3 inline-block h-10 w-10 relative"
+                  >
+                    <Link href="/profilephoto">
+                      <a>
+                        <Image
+                          layout="fill"
+                          src={"/images/" + session.user.profilePhotoName}
+                          className="rounded-full"
+                          alt="NoImage"
+                        />
+                      </a>
+                    </Link>
+                  </motion.div>
+                </AnimatePresence>
+              )}
+
+              <div className="flex flex-col">
+                <Link href="/profile">
+                  <a className="text-bell font-semibold capitalize">
+                    {`${session.user.name} ${session.user.lastName}`}
                   </a>
                 </Link>
-              </div>
-              <div className="flex flex-col">
-                <p className="text-bell font-semibold">{`${session.user.name} ${session.user.lastName}`}</p>
-                <p className="text-xs text-bell">{session.user.email}</p>
+                <Link href='/profile'>
+                  <a className="text-xs text-bell">{session.user.email}</a>
+                </Link>
               </div>
               <button
                 className="ml-10"

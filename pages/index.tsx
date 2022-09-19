@@ -2,11 +2,10 @@ import Head from "next/head";
 import Image from "next/image";
 import { faEllipsisVertical } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {unstable_getServerSession} from "next-auth";
-import {authOptions} from './api/auth/[...nextauth]';
+import { unstable_getServerSession } from "next-auth";
+import { authOptions } from "./api/auth/[...nextauth]";
 
 export default function Home() {
-
   return (
     <>
       <Head>
@@ -17,7 +16,7 @@ export default function Home() {
       <div className="grid grid-cols-2">
         {/*left side */}
         <div className="flex flex-col border-r border-customBorderColor ">
-          <div className='ml-7 w-full'>
+          <div className="ml-7 w-full">
             <input
               type="text"
               className="rounded-2xl w-4/5 mt-6 pl-4 pt-2 pb-2 pr-2 bg-background2 border-solid border border-customBorderColor text-bell"
@@ -33,6 +32,7 @@ export default function Home() {
                 layout="fill"
                 src="/images/selfie1.webp"
                 className="rounded-full"
+                alt="NoImage"
               />
             </div>
             <div className="mr-3 inline-block h-12 w-12 relative">
@@ -40,6 +40,7 @@ export default function Home() {
                 layout="fill"
                 src="/images/selfie2.jpeg"
                 className="rounded-full"
+                alt="NoImage"
               />
             </div>
             <div className="mr-3 inline-block h-12 w-12 relative">
@@ -47,6 +48,7 @@ export default function Home() {
                 layout="fill"
                 src="/images/selfie3.jpg"
                 className="rounded-full"
+                alt="NoImage"
               />
             </div>
             <div className="mr-3 inline-block h-12 w-12 relative">
@@ -54,6 +56,7 @@ export default function Home() {
                 layout="fill"
                 src="/images/selfie4.webp"
                 className="rounded-full"
+                alt="NoImage"
               />
             </div>
             <div className="mr-3 inline-block h-12 w-12 relative">
@@ -61,6 +64,7 @@ export default function Home() {
                 layout="fill"
                 src="/images/selfie.webp"
                 className="rounded-full"
+                alt="NoImage"
               />
             </div>
           </div>
@@ -73,6 +77,7 @@ export default function Home() {
                 layout="fill"
                 src="/images/selfie4.webp"
                 className="rounded-full"
+                alt='NoImage'
               />
             </div>
             <div className="flex flex-col w-full">
@@ -98,6 +103,8 @@ export default function Home() {
                 layout="fill"
                 src="/images/selfie1.webp"
                 className="rounded-full"
+                alt='NoImage'
+
               />
             </div>
             <div className="flex flex-col w-full">
@@ -123,6 +130,8 @@ export default function Home() {
                 layout="fill"
                 src="/images/selfie3.jpg"
                 className="rounded-full"
+                alt='NoImage'
+
               />
             </div>
             <div className="flex flex-col w-full">
@@ -151,6 +160,8 @@ export default function Home() {
                 layout="fill"
                 src="/images/selfie1.webp"
                 className="rounded-full"
+                alt='NoImage'
+
               />
             </div>
             <p className="self-center text-bell pl-3 text-xl">Selena Gomez</p>
@@ -178,6 +189,8 @@ export default function Home() {
                   layout="fill"
                   src="/images/selfie1.webp"
                   className="rounded-full"
+                  alt='NoImage'
+
                 />
               </div>
             </div>
@@ -187,6 +200,8 @@ export default function Home() {
                   layout="fill"
                   src="/images/selfie.webp"
                   className="rounded-full"
+                  alt='NoImage'
+
                 />
               </div>
 
@@ -213,20 +228,21 @@ export default function Home() {
 }
 
 export async function getServerSideProps(context) {
-  const session = await unstable_getServerSession(context.req, context.res, authOptions as any)
-  if(!session) {
+  const session = await unstable_getServerSession(
+    context.req,
+    context.res,
+    authOptions as any
+  );
+  if (!session) {
     return {
       redirect: {
         destination: "/auth/login",
-        permanent: false
-      }
-    }
+        permanent: false,
+      },
+    };
   }
 
   return {
-    props: {
-
-    }
-  }
+    props: {},
+  };
 }
-
