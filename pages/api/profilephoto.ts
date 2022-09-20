@@ -35,7 +35,7 @@ const removeFile = (filePath) => {
   fs.unlinkSync(filePath);
 };
 
-const updateUserProfilePhotoName = async (
+const updateUserProfilePhotoNameByID = async (
   id: String,
   profilePhotoName: String
 ) => {
@@ -71,7 +71,7 @@ const uploadFile = (req: NextApiRequest, user: User) => {
       if (validateFile(file)) {
         try {
           const fullNewPhotoName = await saveFile(file);
-          await updateUserProfilePhotoName(user.id, fullNewPhotoName);
+          await updateUserProfilePhotoNameByID(user.id, fullNewPhotoName);
           if (user.profilePhotoName !== defaultProfilePhotoName) {
             removeFile(`./public/images/${user.profilePhotoName}`);
           }
@@ -90,7 +90,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  if (req.method == "POST") {
+  if (req.method == "PUT") {
     const session = await unstable_getServerSession(req, res, authOptions);
     if (session) {
       const user: User = session?.user;

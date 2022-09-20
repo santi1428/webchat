@@ -1,6 +1,7 @@
 import Navbar from "./navbar";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/router";
+import { Toaster } from "react-hot-toast";
 
 export default function Layout({ children }): JSX.Element {
   const router = useRouter();
@@ -28,6 +29,7 @@ export default function Layout({ children }): JSX.Element {
           {children}
         </motion.div>
       </AnimatePresence>
+      <Toaster />
     </div>
   );
 }

@@ -14,6 +14,7 @@ import { useRouter } from "next/router";
 import { useRef, useState } from "react";
 import axios, { AxiosError } from "axios";
 import { useSession } from "next-auth/react";
+import { toast } from "react-hot-toast";
 
 export default function ProfilePhoto() {
   const router = useRouter();
@@ -39,7 +40,7 @@ export default function ProfilePhoto() {
     body
   ): Promise<[boolean, null | AxiosError]> => {
     try {
-      const res = await axios.post("/api/profilephoto", body, {
+      const res = await axios.put("/api/profilephoto", body, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       console.log(res);
@@ -57,6 +58,9 @@ export default function ProfilePhoto() {
 
   const uploadToServer = async (event) => {
     if (!uploadingProfilePhoto) {
+      const uploadingToast = toast.loading("Updating profile photo...", {
+        position: "bottom-center",
+      });
       setUploadingProfilePhoto(true);
       const body = new FormData();
       body.append("file", file);
@@ -65,6 +69,15 @@ export default function ProfilePhoto() {
       if (res) {
         reloadSession();
         setFile(null);
+        toast.success("Your profile photo has been updated.", {
+          position: "bottom-center",
+          id: uploadingToast,
+        });
+      } else {
+        toast.error("An error occurred. Please try again later.", {
+          position: "bottom-center",
+          id: uploadingToast,
+        });
       }
       setUploadingProfilePhoto(false);
     }

@@ -57,7 +57,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  if (req.method == "POST") {
+  if (req.method == "PUT") {
     const session = await unstable_getServerSession(req, res, authOptions);
     if (session) {
       const user: User = req.body;
@@ -71,6 +71,8 @@ export default async function handler(
         }
         await updateUser(session.user.id, user);
         return res.status(200).end();
+      }else{
+        return res.status(400).end();
       }
     } else {
       return res.status(401).send("User not authorized.");

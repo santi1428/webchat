@@ -17,6 +17,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import * as Yup from "yup";
 import isEqual from "lodash.isequal";
+import toast from "react-hot-toast";
 
 const validationSchema = Yup.object({
   name: Yup.string()
@@ -34,7 +35,7 @@ const validationSchema = Yup.object({
 const updateProfile = async (user): Promise<[boolean, null | AxiosError]> => {
   console.log("submiting profile");
   try {
-    const res = await axios.post("/api/profile", user);
+    const res = await axios.put("/api/profile", user);
     console.log(res);
     return [true, null];
   } catch (error) {
@@ -51,7 +52,9 @@ const reloadSession = () => {
 export default function Profile() {
   const router = useRouter();
   const { data: session, status } = useSession();
-  // console.log(session?.user);
+
+  // const notify = () => toast("✅  Your profile has been updated.");
+
   const formik = useFormik({
     initialValues: {
       name: session?.user?.name ?? "",
@@ -67,6 +70,9 @@ export default function Profile() {
           email: session.user.email,
         })
       ) {
+        const updateToast = toast.loading("Updating Profile...", {
+          position: "bottom-center",
+        });
         const [res, error] = await updateProfile(values);
         if (!res) {
           if (error.response.status === 422) {
@@ -74,6 +80,10 @@ export default function Profile() {
           }
         } else {
           reloadSession();
+          toast.success("Your profile has been updated.", {
+            position: "bottom-center",
+            id: updateToast,
+          });
         }
       }
     },
@@ -215,17 +225,17 @@ export default function Profile() {
             <FontAwesomeIcon className="mr-2" icon={faRefresh} />
             <span>Update Profile</span>
           </motion.button>
-          <Link href="/changepassword">
-            <motion.a
-              type="submit"
-              className="rounded-full text-center bg-bell text-base font-bold py-3 px-3 w-full mt-6"
-              whileHover={{ scale: 1.05 }}
-              href="/changepassword"
-            >
-              <FontAwesomeIcon className="mr-2" icon={faLock} />{" "}
-              <span>Change Password</span>
-            </motion.a>
-          </Link>
+          <motion.button
+            type="button"
+            className="rounded-full text-center bg-bell text-base font-bold py-3 px-3 w-full mt-6"
+            whileHover={{ scale: 1.05 }}
+            onClick={() => {
+              router.push("/changepassword");
+            }}
+          >
+            <FontAwesomeIcon className="mr-2" icon={faLock} />{" "}
+            <span>Change Password</span>
+          </motion.button>
         </form>
       </div>
     </>

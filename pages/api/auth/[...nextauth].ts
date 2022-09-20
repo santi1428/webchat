@@ -1,8 +1,8 @@
-import NextAuth, {NextAuthOptions} from "next-auth";
+import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import {comparePassword} from "../../../lib/bcrypt";
-import {prisma} from "../../../lib/prisma";
-import {User} from "../../../utils/types";
+import { comparePassword } from "../../../lib/bcrypt";
+import { prisma } from "../../../lib/prisma";
+import { User } from "../../../utils/types";
 
 const checkLoginCredentials = async (
   email: string,
@@ -31,14 +31,15 @@ const getUserByID = async (id) => {
     where: {
       id,
     },
+    select: {
+      id: true,
+      email: true,
+      name: true,
+      lastName: true,
+      profilePhotoName: true,
+    },
   });
-  return {
-    id: user.id,
-    name: user.name,
-    lastName: user.lastName,
-    email: user.email,
-    profilePhotoName: user.profilePhotoName
-  };
+  return user;
 };
 // @ts-ignore
 
@@ -79,7 +80,7 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   pages: {
-    signIn: "/aut h/login",
+    signIn: "/auth/login",
   },
 
   callbacks: {

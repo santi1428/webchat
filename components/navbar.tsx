@@ -102,7 +102,7 @@ export default function Navbar() {
                     {`${session.user.name} ${session.user.lastName}`}
                   </a>
                 </Link>
-                <Link href='/profile'>
+                <Link href="/profile">
                   <a className="text-xs text-bell">{session.user.email}</a>
                 </Link>
               </div>
@@ -110,7 +110,7 @@ export default function Navbar() {
                 className="ml-10"
                 onClick={async () => {
                   await signOut({ redirect: false });
-                  await router.push("/auth/login");
+                  router.push("/auth/login");
                 }}
               >
                 <FontAwesomeIcon

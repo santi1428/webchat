@@ -3,18 +3,27 @@ import { useFormik } from "formik";
 import axios, { AxiosError } from "axios";
 import validationScheme from "../utils/validation-scheme";
 import { useRouter } from "next/router";
-import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { unstable_getServerSession } from "next-auth";
 import { authOptions } from "./api/auth/[...nextauth]";
 import { signIn } from "next-auth/react";
-import { faLock } from "@fortawesome/free-solid-svg-icons";
+import {
+  faArrowLeft,
+  faArrowLeftLong,
+  faEye,
+  faEyeSlash,
+  faLock,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import * as Yup from "yup";
+import toast from "react-hot-toast";
+import { useState } from "react";
 
-const registerUser = async (user): Promise<[boolean, null | AxiosError]> => {
+const updatePassword = async (
+  fields
+): Promise<[boolean, null | AxiosError]> => {
   try {
-    const res = await axios.post("/api/register", user);
+    const res = await axios.put("/api/changepassword", fields);
     console.log(res);
     return [true, null];
   } catch (error) {
@@ -38,6 +47,9 @@ const validationSchema = Yup.object({
 
 export default function Register() {
   const router = useRouter();
+  const [showOldPassword, setShowOldPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmNewPassword, setShowConfirmNewPassword] = useState(false);
   const formik = useFormik({
     initialValues: {
       oldPassword: "",
@@ -46,18 +58,17 @@ export default function Register() {
     },
     validationSchema,
     onSubmit: async (values) => {
-      const [res, error] = await registerUser(values);
+      const [res, error] = await updatePassword(values);
       if (!res) {
         if (error.response.status === 422) {
-          formik.errors.email = error.response.data[0] as string;
+          formik.errors.oldPassword = error.response.data[0] as string;
         }
       } else {
-        await signIn("credentials", {
-          email: values.email,
-          password: values.password,
-          redirect: false,
+        console.log("updated password successfully");
+        toast.success("Your password has been updated.", {
+          position: "bottom-center",
         });
-        await router.push("/profilephoto");
+        router.back();
       }
     },
   });
@@ -72,13 +83,13 @@ export default function Register() {
           Change your password
         </h3>
         <form className="w-80" onSubmit={formik.handleSubmit}>
-          <div className="flex flex-col mt-5">
+          <div className="flex flex-col relative mt-5">
             <label htmlFor="oldPassword" className="text-bell text-base mb-2">
               Old Password:
             </label>
             <motion.input
               whileFocus={{ scale: 1.03 }}
-              type="password"
+              type={showOldPassword ? "text" : "password"}
               name="oldPassword"
               className="rounded-2xl w-full pl-4 pt-2 pb-2 pr-2 bg-background2 border-solid border border-bell text-bell"
               placeholder="Enter your old password"
@@ -86,6 +97,24 @@ export default function Register() {
               onChange={formik.handleChange}
               value={formik.values.oldPassword}
             />
+            <AnimatePresence mode="wait">
+              <motion.button
+                key={showOldPassword ? "faEye" : "faEyeSlash"}
+                initial={{ opacity: 0, scale: 0 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.3 }}
+                type="button"
+                onClick={() => {
+                  setShowOldPassword((showOldPassword) => !showOldPassword);
+                }}
+                className="absolute top-11 right-4"
+              >
+                <FontAwesomeIcon
+                  className={"text-bell text-lg"}
+                  icon={showOldPassword ? faEye : faEyeSlash}
+                />
+              </motion.button>
+            </AnimatePresence>
             <AnimatePresence>
               {formik.errors.oldPassword && formik.touched.oldPassword && (
                 <motion.p
@@ -101,13 +130,13 @@ export default function Register() {
             </AnimatePresence>
           </div>
 
-          <div className="flex flex-col mt-5">
+          <div className="flex flex-col relative mt-5">
             <label htmlFor="newPassword" className="text-bell text-base mb-2">
               New Password:
             </label>
             <motion.input
               whileFocus={{ scale: 1.03 }}
-              type="password"
+              type={showNewPassword ? "text" : "password"}
               name="newPassword"
               className="rounded-2xl w-full pl-4 pt-2 pb-2 pr-2 bg-background2 border-solid border border-bell text-bell"
               placeholder="Enter your new password"
@@ -115,6 +144,24 @@ export default function Register() {
               onChange={formik.handleChange}
               value={formik.values.newPassword}
             />
+            <AnimatePresence mode="wait">
+              <motion.button
+                key={showNewPassword ? "faEye" : "faEyeSlash"}
+                initial={{ opacity: 0, scale: 0 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.3 }}
+                type="button"
+                onClick={() => {
+                  setShowNewPassword((showNewPassword) => !showNewPassword);
+                }}
+                className="absolute top-11 right-4"
+              >
+                <FontAwesomeIcon
+                  className={"text-bell text-lg"}
+                  icon={showNewPassword ? faEye : faEyeSlash}
+                />
+              </motion.button>
+            </AnimatePresence>
             <AnimatePresence>
               {formik.errors.newPassword && formik.touched.newPassword && (
                 <motion.p
@@ -129,13 +176,13 @@ export default function Register() {
               )}
             </AnimatePresence>
           </div>
-          <div className="flex flex-col mt-5">
+          <div className="flex flex-col relative mt-5">
             <label htmlFor="password" className="text-bell text-base mb-2">
               Confirm your new password
             </label>
             <motion.input
               whileFocus={{ scale: 1.03 }}
-              type="password"
+              type={showConfirmNewPassword ? "text" : "password"}
               name="confirmNewPassword"
               className="rounded-2xl w-full  pl-4 pt-2 pb-2 pr-2 bg-background2 border-solid border border-bell text-bell"
               placeholder="Confirm your new password"
@@ -143,6 +190,26 @@ export default function Register() {
               onChange={formik.handleChange}
               value={formik.values.confirmNewPassword}
             />
+            <AnimatePresence mode="wait">
+              <motion.button
+                key={showConfirmNewPassword ? "faEye" : "faEyeSlash"}
+                initial={{ opacity: 0, scale: 0 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.3 }}
+                type="button"
+                onClick={() => {
+                  setShowConfirmNewPassword(
+                    (showConfirmNewPassword) => !showConfirmNewPassword
+                  );
+                }}
+                className="absolute top-11 right-4"
+              >
+                <FontAwesomeIcon
+                  className={"text-bell text-lg"}
+                  icon={showConfirmNewPassword ? faEye : faEyeSlash}
+                />
+              </motion.button>
+            </AnimatePresence>
             <AnimatePresence>
               {formik.errors.confirmNewPassword &&
                 formik.touched.confirmNewPassword && (
@@ -165,6 +232,17 @@ export default function Register() {
           >
             <FontAwesomeIcon className="mr-2" icon={faLock} />{" "}
             <span>Change Password</span>
+          </motion.button>
+          <motion.button
+            className="rounded-full text-center bg-bell text-base font-bold py-3 px-3 w-full mt-6"
+            whileHover={{ scale: 1.05 }}
+            type="button"
+            onClick={() => {
+              router.back();
+            }}
+          >
+            <FontAwesomeIcon className="mr-2" icon={faArrowLeftLong} />
+            <span>Go back</span>
           </motion.button>
         </form>
       </div>
