@@ -66,7 +66,7 @@ export default function Register() {
         <title>Sign Up</title>
       </Head>
       <div className="flex flex-col justify-center items-center min-h-[calc(100vh-73px)] text-base">
-        <form className="w-80" onSubmit={formik.handleSubmit}>
+        <form className="w-96 border-1 border-customBorderColor rounded-3xl py-5 px-8" onSubmit={formik.handleSubmit}>
           <div className="flex flex-col">
             <label htmlFor="name" className="text-bell text-base mb-2">
               Name:
@@ -171,6 +171,7 @@ export default function Register() {
                 initial={{ opacity: 0, scale: 0 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.3 }}
+                exit={{ scale: 0 }}
                 type="button"
                 onClick={() => {
                   setShowPassword((showPassword) => !showPassword);
@@ -216,7 +217,8 @@ export default function Register() {
                 key={showConfirmPassword ? "faEye" : "faEyeSlash"}
                 initial={{ opacity: 0, scale: 0 }}
                 animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.3 }}
+                transition={{ duration: 0.2 }}
+                exit={{ scale: 0 }}
                 type="button"
                 onClick={() => {
                   setShowConfirmPassword((showConfirmPassword) => !showConfirmPassword);

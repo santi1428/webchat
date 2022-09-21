@@ -6,6 +6,8 @@ type User = {
     password?: string | null;
     confirmPassword?: string | null;
     profilePhotoName?: string | null;
+    resetPasswordToken?: string | null;
+    resetPasswordTokenExpiry?: int | null;
 };
 
 export {

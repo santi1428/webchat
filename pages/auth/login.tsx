@@ -7,9 +7,13 @@ import * as Yup from "yup";
 import { useRouter } from "next/router";
 import { unstable_getServerSession } from "next-auth";
 import { authOptions } from "../api/auth/[...nextauth]";
+import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useState } from "react";
 
 export default function Login() {
   const router = useRouter();
+  const [showPassword, setShowPassword] = useState(false);
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -21,9 +25,7 @@ export default function Login() {
         .max(255, "The email is too large.")
         .required("The email field is required."),
       password: Yup.string()
-        .min(6, "Password is too short - should be 6 chars minimum.")
-        .max(40, "The password should not exceed 50 characters")
-        .required("The password field is required."),
+      .required("This field is required."),
     }),
     onSubmit: async (values) => {
       const { email, password } = values;
@@ -47,7 +49,10 @@ export default function Login() {
         <title>Sign In</title>
       </Head>
       <div className="flex flex-col justify-center items-center h-[calc(100vh-73px)]">
-        <form className="w-80" onSubmit={formik.handleSubmit}>
+        <form
+          className="w-96 border-1 border-customBorderColor rounded-3xl p-7"
+          onSubmit={formik.handleSubmit}
+        >
           <p className="text-bell font-semibold text-2xl text-center">
             Sign In
           </p>
@@ -79,13 +84,13 @@ export default function Login() {
               )}
             </AnimatePresence>
           </div>
-          <div className="flex flex-col mt-5">
+          <div className="flex flex-col relative mt-5">
             <label htmlFor="password" className="text-bell text-lg mb-2">
               Password:
             </label>
             <motion.input
               whileFocus={{ scale: 1.03 }}
-              type="password"
+              type={showPassword ? "text" : "password"}
               name="password"
               className="rounded-2xl w-full pl-4 pt-2 pb-2 pr-2 bg-background2 border-solid border border-bell text-bell"
               placeholder="Enter your password"
@@ -93,6 +98,25 @@ export default function Login() {
               onChange={formik.handleChange}
               value={formik.values.password}
             />
+            <AnimatePresence mode="wait">
+              <motion.button
+                key={showPassword ? "faEye" : "faEyeSlash"}
+                initial={{ opacity: 0, scale: 0 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.3 }}
+                type="button"
+                exit={{ scale: 0 }}
+                onClick={() => {
+                  setShowPassword((showPassword) => !showPassword);
+                }}
+                className="absolute top-12 right-4"
+              >
+                <FontAwesomeIcon
+                  className={"text-bell text-lg"}
+                  icon={showPassword ? faEye : faEyeSlash}
+                />
+              </motion.button>
+            </AnimatePresence>
             <AnimatePresence>
               {formik.errors.password && formik.touched.password && (
                 <motion.p
@@ -108,9 +132,9 @@ export default function Login() {
             </AnimatePresence>
           </div>
           <p className="mt-4 text-bell">
-            Don&apos;t you have an account?
-            <Link href="/auth/register">
-              <a className="font-bold cursor-pointer ml-2">Sign Up here.</a>
+            Did you forget your password?
+            <Link href="/auth/forgotpassword">
+              <a className="font-bold cursor-pointer ml-2">Click here.</a>
             </Link>
           </p>
           <motion.button
@@ -120,6 +144,12 @@ export default function Login() {
           >
             Sign In
           </motion.button>
+          <p className="mt-4 text-bell text-md">
+            Don&apos;t you have an account?
+            <Link href="/auth/register">
+              <a className="font-bold cursor-pointer ml-2">Sign Up here.</a>
+            </Link>
+          </p>
         </form>
       </div>
     </>

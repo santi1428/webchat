@@ -50,6 +50,7 @@ export default async function handler(
             email: newUser.email,
             password: hashedPassword,
             profilePhotoName: newUser.profilePhotoName,
+
           },
         });
         res.status(200).end();
