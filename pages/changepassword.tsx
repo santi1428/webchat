@@ -79,7 +79,7 @@ export default function Register() {
       <Head>
         <title>Change your password</title>
       </Head>
-      <div className="flex flex-col justify-center items-center min-h-[calc(100vh-73px)] text-base">
+      <div className="flex flex-col justify-center items-center min-h-[calc(100vh-73.5px)] text-base">
         <h3 className="text-bell text-xl font-semibold mb-5">
           Change your password
         </h3>

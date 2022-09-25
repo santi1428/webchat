@@ -107,7 +107,7 @@ export default function Profile() {
       <Head>
         <title>Profile</title>
       </Head>
-      <div className="flex flex-col justify-center items-center min-h-[calc(100vh-73px)] text-base">
+      <div className="flex flex-col justify-center items-center min-h-[calc(100vh-73.5px)] text-base py-12 2xl:py-0">
         <form className="w-80" onSubmit={formik.handleSubmit}>
           <div className="flex flex-col justify-items-center">
             <motion.div

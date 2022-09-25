@@ -4,9 +4,9 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { hashPassword } from "../../lib/bcrypt";
 import { User } from "../../utils/types";
 
-const validateFields = async (
+const validateFields = (
   newUser: User
-): Promise<[boolean, null | { errors: string[] }]> => {
+): [boolean, null | { errors: string[] }] => {
   try {
     validationScheme.validate(newUser);
     return [true, null];
@@ -25,7 +25,6 @@ const doesEmailExist = async (email: string): Promise<boolean> => {
   return userCount > 0;
 };
 
-
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
@@ -33,7 +32,6 @@ export default async function handler(
   if (req.method == "POST") {
     let newUser: User = {
       ...req.body,
-      profilePhotoName: "default-profile-photo.png",
     };
     const fieldsValidation = await validateFields(newUser);
     if (fieldsValidation[0]) {
@@ -49,8 +47,6 @@ export default async function handler(
             lastName: newUser.lastName,
             email: newUser.email,
             password: hashedPassword,
-            profilePhotoName: newUser.profilePhotoName,
-
           },
         });
         res.status(200).end();

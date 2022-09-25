@@ -25,6 +25,7 @@ const registerUser = async (user): Promise<[boolean, null | AxiosError]> => {
 
 export default function Register() {
   const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const formik = useFormik({
@@ -37,25 +38,42 @@ export default function Register() {
     },
     validationSchema: validationScheme,
     onSubmit: async (values) => {
-      const [res, error] = await registerUser(values);
-      if (!res) {
-        if (error.response.status === 422) {
-          formik.errors.email = error.response.data[0] as string;
-        }
-      } else {
-        await signIn("credentials", {
-          email: values.email,
-          password: values.password,
-          redirect: false,
+      if (!isSubmitting) {
+        setIsSubmitting(true);
+        const signingUpToast = toast.loading("Signing up...", {
+          position: "bottom-center",
         });
-        await router.push("/profilephoto");
-        toast.success(
-          "You have signed up, now you can setup a profile photo.",
-          {
-            position: "bottom-center",
-            duration: 8000,
+        const [res, error] = await registerUser(values);
+        if (!res) {
+          if (error.response.status === 422) {
+            toast.dismiss(signingUpToast);
+            formik.errors.email = error.response.data[0] as string;
+          } else if (error.response.status == 500) {
+            toast.error("An error has occurred, please try again later.", {
+              position: "bottom-center",
+              duration: 8000,
+              id: signingUpToast,
+            });
           }
-        );
+        } else {
+          await signIn("credentials", {
+            email: values.email,
+            password: values.password,
+            redirect: false,
+          });
+          await router.push("/profilephoto");
+          toast.success(
+            "You have signed up, now you can setup a profile photo.",
+            {
+              position: "bottom-center",
+              duration: 8000,
+              id: signingUpToast,
+            }
+          );
+        }
+        setTimeout(() => {
+          setIsSubmitting(false);
+        }, 1000);
       }
     },
   });
@@ -65,8 +83,12 @@ export default function Register() {
       <Head>
         <title>Sign Up</title>
       </Head>
-      <div className="flex flex-col justify-center items-center min-h-[calc(100vh-73px)] text-base">
-        <form className="w-96 border-1 border-customBorderColor rounded-3xl py-5 px-8" onSubmit={formik.handleSubmit}>
+      <div className="flex flex-col justify-center items-center min-h-[calc(100vh-73px)] text-base py-12 2xl:py-0">
+        <form
+          className="w-96 border-1 border-customBorderColor rounded-3xl py-5 px-8"
+          onSubmit={formik.handleSubmit}
+        >
+          <h5 className='text-center capitalize text-bell font-semibold text-lg py-4'>Sign Up</h5>
           <div className="flex flex-col">
             <label htmlFor="name" className="text-bell text-base mb-2">
               Name:
@@ -204,7 +226,7 @@ export default function Register() {
             </label>
             <motion.input
               whileFocus={{ scale: 1.03 }}
-              type={showConfirmPassword ? 'text' : 'password'}
+              type={showConfirmPassword ? "text" : "password"}
               name="confirmPassword"
               className="rounded-2xl w-full  pl-4 pt-2 pb-2 pr-2 bg-background2 border-solid border border-bell text-bell"
               placeholder="Confirm your password"
@@ -221,7 +243,9 @@ export default function Register() {
                 exit={{ scale: 0 }}
                 type="button"
                 onClick={() => {
-                  setShowConfirmPassword((showConfirmPassword) => !showConfirmPassword);
+                  setShowConfirmPassword(
+                    (showConfirmPassword) => !showConfirmPassword
+                  );
                 }}
                 className="absolute top-11 right-4"
               >

@@ -1,10 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { hashPassword } from "../../lib/bcrypt";
-import { comparePassword } from "../../lib/bcrypt";
-import { User } from "../../utils/types";
 import * as Yup from "yup";
-import { unstable_getServerSession } from "next-auth";
-import { authOptions } from "./auth/[...nextauth]";
 import { prisma } from "../../lib/prisma";
 import crypto from "crypto";
 

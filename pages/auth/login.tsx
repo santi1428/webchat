@@ -48,7 +48,7 @@ export default function Login() {
       <Head>
         <title>Sign In</title>
       </Head>
-      <div className="flex flex-col justify-center items-center h-[calc(100vh-73px)]">
+      <div className="flex flex-col justify-center items-center h-[calc(100vh-73.5px)]">
         <form
           className="w-96 border-1 border-customBorderColor rounded-3xl p-7"
           onSubmit={formik.handleSubmit}
