@@ -52,32 +52,54 @@ export default function Navbar() {
         <div className="flex flex-row mr-5">
           {status === "unauthenticated" ? (
             <>
-              <Link href="/auth/register" className="self-center">
-                <a className="self-center">
-                  <FontAwesomeIcon
-                    className="text-bell mr-2"
-                    icon={faUserPlus}
-                  />
-                  <span className="text-lg text-bell  font-semibold cursor-pointer mr-7">
-                    Sign Up
-                  </span>
-                </a>
-              </Link>
-              <Link href="/auth/login">
-                <a className="self-center">
-                  <FontAwesomeIcon
-                    className="text-bell mr-2"
-                    icon={faRightToBracket}
-                  />
-                  <span className="text-lg text-bell font-semibold cursor-pointer mr-7">
-                    Sign In
-                  </span>
-                </a>
-              </Link>
+              <AnimatePresence mode="wait">
+                <motion.div
+                  className="my-0 py-0 self-center"
+                  key="sign-up"
+                  initial={{ opacity: 0, scale: 0 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.3 }}
+                  exit={{ scale: 0 }}
+                >
+                  <Link href="/auth/register" className="self-center">
+                    <a className="self-center">
+                      <FontAwesomeIcon
+                        className="text-bell mr-2"
+                        icon={faUserPlus}
+                      />
+                      <span className="text-lg text-bell  font-semibold cursor-pointer mr-7">
+                        Sign Up
+                      </span>
+                    </a>
+                  </Link>
+                </motion.div>
+              </AnimatePresence>
+              <AnimatePresence mode="wait">
+                <motion.div
+                  className="my-0 py-0 h-auto w-auto self-center"
+                  key="sign-in"
+                  initial={{ opacity: 0, scale: 0 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.3 }}
+                  exit={{ scale: 0 }}
+                >
+                  <Link href="/auth/login">
+                    <a className="self-center">
+                      <FontAwesomeIcon
+                        className="text-bell mr-2"
+                        icon={faRightToBracket}
+                      />
+                      <span className="text-lg text-bell font-semibold cursor-pointer mr-7">
+                        Sign In
+                      </span>
+                    </a>
+                  </Link>
+                </motion.div>
+              </AnimatePresence>
             </>
           ) : (
             <>
-              <AnimatePresence mode='wait'>
+              <AnimatePresence mode="wait">
                 <motion.div
                   initial={{ opacity: 0, scale: 0 }}
                   animate={{ opacity: 1, scale: 1 }}
@@ -115,6 +137,7 @@ export default function Navbar() {
                   </AnimatePresence>
                   <AnimatePresence mode="wait">
                     <motion.div
+                      key="full-name"
                       initial={{ opacity: 0, scale: 0 }}
                       animate={{ opacity: 1, scale: 1 }}
                       transition={{ duration: 0.3 }}
@@ -144,6 +167,7 @@ export default function Navbar() {
                         <AnimatePresence mode="wait">
                           {showDropdownMenu && (
                             <motion.div
+                              key="profile"
                               initial={{ opacity: 0, scale: 0 }}
                               animate={{ opacity: 1, scale: 1 }}
                               transition={{ duration: 0.3 }}

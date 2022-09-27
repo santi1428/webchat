@@ -30,9 +30,7 @@ export default async function handler(
   res: NextApiResponse
 ) {
   if (req.method == "POST") {
-    let newUser: User = {
-      ...req.body,
-    };
+    let newUser: User = req.body;
     const fieldsValidation = await validateFields(newUser);
     if (fieldsValidation[0]) {
       try {

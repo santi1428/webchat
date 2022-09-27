@@ -31,7 +31,12 @@ export default function ProfilePhoto() {
       if (!selectedFile.name.match(/\.(jpg|jpeg|png|gif|webp)$/)) {
         setFileError("Selected file is not valid.");
       } else {
-        setFileError("");
+        const fileSize = selectedFile.size / 1024 / 1024;
+        if (fileSize > 3) {
+          setFileError("File size exceeds 3 MiB");
+        } else {
+          setFileError("");
+        }
       }
     }
   };

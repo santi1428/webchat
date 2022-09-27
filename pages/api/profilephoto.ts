@@ -56,6 +56,11 @@ const validateFile = (file: File): boolean => {
       return false;
     } else {
       console.log("Selected file is valid");
+      const fileSize = file.size / 1024 / 1024;
+      if (fileSize > 3) {
+        console.log("File size exceeds 3 MiB");
+        return false;
+      }
       return true;
     }
   }

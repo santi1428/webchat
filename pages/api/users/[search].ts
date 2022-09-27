@@ -33,6 +33,10 @@ const getUsers = async (search: String): Promise<User[]> => {
       lastName: true,
       profilePhotoName: true,
     },
+    take: 10,
+    orderBy: {
+      name: "asc",
+    },
   });
   return users;
 };
