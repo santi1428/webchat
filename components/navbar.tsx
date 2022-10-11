@@ -16,16 +16,24 @@ import { useRouter } from "next/router";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import SearchBar from "./searchBar";
+import { useRef } from "react";
+import useOnClickOutside from "./hooks/useOnClickOutside";
 
 export default function Navbar() {
   const [showDropdownMenu, setShowDropdownMenu] = useState(true);
   const { data: session, status } = useSession();
+  const userDropDownMenuRef = useRef();
 
   const router = useRouter();
 
   useEffect(() => {
     setShowDropdownMenu(false);
   }, [router.asPath]);
+
+  useOnClickOutside(userDropDownMenuRef, () => {
+    setShowDropdownMenu(false);
+  });
+
   return (
     <div className="flex flex-row justify-between pt-4 pb-3 border-b-1 border-customBorderColor ">
       <div className="ml-5">
@@ -168,6 +176,7 @@ export default function Navbar() {
                           {showDropdownMenu && (
                             <motion.div
                               key="profile"
+                              ref={userDropDownMenuRef}
                               initial={{ opacity: 0, scale: 0 }}
                               animate={{ opacity: 1, scale: 1 }}
                               transition={{ duration: 0.3 }}

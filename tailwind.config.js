@@ -18,10 +18,11 @@ module.exports = {
         "bubble-gum": "#ff77e9",
         bermuda: "#78dcca",
         background: "#17181F",
-        bell: "#99C1C4",
+        bell: "#83F0FF",
         disabledButton: '#1e2627',
-        customBorderColor: "#2d393a",
+        customBorderColor: "#24252A",
         background2: "#1C1C25",
+        background3: "#5c5d62"
       },
       borderWidth: {
         DEFAULT: "1px",
