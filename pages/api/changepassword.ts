@@ -22,7 +22,6 @@ const validationScheme = Yup.object({
 });
 
 const getUserPasswordByID = async (id): Promise<String> => {
-  console.log("querying database getUserByID");
   const user: User = await prisma.user.findUnique({
     where: {
       id,
@@ -82,7 +81,7 @@ export default async function handler(
         return res.status(400).end();
       }
     } else {
-      return res.status(401).send("User not authorized.");
+      return res.status(401).send("ListUser not authorized.");
     }
   }
 }

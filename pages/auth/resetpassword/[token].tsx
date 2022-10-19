@@ -33,6 +33,7 @@ export default function Register() {
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmNewPassword, setShowConfirmNewPassword] = useState(false);
   const [isSubmittingForm, setIsSubmittingForm] = useState(false);
+
   const resetPassword = async (
     fields
   ): Promise<[boolean, null | AxiosError]> => {
@@ -92,7 +93,7 @@ export default function Register() {
       </Head>
       <div className="flex flex-col justify-center items-center min-h-[calc(100vh-73px)] text-base">
         <form
-          className="w-80 border-1 border-customBorderColor p-6 rounded-3xl"
+          className="w-96 border-1 border-customBorderColor p-6 rounded-3xl"
           onSubmit={formik.handleSubmit}
         >
           <h3 className="text-bell text-xl text-center font-semibold mb-5">

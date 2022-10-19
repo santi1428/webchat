@@ -3,6 +3,7 @@ import { authOptions } from "./api/auth/[...nextauth]";
 import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 import {
   faHouse,
   faArrowsRotate,
@@ -93,6 +94,7 @@ export default function ProfilePhoto() {
     session?.user?.profilePhotoName
   );
 
+
   return (
     <>
       <Head>
@@ -118,7 +120,7 @@ export default function ProfilePhoto() {
               }}
               transition={{ duration: 0.3 }}
               exit={{ scale: 0 }}
-              className="h-64 w-64 relative "
+              className="h-64 w-64 relative mb-20"
             >
               <Image
                 alt="NoImage"

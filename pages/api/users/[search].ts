@@ -5,7 +5,6 @@ import { prisma } from "../../../lib/prisma";
 import { User } from "../../../utils/types";
 
 const getUsers = async (search: String): Promise<User[]> => {
-  console.log("querying database getUserByID");
   const users = await prisma.user.findMany({
     where: {
       OR: [
@@ -53,7 +52,7 @@ export default async function handler(
       const users: User[] = await getUsers(search);
       return res.status(200).send(users);
     } else {
-      return res.status(401).send("User not authorized.");
+      return res.status(401).send("ListUser not authorized.");
     }
   }
 }

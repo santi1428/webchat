@@ -4,7 +4,7 @@ import { faEllipsisVertical } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { unstable_getServerSession } from "next-auth";
 import { authOptions } from "./api/auth/[...nextauth]";
-import Chat from "../components/chat";
+import Chat from "../components/chat/chat";
 
 export default function Home() {
   return (
@@ -14,9 +14,9 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
         <title>Free open source Chat - Home</title>
       </Head>
-      <div className="grid grid-cols-12">
+      <div className="flex grow flex-1 grid grid-cols-12 h-full">
         {/*left side */}
-        <div className="col-span-4 flex flex-col border-r border-customBorderColor ">
+        <div className="min-h-[calc(100vh-73.5px)] col-span-4 flex flex-col border-r border-customBorderColor">
           <div className="ml-7 w-full">
             <input
               type="text"
@@ -78,7 +78,7 @@ export default function Home() {
                 layout="fill"
                 src="/images/selfie4.webp"
                 className="rounded-full"
-                alt='NoImage'
+                alt="NoImage"
               />
             </div>
             <div className="flex flex-col w-full">
@@ -104,8 +104,7 @@ export default function Home() {
                 layout="fill"
                 src="/images/selfie1.webp"
                 className="rounded-full"
-                alt='NoImage'
-
+                alt="NoImage"
               />
             </div>
             <div className="flex flex-col w-full">
@@ -131,8 +130,7 @@ export default function Home() {
                 layout="fill"
                 src="/images/selfie3.jpg"
                 className="rounded-full"
-                alt='NoImage'
-
+                alt="NoImage"
               />
             </div>
             <div className="flex flex-col w-full">
@@ -152,6 +150,7 @@ export default function Home() {
               <p className="ml-5 text-bell">OMG! This is amazing :).</p>
             </div>
           </div>
+          <div className="grow h-full flex-1"></div>
         </div>
         {/*right side*/}
         <Chat />

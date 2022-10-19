@@ -3,10 +3,8 @@ import {
   faRightToBracket,
   faRightFromBracket,
   faBell,
-  faCaretDown,
   faSquareCaretDown,
 } from "@fortawesome/free-solid-svg-icons";
-// @ts-ignore
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
 import Image from "next/image";
@@ -15,7 +13,7 @@ import { signOut } from "next-auth/react";
 import { useRouter } from "next/router";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
-import SearchBar from "./searchBar";
+import SearchBar from "./searchbar/searchBar";
 import { useRef } from "react";
 import useOnClickOutside from "./hooks/useOnClickOutside";
 

@@ -53,8 +53,6 @@ export default function Profile() {
   const router = useRouter();
   const { data: session, status } = useSession();
 
-  // const notify = () => toast("✅  Your profile has been updated.");
-
   const formik = useFormik({
     initialValues: {
       name: session?.user?.name ?? "",
@@ -77,6 +75,7 @@ export default function Profile() {
         if (!res) {
           if (error.response.status === 422) {
             formik.errors.email = error.response.data[0] as string;
+            toast.dismiss(updateToast);
           }
         } else {
           reloadSession();

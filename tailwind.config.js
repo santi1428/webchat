@@ -22,7 +22,7 @@ module.exports = {
         disabledButton: '#1e2627',
         customBorderColor: "#24252A",
         background2: "#1C1C25",
-        background3: "#5c5d62"
+        background3: "#e8e7e0"
       },
       borderWidth: {
         DEFAULT: "1px",

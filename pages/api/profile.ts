@@ -75,7 +75,7 @@ export default async function handler(
         return res.status(400).end();
       }
     } else {
-      return res.status(401).send("User not authorized.");
+      return res.status(401).send("ListUser not authorized.");
     }
   }
 }
