@@ -1,62 +1,57 @@
-import Image from "next/image";
+import { motion } from "framer-motion";
+import { useNotificationStore } from "../../lib/store";
+import Message from "./message";
+import dayjs from "dayjs";
+import "dayjs/locale/es";
+import { useEffect, useMemo } from "react";
 
-export default function Messages(): JSX {
+export default function Messages(props): JSX {
+  const { messages, user, selectedChatUser } = props;
+  console.log("user", user);
 
+  const setFocusedMessageInput = useNotificationStore(
+    (state) => state.setFocusedMessageInput
+  );
+
+  useEffect(() => {
+    dayjs.locale("es");
+  });
 
   return (
     <>
-      <div className="flex flex-row justify-end mt-6 mr-6">
-        <div className="flex flex-col">
-          <div className="flex flex-row justify-end">
-            <span className="self-center text-xs text-bell self-center">
-              9:52 AM
+      {messages?.length === 0 || messages === null ? (
+        <motion.div
+          className="flex flex-col justify-center items-center h-full"
+          key={messages?.length}
+          initial={{ opacity: 0, scale: 0 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.2 }}
+          exit={{ scale: 0 }}
+        >
+          <div className="flex flex-row  cursor-pointer text-bell text-lg self-center">
+            <span
+              className="underline"
+              onClick={() => {
+                setFocusedMessageInput(true);
+              }}
+            >
+              Write something to {selectedChatUser.name}...
             </span>
-            <p className="self-center text-sm text-bell font-semibold mr-5 ml-3">
-              Selena Gómez
-            </p>
           </div>
-          <p className="text-justify rounded-l-3xl rounded-br-3xl max-w-md text-sm bg-bell mt-2 mr-4 px-9 py-4 ml-5">
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-            Accusantium commodi, dolorem doloribus eos ex nihil quam similique
-            unde vero! Aliquid ea libero minima optio sint sit suscipit,
-            voluptatibus. Impedit, nostrum!
-          </p>
-        </div>
-
-        <div className="mr-4 inline-block h-10 w-10 relative">
-          <Image
-            layout="fill"
-            src="/images/selfie1.webp"
-            className="rounded-full"
-            alt="NoImage"
-          />
-        </div>
-      </div>
-      <div className="flex flex-row justify-start mt-9 ml-6">
-        <div className="inline-block h-11 w-10 relative">
-          <Image
-            layout="fill"
-            src="/images/selfie.webp"
-            className="rounded-full"
-            alt="NoImage"
-          />
-        </div>
-
-        <div className="flex flex-col">
-          <div className="flex flex-row">
-            <p className="text-sm text-bell font-semibold self-end mr-4 ml-4">
-              Charles Machado
-            </p>
-            <span className="self-center text-xs text-bell">9:52 AM</span>
-          </div>
-          <p className="rounded-r-3xl rounded-bl-3xl max-w-md text-sm bg-bell mt-2 mr-4 px-9 py-4 ml-5">
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-            Accusantium commodi, dolorem doloribus eos ex nihil quam similique
-            unde vero! Aliquid ea libero minima optio sint sit suscipit,
-            voluptatibus. Impedit, nostrum!
-          </p>
-        </div>
-      </div>
+        </motion.div>
+      ) : (
+        <motion.div>
+          {messages.map((message, index) => (
+            <Message
+              key={message.id}
+              message={message}
+              user={user}
+              selectedChatUser={selectedChatUser}
+              dayjs={dayjs}
+            />
+          ))}
+        </motion.div>
+      )}
     </>
   );
 }

@@ -11,16 +11,19 @@ const getUsers = async (search: String): Promise<User[]> => {
         {
           name: {
             contains: search,
+            mode: "insensitive",
           },
         },
         {
           lastName: {
             contains: search,
+            mode: "insensitive",
           },
         },
         {
           email: {
             contains: search,
+            mode: "insensitive",
           },
         },
       ],

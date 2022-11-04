@@ -141,103 +141,111 @@ export default function Navbar() {
                       </Link>
                     </motion.div>
                   </AnimatePresence>
-                  <AnimatePresence mode="wait">
-                    <motion.div
-                      key="full-name"
-                      initial={{ opacity: 0, scale: 0 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ duration: 0.3 }}
-                      exit={{ scale: 0 }}
-                      className="flex flex-col mr-10 relative"
-                    >
-                      <div className="flex flex-row">
-                        <Link href="/profile">
-                          <a className="text-bell font-semibold capitalize">
-                            {`${session.user.name} ${session.user.lastName}`}
-                          </a>
-                        </Link>
-                        <div className="mt-1 h-auto">
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setShowDropdownMenu(!showDropdownMenu);
-                            }}
+
+                  <motion.div
+                    key="full-name"
+                    initial={{ opacity: 0, scale: 0 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.3 }}
+                    exit={{ scale: 0 }}
+                    className="flex flex-col mr-10 relative"
+                  >
+                    <div className="flex flex-row">
+                      <AnimatePresence mode="wait">
+                        <motion.div
+                          key={session.user.name + session.user.lastName}
+                          initial={{ opacity: 0, scale: 0 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ duration: 0.3 }}
+                          exit={{ scale: 0 }}
+                        >
+                          <Link href="/profile">
+                            <a className="text-bell font-semibold capitalize">
+                              {`${session.user.name} ${session.user.lastName}`}
+                            </a>
+                          </Link>
+                        </motion.div>
+                      </AnimatePresence>
+                      <div className="mt-1 h-auto">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setShowDropdownMenu(!showDropdownMenu);
+                          }}
+                        >
+                          <FontAwesomeIcon
+                            className="mr-2 text-xl ml-5 text-bell"
+                            icon={faSquareCaretDown}
+                          />
+                        </button>
+                      </div>
+
+                      {/*Dropdown Menu*/}
+                      <AnimatePresence mode="wait">
+                        {showDropdownMenu && (
+                          <motion.div
+                            key="profile"
+                            ref={userDropDownMenuRef}
+                            initial={{ opacity: 0, scale: 0 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{ duration: 0.3 }}
+                            exit={{ scale: 0 }}
+                            className="flex flex-col absolute top-8 right-2 px-5 pb-3 rounded-b-2xl right-0 full-rounded bg-background border-b-1 border-l-1 border-r-1 border-customBorderColor text-sm"
                           >
-                            <FontAwesomeIcon
-                              className="mr-2 text-xl ml-5 text-bell"
-                              icon={faSquareCaretDown}
-                            />
-                          </button>
-                        </div>
-                        {/*Dropdown Menu*/}
-                        <AnimatePresence mode="wait">
-                          {showDropdownMenu && (
                             <motion.div
-                              key="profile"
-                              ref={userDropDownMenuRef}
+                              whileHover={{ scale: 1.05 }}
                               initial={{ opacity: 0, scale: 0 }}
-                              animate={{ opacity: 1, scale: 1 }}
+                              animate={{
+                                opacity: 1,
+                                scale: 1,
+                              }}
                               transition={{ duration: 0.3 }}
                               exit={{ scale: 0 }}
-                              className="flex flex-col absolute top-8 right-2 px-5 pb-3 rounded-b-2xl right-0 full-rounded bg-background border-b-1 border-l-1 border-r-1 border-customBorderColor text-sm"
+                              className="capitalize w-full pt-3"
                             >
-                              <motion.div
-                                whileHover={{ scale: 1.05 }}
-                                initial={{ opacity: 0, scale: 0 }}
-                                animate={{
-                                  opacity: 1,
-                                  scale: 1,
-                                }}
-                                transition={{ duration: 0.3 }}
-                                exit={{ scale: 0 }}
-                                className="capitalize w-full pt-3"
-                              >
-                                <Link href="/profile">
-                                  <a
-                                    className="text-bell text-center font-semibold capitalize border-b-1 border-customBorderColor pb-3"
-                                    onClick={() => {
-                                      setShowDropdownMenu(false);
-                                    }}
-                                  >
-                                    My Profile
-                                  </a>
-                                </Link>
-                              </motion.div>
-                              <motion.button
-                                whileHover={{ scale: 1.05 }}
-                                initial={{ opacity: 0, scale: 0 }}
-                                animate={{
-                                  opacity: 1,
-                                  scale: 1,
-                                }}
-                                transition={{ duration: 0.3 }}
-                                exit={{ scale: 0 }}
-                                className="mt-6 w-full"
-                                onClick={async () => {
-                                  setShowDropdownMenu(false);
-                                  await signOut({ redirect: false });
-                                  router.push("/auth/login");
-                                }}
-                              >
-                                <FontAwesomeIcon
-                                  className="text-bell mr-2"
-                                  icon={faRightFromBracket}
-                                />
-                                <span className="text-bell  font-semibold cursor-pointer">
-                                  Sign Out
-                                </span>
-                              </motion.button>
+                              <Link href="/profile">
+                                <a
+                                  className="text-bell text-center font-semibold capitalize border-b-1 border-customBorderColor pb-3"
+                                  onClick={() => {
+                                    setShowDropdownMenu(false);
+                                  }}
+                                >
+                                  My Profile
+                                </a>
+                              </Link>
                             </motion.div>
-                          )}
-                        </AnimatePresence>
-                      </div>
-                      <Link href="/profile">
-                        <a className="text-xs text-bell">
-                          {session.user.email}
-                        </a>
-                      </Link>
-                    </motion.div>
-                  </AnimatePresence>
+                            <motion.button
+                              whileHover={{ scale: 1.05 }}
+                              initial={{ opacity: 0, scale: 0 }}
+                              animate={{
+                                opacity: 1,
+                                scale: 1,
+                              }}
+                              transition={{ duration: 0.3 }}
+                              exit={{ scale: 0 }}
+                              className="mt-6 w-full"
+                              onClick={async () => {
+                                setShowDropdownMenu(false);
+                                await signOut({ redirect: false });
+                                router.push("/auth/login");
+                              }}
+                            >
+                              <FontAwesomeIcon
+                                className="text-bell mr-2"
+                                icon={faRightFromBracket}
+                              />
+                              <span className="text-bell  font-semibold cursor-pointer">
+                                Sign Out
+                              </span>
+                            </motion.button>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                    <Link href="/profile">
+                      <a className="text-xs text-bell">{session.user.email}</a>
+                    </Link>
+                  </motion.div>
                 </div>
               )}
             </>

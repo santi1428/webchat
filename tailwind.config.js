@@ -1,4 +1,7 @@
-/** @type {import('tailwindcss').Config} */
+/** @type {import("tailwindcss").Config} */
+
+const plugin = require("tailwindcss/plugin");
+
 module.exports = {
   content: [
     "./pages/**/*.{js,ts,jsx,tsx}",
@@ -19,10 +22,10 @@ module.exports = {
         bermuda: "#78dcca",
         background: "#17181F",
         bell: "#83F0FF",
-        disabledButton: '#1e2627',
+        disabledButton: "#1e2627",
         customBorderColor: "#24252A",
         background2: "#1C1C25",
-        background3: "#e8e7e0"
+        background3: "#e8e7e0",
       },
       borderWidth: {
         DEFAULT: "1px",
@@ -36,5 +39,5 @@ module.exports = {
       },
     },
   },
-  plugins: [],
+  plugins: [require("tailwind-scrollbar")],
 };

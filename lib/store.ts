@@ -19,8 +19,16 @@ const useChatStore = create((set) => ({
 
 const useNotificationStore = create((set) => ({
   focusedSearchInput: false,
+  focusedMessageInput: false,
   setFocusedSearchInput: (focusedSearchInput) => {
     set((state) => ({ focusedSearchInput: focusedSearchInput }));
+  },
+  setFocusedMessageInput: (focusedMessageInput) => {
+    set((state) => ({ focusedMessageInput: focusedMessageInput }));
+  },
+  scrollMessagesToBottom: false,
+  setScrollMessagesToBottom: (scrollMessagesToBottom) => {
+    set((state) => ({ scrollMessagesToBottom: scrollMessagesToBottom }));
   },
 }));
 

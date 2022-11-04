@@ -57,6 +57,7 @@ export default function SearchBar() {
   return (
     <form className="relative mr-10 lg:ml-10 w-64 lg:w-96 relative max-h-80">
       <motion.input
+        whileTap={{ scale: 0.95 }}
         whileFocus={{ scale: 1.03 }}
         ref={inputRef}
         onFocus={() => {
