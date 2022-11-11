@@ -7,7 +7,6 @@ import { useEffect, useMemo } from "react";
 
 export default function Messages(props): JSX {
   const { messages, user, selectedChatUser } = props;
-  console.log("user", user);
 
   const setFocusedMessageInput = useNotificationStore(
     (state) => state.setFocusedMessageInput

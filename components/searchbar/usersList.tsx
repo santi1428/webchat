@@ -6,11 +6,14 @@ import { useRef, useState } from "react";
 import useOnClickOutside from "../hooks/useOnClickOutside";
 import { User } from "../../utils/types";
 import ListUser from "./listUser";
+import { useSession } from "next-auth/react";
 
 export default function UsersList(props) {
   const { data, setShowUsersList, setSearch, search } = props;
 
   const usersListRef = useRef();
+
+  const { data: session, status } = useSession();
 
   useOnClickOutside(usersListRef, () => {
     setShowUsersList(false);
@@ -58,14 +61,16 @@ export default function UsersList(props) {
                   </motion.li>
                 </AnimatePresence>
               )}
-              {data?.map((user: User, index: Number) => (
-                <ListUser
-                  user={user}
-                  key={user.id}
-                  setShowUsersList={setShowUsersList}
-                  setSearch={setSearch}
-                />
-              ))}
+              {data
+                ?.filter((user) => user.id !== session?.user?.id)
+                .map((user: User, index: Number) => (
+                  <ListUser
+                    user={user}
+                    key={user.id}
+                    setShowUsersList={setShowUsersList}
+                    setSearch={setSearch}
+                  />
+                ))}
             </ul>
           </motion.div>
         </AnimatePresence>

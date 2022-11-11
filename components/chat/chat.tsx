@@ -9,8 +9,8 @@ import { useInfiniteQuery, useQuery } from "react-query";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useField } from "formik";
 import { useRouter } from "next/router";
+import InfiniteScroll from "react-infinite-scroller";
 
 export default function Chat(): JSX.Element {
   const selectedChatUser = useChatStore((state) => state.selectedChat);
@@ -25,67 +25,45 @@ export default function Chat(): JSX.Element {
     (state) => state.setScrollMessagesToBottom
   );
 
-  const session = useSession();
+  const { data: session, status } = useSession();
 
   const router = useRouter();
 
   const scrollBottomRef = useRef<HTMLDivElement>(null);
 
   const getMessages = async ({ pageParam = "" }) => {
+    console.log("Fetching messages...");
     const res = await axios.get(
       `/api/message/${selectedChatUser.id}?cursor=${pageParam}`
     );
     return res.data;
   };
 
-  useEffect(() => {
-    console.log("router as path", router.asPath);
-    setScrollMessagesToBottom(true);
-  }, [router.asPath, selectedChatUser.id]);
-
-  useEffect(() => {
-    if (scrollMessagesToBottom) {
-      setTimeout(() => {
-        scrollBottomRef.current?.scrollIntoView({ behavior: "smooth" });
-        setScrollMessagesToBottom(false);
-      }, 300);
-    }
-  }, [scrollMessagesToBottom]);
-
-  const { data, fetchNextPage, isFetchingNextPage } = useInfiniteQuery(
-    ["messages", selectedChatUser.id],
-    getMessages,
-    {
+  const { data, fetchNextPage, isFetchingNextPage, isFetching } =
+    useInfiniteQuery(["messages", selectedChatUser.id], getMessages, {
       enabled: selectedChatUser.id !== "",
       staleTime: 1000 * 60 * 5,
       getNextPageParam: (lastPage) => {
-        console.log("lastpage.messages", lastPage.messages);
         if (lastPage.messages.length < 10) {
           return undefined;
         }
         return lastPage.messages[lastPage.messages.length - 1].id;
       },
-      onSuccess: () => {
-        if (scrollMessagesToBottom) {
-          setTimeout(() => {
-            scrollBottomRef.current?.scrollIntoView({
-              behavior: "smooth",
-            });
-            setScrollMessagesToBottom(false);
-          }, 100);
-        }
-      },
-    }
-  );
+    });
 
-  console.log("data", data);
+  useEffect(() => {
+    setScrollMessagesToBottom(true);
+  }, [router.asPath, selectedChatUser.id]);
 
-  const handleScroll = (e) => {
-    const element = e.target;
-    if (element.scrollTop === 0) {
-      fetchNextPage();
+  useEffect(() => {
+    if (scrollMessagesToBottom) {
+      console.log("scrollMessagesToBottom", scrollMessagesToBottom);
+      console.log("data", JSON.stringify(data)?.length);
+      setTimeout(() => {
+        scrollBottomRef.current?.scrollIntoView();
+      }, 250);
     }
-  };
+  });
 
   const getMessagesArray = () => {
     const messagesArray = [];
@@ -99,6 +77,15 @@ export default function Chat(): JSX.Element {
   };
 
   const messagesArray = useMemo(getMessagesArray, [data]);
+
+  const scrollParentRef = useRef<HTMLDivElement>(null);
+
+  const handleScroll = (e) => {
+    // check if scroll is at bottom
+    if (e.target.scrollTop + e.target.offsetHeight === e.target.scrollHeight) {
+      setScrollMessagesToBottom(false);
+    }
+  };
 
   return (
     <>
@@ -138,32 +125,43 @@ export default function Chat(): JSX.Element {
             {/*Chat*/}
             <div className="flex flex-col h-[calc(100vh-145px)]">
               <div
+                ref={scrollParentRef}
                 onScroll={handleScroll}
                 className="h-full overflow-y-auto scrollbar scrollbar-thin scrollbar-thumb-bell scrollbar-track-background2 overflow-x-hidden"
               >
-                <AnimatePresence mode={"wait"}>
-                  <motion.div
-                    key={isFetchingNextPage ? 1 : 0}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.2 }}
-                    exit={{ opacity: 0 }}
-                    className="text-center"
-                  >
-                    {isFetchingNextPage && (
+                <InfiniteScroll
+                  pageStart={0}
+                  loadMore={!isFetchingNextPage ? fetchNextPage : () => {}}
+                  hasMore={
+                    data?.pages[data.pages.length - 1].messages.length >= 10
+                  }
+                  loader={
+                    <div
+                      className="flex flex-row justify-center items-center mt-8"
+                      key={selectedChatUser.id}
+                    >
                       <FontAwesomeIcon
                         icon={faSpinner}
-                        className="fa-spin self-center text-bell mt-5"
-                        size="xl"
+                        size={"xl"}
+                        spin
+                        className="text-bell"
                       />
-                    )}
-                  </motion.div>
-                </AnimatePresence>
-                <Messages
-                  messages={messagesArray}
-                  user={session?.data?.user}
-                  selectedChatUser={selectedChatUser}
-                />
-                <div ref={scrollBottomRef}></div>
+                    </div>
+                  }
+                  className="flex flex-col h-full"
+                  useWindow={false}
+                  threshold={50}
+                  initialLoad={false}
+                  isReverse={true}
+                  getScrollParent={() => scrollParentRef.current}
+                >
+                  <Messages
+                    messages={messagesArray}
+                    user={session?.user}
+                    selectedChatUser={selectedChatUser}
+                  />
+                  <div ref={scrollBottomRef}></div>
+                </InfiniteScroll>
               </div>
               <div>
                 <SendMessageInput selectedChatUser={selectedChatUser} />

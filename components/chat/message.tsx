@@ -15,7 +15,7 @@ export default function Message(props) {
             transition={{
               duration: 0.5,
               type: "spring",
-              stiffness: 100,
+              stiffness: 90,
               delay: 0.1,
             }}
             exit={{ scale: 0 }}
@@ -58,7 +58,7 @@ export default function Message(props) {
             transition={{
               duration: 0.5,
               type: "spring",
-              stiffness: 100,
+              stiffness: 90,
               delay: 0.1,
             }}
             exit={{ scale: 0 }}
