@@ -3,9 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsisVertical } from "@fortawesome/free-solid-svg-icons";
 import Image from "next/image";
 import { useChatStore } from "../../lib/store";
-import { AnimatePresence, motion } from "framer-motion";
-import src from "react-hot-toast/src";
-import { h } from "preact";
+import { motion } from "framer-motion";
 
 export default function ActiveChat(props): JSX {
   const { activeChat } = props;

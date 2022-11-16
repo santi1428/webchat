@@ -7,9 +7,13 @@ import axios from "axios";
 import dayjs from "dayjs";
 import ActiveChat from "./activechat";
 import ActiveChatsFilter from "./activeChatsFilter";
+import { useChatStore } from "../../lib/store";
+import { useEffect } from "react";
 
-export default function ActiveChats(): JSX {
+export default function ActiveChats(props): JSX {
+  const { socket } = props;
   const { data: session, status } = useSession();
+  const activeChatsFilter = useChatStore((state) => state.activeChatsFilter);
 
   const { data, isFetching } = useQuery(
     "activeChats",
@@ -20,6 +24,26 @@ export default function ActiveChats(): JSX {
       staleTime: 1000 * 60 * 5,
     }
   );
+
+  const getRoomID = (myID, activeChatID) => {
+    let separator = ":";
+    if (myID <= activeChatID) {
+      return myID + separator + activeChatID;
+    } else {
+      return activeChatID + separator + myID;
+    }
+  };
+
+  useEffect(() => {
+    if (data?.data?.length && session?.user?.id && socket) {
+      for (let i = 0; i < data.data.length; i++) {
+        const roomID = getRoomID(session.user.id, data.data[i].id);
+        socket.join(roomID, () => {
+          console.log("Joined room", roomID);
+        });
+      }
+    }
+  }, [data, session?.user?.id, socket]);
 
   return (
     <div className="min-h-[calc(100vh-73.5px)] max-h-[calc(100vh-73.5px)] col-span-4 flex flex-col border-r border-customBorderColor overflow-y-auto overflow-x-hidden scrollbar scrollbar-thin scrollbar-thumb-bell scrollbar-track-background">
@@ -71,7 +95,19 @@ export default function ActiveChats(): JSX {
       {/*Seccion de lista de chats*/}
 
       {[...new Map(data?.data.map((item) => [item["id"], item])).values()]
-        .filter((chat) => chat.id !== session?.user?.id)
+        .filter(
+          (chat) =>
+            chat.id !== session?.user?.id &&
+            (chat.lastMessage?.content
+              .toLowerCase()
+              .includes(activeChatsFilter.toLowerCase()) ||
+              chat.name
+                .toLowerCase()
+                .includes(activeChatsFilter.toLowerCase()) ||
+              chat.lastName
+                .toLowerCase()
+                .includes(activeChatsFilter.toLowerCase()))
+        )
         .map((chat) => (
           <ActiveChat key={chat.id} activeChat={chat} />
         ))}

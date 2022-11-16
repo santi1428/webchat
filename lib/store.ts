@@ -12,8 +12,11 @@ const useChatStore = create((set) => ({
   selectedChat: {
     ...initialSelectedChatState,
   },
+  activeChatsFilter: "",
   changeSelectedChat: (selectedChat) =>
     set((state) => ({ selectedChat: selectedChat })),
+  setActiveChatsFilter: (activeChatsFilter) =>
+    set((state) => ({ activeChatsFilter: activeChatsFilter })),
   reset: () => set((state) => ({ selectedChat: initialSelectedChatState })),
 }));
 

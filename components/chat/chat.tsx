@@ -12,7 +12,9 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import InfiniteScroll from "react-infinite-scroller";
 
-export default function Chat(): JSX.Element {
+export default function Chat(props): JSX.Element {
+  const { socket } = props;
+
   const selectedChatUser = useChatStore((state) => state.selectedChat);
   const setFocusedSearchInput = useNotificationStore(
     (state) => state.setFocusedSearchInput

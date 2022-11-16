@@ -1,44 +1,30 @@
 import Head from "next/head";
-import Image from "next/image";
-import { faEllipsisVertical } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { unstable_getServerSession } from "next-auth";
 import { authOptions } from "./api/auth/[...nextauth]";
 import Chat from "../components/chat/chat";
 import ActiveChats from "../components/activechats/activechats";
-import { useCallback, useEffect, useState } from "react";
-import { isBrowser } from "framer-motion";
-import ws from 'ws'
+import { useEffect, useState } from "react";
+import io from "socket.io-client";
 
 export default function Home() {
-  const [wsInstance, setWsInstance] = useState(null);
+  const [socket, setSocket] = useState<SocketIOClient.Socket>();
+  const socketInitializer = async () => {
+    await fetch("/api/socket");
+    setSocket(io());
+  };
 
-  // Call when updating the ws connection
-  const updateWs = useCallback((url) => {
-    if(!browser) return setWsInstance(null);
-
-    // Close the old connection
-    if(wsInstance?.readyState !== 3)
-      wsInstance.close(...);
-
-    // Create a new connection
-    const newWs = new WebSocket(url);
-    setWsInstance(newWs);
-  }, [wsInstance])
-
-  // (Optional) Open a connection on mount
   useEffect(() => {
-    if(isBrowser) {
-      const ws = new WebSocket(...);
-      setWsInstance(ws);
+    if (socket) {
+      socket.on("connect", () => {
+        console.log("connected");
+      });
     }
+    console.log("socket", socket);
+  }, [socket]);
 
-    return () => {
-      // Cleanup on unmount if ws wasn't closed already
-      if(ws?.readyState !== 3)
-        ws.close(...)
-    }
-  }, [])
+  useEffect(() => {
+    socketInitializer();
+  }, []);
 
   return (
     <>
@@ -49,9 +35,9 @@ export default function Home() {
       </Head>
       <div className="flex grow flex-1 grid grid-cols-12 h-full">
         {/*left side */}
-        <ActiveChats />
+        <ActiveChats socket={socket} />
         {/*right side*/}
-        <Chat />
+        <Chat socket={socket} />
       </div>
     </>
   );
