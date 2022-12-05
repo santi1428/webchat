@@ -8,6 +8,7 @@ import io from "socket.io-client";
 
 export default function Home() {
   const [socket, setSocket] = useState<SocketIOClient.Socket>();
+
   const socketInitializer = async () => {
     await fetch("/api/socket");
     setSocket(io());
@@ -15,7 +16,7 @@ export default function Home() {
 
   useEffect(() => {
     if (socket) {
-      socket.on("connect", () => {
+      socket.on("connect", (socket) => {
         console.log("connected");
       });
     }

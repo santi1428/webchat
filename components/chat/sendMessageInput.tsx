@@ -4,11 +4,13 @@ import { motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { useMutation, useQueryClient } from "react-query";
-import { useNotificationStore } from "../../lib/store";
+import { useChatStore, useNotificationStore } from "../../lib/store";
+import { useSession } from "next-auth/react";
 
 export default function SendMessageInput(props): JSX {
-  const { selectedChatUser } = props;
+  const { selectedChatUser, socket } = props;
   const [message, setMessage] = useState("");
+  const { data: session, status } = useSession();
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -24,6 +26,8 @@ export default function SendMessageInput(props): JSX {
   );
 
   const queryClient = useQueryClient();
+
+  const getRoomID = useChatStore((state) => state.getRoomID);
 
   useEffect(() => {
     if (focusedMessageInput) {
@@ -55,6 +59,16 @@ export default function SendMessageInput(props): JSX {
       return;
     }
     mutate();
+    socket.emit("sendMessage", {
+      roomID: getRoomID(session.user.id, selectedChatUser.id),
+      senderId: session.user.id,
+      message,
+      senderProfilePhotoName: session.user.profilePhotoName,
+      senderName: session.user.name,
+      senderLastName: session.user.lastName,
+      senderEmail: session.user.email,
+      createdAt: new Date().toISOString(),
+    });
     setMessage("");
   };
 

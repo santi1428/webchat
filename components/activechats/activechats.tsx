@@ -25,25 +25,18 @@ export default function ActiveChats(props): JSX {
     }
   );
 
-  const getRoomID = (myID, activeChatID) => {
-    let separator = ":";
-    if (myID <= activeChatID) {
-      return myID + separator + activeChatID;
-    } else {
-      return activeChatID + separator + myID;
-    }
-  };
+  const getRoomID = useChatStore((state) => state.getRoomID);
 
   useEffect(() => {
-    if (data?.data?.length && session?.user?.id && socket) {
-      for (let i = 0; i < data.data.length; i++) {
-        const roomID = getRoomID(session.user.id, data.data[i].id);
-        socket.join(roomID, () => {
-          console.log("Joined room", roomID);
-        });
-      }
+    console.log("data.length", data?.data.length);
+    if (data?.data?.length && socket && session?.user?.id) {
+      console.log("Joining rooms...");
+      socket.emit(
+        "joinRooms",
+        data.data.map((activeChat) => getRoomID(session.user.id, activeChat.id))
+      );
     }
-  }, [data, session?.user?.id, socket]);
+  }, [data?.data, socket, session?.user?.id]);
 
   return (
     <div className="min-h-[calc(100vh-73.5px)] max-h-[calc(100vh-73.5px)] col-span-4 flex flex-col border-r border-customBorderColor overflow-y-auto overflow-x-hidden scrollbar scrollbar-thin scrollbar-thumb-bell scrollbar-track-background">

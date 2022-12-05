@@ -3,7 +3,11 @@ import ChatHeader from "./chatHeader";
 import SendMessageInput from "./sendMessageInput";
 import { useChatStore, useNotificationStore } from "../../lib/store";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMessage, faSpinner } from "@fortawesome/free-solid-svg-icons";
+import {
+  faMessage,
+  faSpinner,
+  faReply,
+} from "@fortawesome/free-solid-svg-icons";
 import { motion, AnimatePresence } from "framer-motion";
 import { useInfiniteQuery, useQuery } from "react-query";
 import axios from "axios";
@@ -11,11 +15,14 @@ import { useSession } from "next-auth/react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import InfiniteScroll from "react-infinite-scroller";
+import toast from "react-hot-toast";
+import dayjs from "dayjs";
 
 export default function Chat(props): JSX.Element {
   const { socket } = props;
 
   const selectedChatUser = useChatStore((state) => state.selectedChat);
+  const changeSelectedChat = useChatStore((state) => state.changeSelectedChat);
   const setFocusedSearchInput = useNotificationStore(
     (state) => state.setFocusedSearchInput
   );
@@ -89,6 +96,87 @@ export default function Chat(props): JSX.Element {
     }
   };
 
+  useEffect(() => {
+    showMessageToast({
+      message: "You have a new message!",
+      senderProfilePhotoName: "default-profile-photo.png",
+      senderName: "John",
+      senderLastName: "Doe",
+      createdAt: new Date(),
+    });
+  }, [selectedChatUser]);
+
+  const showMessageToast = (message) => {
+    console.log("message", message);
+    toast.custom(
+      (t) => (
+        <div
+          className={`${
+            t.visible
+              ? "transition-all ease-in duration-300 opacity-100"
+              : "transition-all ease-out duration-300 opacity-0"
+          } max-w-md w-full bg-white shadow-lg rounded-lg pointer-events-auto flex ring-1 ring-black ring-opacity-5`}
+          onClick={() => {
+            changeSelectedChat({
+              id: message.senderId,
+              name: message.senderName,
+              lastName: message.senderLastName,
+              profilePhotoName: message.senderProfilePhotoName,
+              email: message.senderEmail,
+            });
+          }}
+        >
+          <div className="flex-1 w-0 p-4">
+            <div className="flex items-start">
+              <div className="flex-shrink-0 pt-0.5">
+                <img
+                  className="h-10 w-10 rounded-full"
+                  src={
+                    message.senderProfilePhotoName.includes("http")
+                      ? message.senderProfilePhotoName
+                      : "/images/" + message.senderProfilePhotoName
+                  }
+                  alt=""
+                />
+              </div>
+              <div className="ml-3 flex-1">
+                <p className="text-sm font-bold text-gray-900">{`${message.senderName} ${message.senderLastName}`}</p>
+                <p className="mt-1 text-sm text-gray-500">{message.message}</p>
+              </div>
+              <div>
+                <p className="text-xs">
+                  {dayjs(message.createdAt).format("hh:mm A")}
+                </p>
+              </div>
+              <div className="border-l border-background2 h-full">
+                <FontAwesomeIcon icon={faReply} className="text-background" />
+              </div>
+            </div>
+          </div>
+        </div>
+      ),
+      {
+        duration: 10000,
+      }
+    );
+  };
+
+  useEffect(() => {
+    if (socket?.on) {
+      console.log("declaring socket events");
+      socket.on("newMessage", (message) => {
+        console.log("newMessage", message);
+        console.table("session?.user", session?.user);
+        // if (message.receiverId === session?.user.id) {
+        showMessageToast(message);
+        // }
+        // if (message.senderId === selectedChatUser.id) {
+        //   fetchNextPage();
+        // }
+      });
+    }
+  }, [socket]);
+
   return (
     <>
       <AnimatePresence mode={"wait"}>
@@ -129,7 +217,7 @@ export default function Chat(props): JSX.Element {
               <div
                 ref={scrollParentRef}
                 onScroll={handleScroll}
-                className="h-full overflow-y-auto scrollbar scrollbar-thin scrollbar-thumb-bell scrollbar-track-background2 overflow-x-hidden"
+                className="h-full overflow-y-auto scrollbar scrollbar-thin scrollbar-thumb-bell scrollbar-track-background overflow-x-hidden"
               >
                 <InfiniteScroll
                   pageStart={0}
@@ -166,7 +254,10 @@ export default function Chat(props): JSX.Element {
                 </InfiniteScroll>
               </div>
               <div>
-                <SendMessageInput selectedChatUser={selectedChatUser} />
+                <SendMessageInput
+                  selectedChatUser={selectedChatUser}
+                  socket={socket}
+                />
               </div>
             </div>
           </motion.div>

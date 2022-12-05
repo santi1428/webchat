@@ -9,6 +9,14 @@ const initialSelectedChatState = {
 };
 
 const useChatStore = create((set) => ({
+  getRoomID: (myID, activeChatID) => {
+    let separator = ":";
+    if (myID <= activeChatID) {
+      return myID + separator + activeChatID;
+    } else {
+      return activeChatID + separator + myID;
+    }
+  },
   selectedChat: {
     ...initialSelectedChatState,
   },

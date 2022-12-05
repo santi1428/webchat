@@ -1,17 +1,31 @@
 import { Server } from "Socket.IO";
+import { authOptions } from "./auth/[...nextauth]";
+import { unstable_getServerSession } from "next-auth";
 
-const SocketHandler = (req, res) => {
+const SocketHandler = async (req, res) => {
   if (res.socket.server.io) {
     console.log("Socket is already running");
   } else {
     console.log("Socket is initializing");
     const io = new Server(res.socket.server);
     res.socket.server.io = io;
-
+    // @ts-ignore
     io.on("connect", (socket) => {
-      socket.on("test", (msg) => {
-        // socket.broadcast.emit("update-input", msg);
-        console.log("Message received: " + msg);
+      socket.on("joinRooms", async (rooms) => {
+        console.log("Joining rooms: " + rooms);
+        console.log("This is the test of nodemon");
+        for (const room of rooms) {
+          await socket.join(room);
+        }
+      });
+
+      socket.on("sendMessage", async (message) => {
+        console.log(
+          "Sending message: " + message.message,
+          "to room: " + message.roomID
+        );
+        // @ts-ignore
+        socket.broadcast.to(message.roomID).emit("newMessage", message);
       });
     });
   }
