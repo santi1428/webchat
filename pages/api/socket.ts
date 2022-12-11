@@ -12,10 +12,12 @@ const SocketHandler = async (req, res) => {
     // @ts-ignore
     io.on("connect", (socket) => {
       socket.on("joinRooms", async (rooms) => {
-        console.log("Joining rooms: " + rooms);
         console.log("This is the test of nodemon");
         for (const room of rooms) {
-          await socket.join(room);
+          if (!socket.rooms.has(room)) {
+            console.log("Joining room " + room);
+            await socket.join(room);
+          }
         }
       });
 

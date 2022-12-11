@@ -21,18 +21,23 @@ export default function Message(props) {
             exit={{ scale: 0 }}
             className="flex flex-row justify-end mt-7 mr-6"
           >
-            <div className="flex flex-col">
+            <div className="flex flex-col relative">
               <div className="flex flex-row justify-end">
                 <span className="self-center text-xs text-bell self-center">
-                  {dayjs(message.createdAt).format("h:mm A - MMM D YYYY")}
+                  {dayjs(message.createdAt).format("MMM D YYYY")}
                 </span>
                 <p className="self-center text-sm text-bell font-semibold mr-6 ml-3">
                   {selectedChatUser.name} {selectedChatUser.lastName}
                 </p>
               </div>
-              <p className="text-justify rounded-l-3xl rounded-br-3xl max-w-md text-sm bg-bell mt-2 mr-4 px-9 py-4 ml-5">
-                {message.content}
-              </p>
+              <div className="flex flex-col rounded-l-3xl rounded-br-3xl bg-bell px-9 pt-6 pb-4  mt-2 mr-4  ml-5 min-w-max">
+                <p className="text-justify break-words  max-w-xs text-sm">
+                  {message.content}
+                </p>
+                <p className="text-xs font-semibold text-background self-end pt-1">
+                  {dayjs(message.createdAt).format("hh:mm A")}
+                </p>
+              </div>
             </div>
 
             <div className="mr-5 inline-block h-10 w-10 relative">
@@ -83,12 +88,17 @@ export default function Message(props) {
                   You
                 </p>
                 <time className="self-center text-xs text-bell">
-                  {dayjs(message.createdAt).format("h:mm A - MMM D YYYY")}
+                  {dayjs(message.createdAt).format("MMM D YYYY")}
                 </time>
               </div>
-              <p className="w-full rounded-r-3xl rounded-bl-3xl max-w-md text-sm bg-bell mt-2 mr-4 px-9 py-4 ml-5">
-                {message.content}
-              </p>
+              <div className="flex flex-col rounded-bl-3xl rounded-tr-3xl rounded-br-3xl bg-bell px-9 pt-6 pb-4  mt-2 mr-4  ml-5">
+                <p className="text-justify break-words min-w-xs max-w-lg  text-sm">
+                  {message.content}
+                </p>
+                <p className="text-xs font-semibold text-background self-end pt-1">
+                  {dayjs(message.createdAt).format("hh:mm A")}
+                </p>
+              </div>
             </div>
           </motion.div>
         </AnimatePresence>

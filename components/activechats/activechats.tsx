@@ -1,42 +1,44 @@
 import Image from "next/image";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEllipsisVertical } from "@fortawesome/free-solid-svg-icons";
 import { useSession } from "next-auth/react";
 import { useQuery } from "react-query";
 import axios from "axios";
-import dayjs from "dayjs";
 import ActiveChat from "./activechat";
 import ActiveChatsFilter from "./activeChatsFilter";
-import { useChatStore } from "../../lib/store";
+import { useChatStore, useSocketStore } from "../../lib/store";
 import { useEffect } from "react";
+import useActiveChats from "../hooks/useActiveChats";
 
 export default function ActiveChats(props): JSX {
-  const { socket } = props;
   const { data: session, status } = useSession();
   const activeChatsFilter = useChatStore((state) => state.activeChatsFilter);
+  const socket = useSocketStore((state) => state.socket);
+  const socketConnected = useSocketStore((state) => state.socketConnected);
+  const setHasJoinedRooms = useSocketStore((state) => state.setHasJoinedRooms);
+  const hasJoinedRooms = useSocketStore((state) => state.hasJoinedRooms);
 
-  const { data, isFetching } = useQuery(
-    "activeChats",
-    () => {
-      return axios.get("/api/activechats");
-    },
-    {
-      staleTime: 1000 * 60 * 5,
-    }
-  );
+  const { data, isFetched } = useActiveChats();
 
   const getRoomID = useChatStore((state) => state.getRoomID);
 
   useEffect(() => {
-    console.log("data.length", data?.data.length);
-    if (data?.data?.length && socket && session?.user?.id) {
-      console.log("Joining rooms...");
+    console.log("hasJoinedRooms", hasJoinedRooms);
+    if (
+      !hasJoinedRooms &&
+      socketConnected &&
+      status === "authenticated" &&
+      isFetched
+    ) {
+      console.log(
+        "Joining Rooms",
+        data.data.map((activeChat) => getRoomID(session.user.id, activeChat.id))
+      );
       socket.emit(
         "joinRooms",
         data.data.map((activeChat) => getRoomID(session.user.id, activeChat.id))
       );
+      setHasJoinedRooms(true);
     }
-  }, [data?.data, socket, session?.user?.id]);
+  }, [socketConnected, status, hasJoinedRooms, isFetched]);
 
   return (
     <div className="min-h-[calc(100vh-73.5px)] max-h-[calc(100vh-73.5px)] col-span-4 flex flex-col border-r border-customBorderColor overflow-y-auto overflow-x-hidden scrollbar scrollbar-thin scrollbar-thumb-bell scrollbar-track-background">

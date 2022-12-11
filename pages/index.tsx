@@ -3,30 +3,8 @@ import { unstable_getServerSession } from "next-auth";
 import { authOptions } from "./api/auth/[...nextauth]";
 import Chat from "../components/chat/chat";
 import ActiveChats from "../components/activechats/activechats";
-import { useEffect, useState } from "react";
-import io from "socket.io-client";
 
 export default function Home() {
-  const [socket, setSocket] = useState<SocketIOClient.Socket>();
-
-  const socketInitializer = async () => {
-    await fetch("/api/socket");
-    setSocket(io());
-  };
-
-  useEffect(() => {
-    if (socket) {
-      socket.on("connect", (socket) => {
-        console.log("connected");
-      });
-    }
-    console.log("socket", socket);
-  }, [socket]);
-
-  useEffect(() => {
-    socketInitializer();
-  }, []);
-
   return (
     <>
       <Head>
@@ -36,9 +14,9 @@ export default function Home() {
       </Head>
       <div className="flex grow flex-1 grid grid-cols-12 h-full">
         {/*left side */}
-        <ActiveChats socket={socket} />
+        <ActiveChats />
         {/*right side*/}
-        <Chat socket={socket} />
+        <Chat />
       </div>
     </>
   );

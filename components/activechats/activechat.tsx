@@ -60,17 +60,23 @@ export default function ActiveChat(props): JSX {
               <FontAwesomeIcon
                 icon={faEllipsisVertical}
                 size="lg"
-                className="pr-6 text-bell"
+                className={`pr-6 ${
+                  selectedChat.id === activeChat.id
+                    ? "text-background2"
+                    : "text-bell"
+                }`}
               />
             </a>
           </div>
         </div>
         <p
-          className={`ml-5 ${
+          className={`ml-5 max-w-2xl ${
             selectedChat.id === activeChat.id ? "text-background2" : "text-bell"
           }`}
         >
-          {activeChat.lastMessage?.content}
+          {activeChat.lastMessage?.content.length > 50
+            ? activeChat.lastMessage?.content.substring(0, 50) + "..."
+            : activeChat.lastMessage?.content}
         </p>
       </div>
     </motion.div>
