@@ -2,62 +2,28 @@ import Navbar from "./navbar";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/router";
 import toast, { Toaster } from "react-hot-toast";
-import { useChatStore, useSocketStore } from "../lib/store";
-import { useEffect } from "react";
-import io from "socket.io-client";
-import { useSession } from "next-auth/react";
+import useActiveChats from "./hooks/useActiveChats";
+import useJoinRooms from "./hooks/useJoinRooms";
+import useInitSocket from "./hooks/useInitSocket";
+import useOnNewMessageSocketEvent from "./hooks/useOnNewMessageSocketEvent";
 import ChatMessageToast from "./chat/chatMessageToast";
-import usePrefetchActiveChats from "./hooks/usePrefetchActiveChats";
+import { useChatStore } from "../lib/store";
+import { useSession } from "next-auth/react";
+import { useEffect } from "react";
 
 export default function Layout({ children }): JSX.Element {
   const router = useRouter();
 
-  const setSocket = useSocketStore((state) => state.setSocket);
-  const socket = useSocketStore((state) => state.socket);
-  const socketConnected = useSocketStore((state) => state.socketConnected);
-  const setSocketConnected = useSocketStore(
-    (state) => state.setSocketConnected
-  );
-  const isNewMessageEventDeclared = useSocketStore(
-    (state) => state.isNewMessageEventDeclared
-  );
-  const setIsNewMessageEventDeclared = useSocketStore(
-    (state) => state.setIsNewMessageEventDeclared
-  );
-  const selectedChatUser = useChatStore((state) => state.selectedChat);
   const { status } = useSession();
 
-  usePrefetchActiveChats();
-
-  const socketInitializer = async () => {
-    await fetch("/api/socket");
-    setSocket(io());
-  };
-
-  useEffect(() => {
-    if (socket) {
-      socket.on("connect", (socket) => {
-        console.log("connected");
-        setSocketConnected(true);
-      });
-    }
-    console.log("socket", socket);
-  }, [socket]);
-
-  useEffect(() => {
-    if (!socket && status === "authenticated") {
-      socketInitializer();
-      console.log("Socket Initialized");
-
-      // alert("socket initialized");
-    }
-  }, [socket, status]);
+  const selectedChat = useChatStore((state) => state.selectedChat);
 
   const showMessageToast = (message) => {
     console.log("message", message);
     toast.custom(
+      // @ts-ignore
       (t) => {
-        console.log("toast t", t);
+        // console.log("toast t", t);
         return <ChatMessageToast message={message} t={t} />;
       },
       {
@@ -66,24 +32,9 @@ export default function Layout({ children }): JSX.Element {
     );
   };
 
-  useEffect(() => {
-    if (
-      socketConnected &&
-      !isNewMessageEventDeclared &&
-      status === "authenticated"
-    ) {
-      console.log("router path", router.asPath);
-      console.log("declaring newMessageEvent");
-      socket.on("newMessage", (message) => {
-        console.log("newMessage", message);
-        if (selectedChatUser.id !== message.senderId || router.asPath !== "/") {
-          showMessageToast(message);
-        }
-      });
-      setIsNewMessageEventDeclared(true);
-    }
-    console.log("isNewMessageEventDeclared", isNewMessageEventDeclared);
-  }, [socketConnected, isNewMessageEventDeclared, router.asPath]);
+  useInitSocket();
+
+  useOnNewMessageSocketEvent({ showMessageToast, selectedChat });
 
   return (
     <>

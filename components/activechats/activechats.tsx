@@ -5,40 +5,41 @@ import axios from "axios";
 import ActiveChat from "./activechat";
 import ActiveChatsFilter from "./activeChatsFilter";
 import { useChatStore, useSocketStore } from "../../lib/store";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import useActiveChats from "../hooks/useActiveChats";
+import { AnimatePresence, motion } from "framer-motion";
+import useMutedUsers from "../hooks/useMutedUsers";
 
 export default function ActiveChats(props): JSX {
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
   const activeChatsFilter = useChatStore((state) => state.activeChatsFilter);
-  const socket = useSocketStore((state) => state.socket);
-  const socketConnected = useSocketStore((state) => state.socketConnected);
-  const setHasJoinedRooms = useSocketStore((state) => state.setHasJoinedRooms);
-  const hasJoinedRooms = useSocketStore((state) => state.hasJoinedRooms);
 
-  const { data, isFetched } = useActiveChats();
+  const { data } = useActiveChats();
+  const { data: mutedUsers } = useMutedUsers();
 
-  const getRoomID = useChatStore((state) => state.getRoomID);
+  console.log("mutedUsers", mutedUsers);
 
-  useEffect(() => {
-    console.log("hasJoinedRooms", hasJoinedRooms);
-    if (
-      !hasJoinedRooms &&
-      socketConnected &&
-      status === "authenticated" &&
-      isFetched
-    ) {
-      console.log(
-        "Joining Rooms",
-        data.data.map((activeChat) => getRoomID(session.user.id, activeChat.id))
+  const memoizedActiveChatsFiltered = useMemo(() => {
+    return [...new Map(data?.data.map((item) => [item["id"], item])).values()]
+      .slice(0)
+      .sort((a, b) => {
+        return (
+          new Date(b.lastMessage?.createdAt).getTime() -
+          new Date(a.lastMessage?.createdAt).getTime()
+        );
+      })
+      .filter(
+        (chat) =>
+          chat.id !== session?.user?.id &&
+          (chat.lastMessage?.content
+            .toLowerCase()
+            .includes(activeChatsFilter.toLowerCase()) ||
+            chat.name.toLowerCase().includes(activeChatsFilter.toLowerCase()) ||
+            chat.lastName
+              .toLowerCase()
+              .includes(activeChatsFilter.toLowerCase()))
       );
-      socket.emit(
-        "joinRooms",
-        data.data.map((activeChat) => getRoomID(session.user.id, activeChat.id))
-      );
-      setHasJoinedRooms(true);
-    }
-  }, [socketConnected, status, hasJoinedRooms, isFetched]);
+  }, [data, activeChatsFilter]);
 
   return (
     <div className="min-h-[calc(100vh-73.5px)] max-h-[calc(100vh-73.5px)] col-span-4 flex flex-col border-r border-customBorderColor overflow-y-auto overflow-x-hidden scrollbar scrollbar-thin scrollbar-thumb-bell scrollbar-track-background">
@@ -89,23 +90,46 @@ export default function ActiveChats(props): JSX {
 
       {/*Seccion de lista de chats*/}
 
-      {[...new Map(data?.data.map((item) => [item["id"], item])).values()]
-        .filter(
-          (chat) =>
-            chat.id !== session?.user?.id &&
-            (chat.lastMessage?.content
-              .toLowerCase()
-              .includes(activeChatsFilter.toLowerCase()) ||
-              chat.name
-                .toLowerCase()
-                .includes(activeChatsFilter.toLowerCase()) ||
-              chat.lastName
-                .toLowerCase()
-                .includes(activeChatsFilter.toLowerCase()))
-        )
-        .map((chat) => (
-          <ActiveChat key={chat.id} activeChat={chat} />
-        ))}
+      {memoizedActiveChatsFiltered.map((chat) => (
+        <ActiveChat
+          key={chat.id}
+          activeChat={chat}
+          mutedUsers={mutedUsers.data}
+        />
+      ))}
+
+      {data?.data.length === 0 && (
+        <div className="flex flex-col items-center justify-center h-full ">
+          <h3 className="text-bell text-lg font-semibold">
+            No active chats found
+          </h3>
+          <h3 className="text-bell text-lg font-semibold">
+            Start a new conversation
+          </h3>
+        </div>
+      )}
+
+      <AnimatePresence mode={"wait"}>
+        {memoizedActiveChatsFiltered.length === 0 &&
+          activeChatsFilter.trim() !== "" &&
+          data?.data.length > 0 && (
+            <motion.div
+              key={memoizedActiveChatsFiltered.length}
+              initial={{ opacity: 0, scale: 0 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.3 }}
+              exit={{ scale: 0 }}
+              className="flex flex-col justify-center items-center h-full"
+            >
+              <h3 className="text-bell text-lg font-semibold">
+                No chats found
+              </h3>
+              <p className="text-bell text-sm font-semibold">
+                Try searching for a different name
+              </p>
+            </motion.div>
+          )}
+      </AnimatePresence>
     </div>
   );
 }

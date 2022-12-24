@@ -21,8 +21,10 @@ model User {
   resetPasswordTokenExpiry  BigInt?   @db.BigInt
   createdAt         DateTime  @default(now()) @map(name: "created_at")
   updatedAt         DateTime  @updatedAt @map(name: "updated_at")
-  sender         Message[] @relation("Sender")
-  receiver       Message[] @relation("Receiver")
+  sender            Message[] @relation("Sender")
+  receiver          Message[] @relation("Receiver")
+  user              MutedUser[]    @relation("User")
+  mutedUser         MutedUser[]    @relation("MutedUser")
   @@map(name: "users")
 }
 
@@ -36,4 +38,15 @@ model Message {
     sender            User      @relation(name: "Sender", fields: [senderId], references: [id])
     receiver          User      @relation(name: "Receiver", fields: [receiverId], references: [id])
   @@map(name: "messages")
+}
+
+model MutedUser {
+  id                BigInt    @default(autoincrement()) @id
+  createdAt         DateTime  @default(now()) @map(name: "created_at")
+  updatedAt         DateTime  @updatedAt @map(name: "updated_at")
+  userId            String
+  mutedUserId       String
+  user              User      @relation(name: "User", fields: [userId], references: [id])
+  mutedUser         User      @relation(name: "MutedUser", fields: [mutedUserId], references: [id])
+  @@map(name: "muted_users")
 }

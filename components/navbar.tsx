@@ -190,7 +190,7 @@ export default function Navbar() {
                             animate={{ opacity: 1, scale: 1 }}
                             transition={{ duration: 0.3 }}
                             exit={{ scale: 0 }}
-                            className="flex flex-col absolute top-8 right-2 px-5 pb-3 rounded-b-2xl right-0 full-rounded bg-background border-b-1 border-l-1 border-r-1 border-customBorderColor text-sm"
+                            className="flex flex-col items-center w-72 absolute top-16 px-5 pb-3 rounded-b-2xl right-0 full-rounded bg-background border-b-1 border-l-1 border-r-1 border-customBorderColor text-sm"
                           >
                             <motion.div
                               whileHover={{ scale: 1.05 }}
@@ -199,21 +199,22 @@ export default function Navbar() {
                                 opacity: 1,
                                 scale: 1,
                               }}
-                              transition={{ duration: 0.3 }}
+                              transition={{ duration: 0.1 }}
                               exit={{ scale: 0 }}
-                              className="capitalize w-full pt-3"
+                              className="capitalize w-auto   pt-3 pb-3"
                             >
                               <Link href="/profile">
                                 <a
-                                  className="text-bell text-center font-semibold capitalize border-b-1 border-customBorderColor pb-3"
+                                  className="text-bell text-center w-auto font-semibold capitalize  pb-3"
                                   onClick={() => {
                                     setShowDropdownMenu(false);
                                   }}
                                 >
-                                  My Profile
+                                  edit my profile
                                 </a>
                               </Link>
                             </motion.div>
+                            <hr className="w-full border-1 border-customBorderColor" />
                             <motion.button
                               whileHover={{ scale: 1.05 }}
                               initial={{ opacity: 0, scale: 0 }}
@@ -221,9 +222,9 @@ export default function Navbar() {
                                 opacity: 1,
                                 scale: 1,
                               }}
-                              transition={{ duration: 0.3 }}
+                              transition={{ duration: 0.1 }}
                               exit={{ scale: 0 }}
-                              className="mt-6 w-full"
+                              className="mt-6 w-full pb-2"
                               onClick={async () => {
                                 setShowDropdownMenu(false);
                                 await signOut({ redirect: false });

@@ -9,16 +9,14 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMessage, faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { motion, AnimatePresence } from "framer-motion";
-import { useInfiniteQuery } from "react-query";
-import axios from "axios";
 import { useSession } from "next-auth/react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { useRouter } from "next/router";
 import InfiniteScroll from "react-infinite-scroller";
+import useChatMessages from "../hooks/useChatMessages";
 
-export default function Chat(props): JSX.Element {
+export default function Chat(): JSX.Element {
   const selectedChatUser = useChatStore((state) => state.selectedChat);
-  const changeSelectedChat = useChatStore((state) => state.changeSelectedChat);
   const setFocusedSearchInput = useNotificationStore(
     (state) => state.setFocusedSearchInput
   );
@@ -37,25 +35,7 @@ export default function Chat(props): JSX.Element {
 
   const scrollBottomRef = useRef<HTMLDivElement>(null);
 
-  const getMessages = async ({ pageParam = "" }) => {
-    console.log("Fetching messages...");
-    const res = await axios.get(
-      `/api/message/${selectedChatUser.id}?cursor=${pageParam}`
-    );
-    return res.data;
-  };
-
-  const { data, fetchNextPage, isFetchingNextPage, isFetching } =
-    useInfiniteQuery(["messages", selectedChatUser.id], getMessages, {
-      enabled: selectedChatUser.id !== "",
-      staleTime: 1000 * 60 * 5,
-      getNextPageParam: (lastPage) => {
-        if (lastPage.messages.length < 10) {
-          return undefined;
-        }
-        return lastPage.messages[lastPage.messages.length - 1].id;
-      },
-    });
+  const { data, fetchNextPage, isFetchingNextPage } = useChatMessages();
 
   useEffect(() => {
     setScrollMessagesToBottom(true);

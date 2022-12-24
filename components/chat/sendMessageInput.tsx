@@ -37,6 +37,19 @@ export default function SendMessageInput(props): JSX {
     setFocusedMessageInput(false);
   }, [focusedMessageInput]);
 
+  const sendSocketMessage = () => {
+    socket.emit("sendMessage", {
+      roomID: getRoomID(session.user.id, selectedChatUser.id),
+      senderId: session.user.id,
+      message,
+      senderProfilePhotoName: session.user.profilePhotoName,
+      senderName: session.user.name,
+      senderLastName: session.user.lastName,
+      senderEmail: session.user.email,
+      createdAt: new Date().toISOString(),
+    });
+  };
+
   const { mutate } = useMutation(
     () =>
       axios.post("/api/message/addmessage", {
@@ -44,10 +57,11 @@ export default function SendMessageInput(props): JSX {
         receiverId: selectedChatUser.id,
       }),
     {
-      onSuccess: () => {
+      onSuccess: async () => {
         console.log("mutation success");
         console.log(["messages", selectedChatUser.id]);
-        queryClient.invalidateQueries(["messages", selectedChatUser.id]);
+        await queryClient.invalidateQueries(["messages", selectedChatUser.id]);
+        sendSocketMessage();
         setScrollMessagesToBottom(true);
       },
     }
@@ -59,16 +73,7 @@ export default function SendMessageInput(props): JSX {
       return;
     }
     mutate();
-    socket.emit("sendMessage", {
-      roomID: getRoomID(session.user.id, selectedChatUser.id),
-      senderId: session.user.id,
-      message,
-      senderProfilePhotoName: session.user.profilePhotoName,
-      senderName: session.user.name,
-      senderLastName: session.user.lastName,
-      senderEmail: session.user.email,
-      createdAt: new Date().toISOString(),
-    });
+
     setMessage("");
   };
 

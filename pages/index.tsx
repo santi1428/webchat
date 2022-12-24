@@ -3,8 +3,13 @@ import { unstable_getServerSession } from "next-auth";
 import { authOptions } from "./api/auth/[...nextauth]";
 import Chat from "../components/chat/chat";
 import ActiveChats from "../components/activechats/activechats";
+import useActiveChats from "../components/hooks/useActiveChats";
+import useJoinRooms from "../components/hooks/useJoinRooms";
 
 export default function Home() {
+  const { data, isFetched } = useActiveChats();
+  useJoinRooms({ data, isFetched });
+
   return (
     <>
       <Head>

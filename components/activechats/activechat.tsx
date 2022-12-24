@@ -1,15 +1,19 @@
 import dayjs from "dayjs";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEllipsisVertical } from "@fortawesome/free-solid-svg-icons";
 import Image from "next/image";
 import { useChatStore } from "../../lib/store";
 import { motion } from "framer-motion";
+import OptionsMenu from "./optionsmenu";
+import { useMemo } from "react";
+import MutedActiveChatIcon from "./mutedactivechaticon";
 
 export default function ActiveChat(props): JSX {
-  const { activeChat } = props;
+  const { activeChat, mutedUsers } = props;
 
   const selectedChat = useChatStore((state) => state.selectedChat);
   const changeSelectedChat = useChatStore((state) => state.changeSelectedChat);
+  const isUserMutedMemoized = useMemo(() => {
+    return mutedUsers.includes(activeChat.id);
+  }, [mutedUsers, activeChat.id]);
 
   return (
     <motion.div
@@ -19,6 +23,7 @@ export default function ActiveChat(props): JSX {
       exit={{ opacity: 0 }}
       key={activeChat.id === selectedChat.id ? 1 : 0}
       onClick={() => {
+        console.log("activeChat", activeChat);
         changeSelectedChat(activeChat);
       }}
       className={`flex flex-row py-4 cursor-pointer ${
@@ -39,13 +44,19 @@ export default function ActiveChat(props): JSX {
       </div>
       <div className="flex flex-col w-full">
         <div className="flex flex-row justify-between pb-1">
-          <p
-            className={`ml-5 text-bell font-semibold ${
-              selectedChat.id === activeChat.id ? "text-background2" : ""
-            }`}
-          >
-            {activeChat.name} {activeChat.lastName}
-          </p>
+          <div className="flex flex-row">
+            <p
+              className={`ml-5 text-bell font-semibold ${
+                selectedChat.id === activeChat.id ? "text-background2" : ""
+              }`}
+            >
+              {activeChat.name} {activeChat.lastName}
+            </p>
+            <MutedActiveChatIcon
+              activeChat={activeChat}
+              isUserMutedMemoized={isUserMutedMemoized}
+            />
+          </div>
           <div className="flex flex-row">
             <p
               className={`mr-4 ${
@@ -56,17 +67,10 @@ export default function ActiveChat(props): JSX {
             >
               {dayjs(activeChat.lastMessage?.createdAt).format("h:mm A")}
             </p>
-            <a href="">
-              <FontAwesomeIcon
-                icon={faEllipsisVertical}
-                size="lg"
-                className={`pr-6 ${
-                  selectedChat.id === activeChat.id
-                    ? "text-background2"
-                    : "text-bell"
-                }`}
-              />
-            </a>
+            <OptionsMenu
+              activeChat={activeChat}
+              isUserMutedMemoized={isUserMutedMemoized}
+            />
           </div>
         </div>
         <p

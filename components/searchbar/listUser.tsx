@@ -2,7 +2,6 @@ import { AnimatePresence } from "framer-motion";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { useChatStore } from "../../lib/store";
-import { router } from "next/client";
 import { useRouter } from "next/router";
 
 export default function ListUser(props) {

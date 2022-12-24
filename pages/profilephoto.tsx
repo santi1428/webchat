@@ -16,6 +16,8 @@ import { useRef, useState } from "react";
 import axios, { AxiosError } from "axios";
 import { useSession } from "next-auth/react";
 import { toast } from "react-hot-toast";
+import useActiveChats from "../components/hooks/useActiveChats";
+import useJoinRooms from "../components/hooks/useJoinRooms";
 
 export default function ProfilePhoto() {
   const router = useRouter();
@@ -24,6 +26,9 @@ export default function ProfilePhoto() {
   const [fileError, setFileError] = useState(String);
   const [uploadingProfilePhoto, setUploadingProfilePhoto] = useState(false);
   const { data: session, status } = useSession();
+
+  const { data, isFetched } = useActiveChats();
+  useJoinRooms({ data, isFetched });
 
   const validateFile = () => {
     const selectedFile = fileInput.current.files[0];
@@ -93,7 +98,6 @@ export default function ProfilePhoto() {
     "latest profile photo name session",
     session?.user?.profilePhotoName
   );
-
 
   return (
     <>

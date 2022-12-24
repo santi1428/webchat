@@ -6,10 +6,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { faReply } from "@fortawesome/free-solid-svg-icons";
+import { useRouter } from "next/router";
 
 export default function ChatMessageToast(props): JSX {
   const { message, t } = props;
   const changeSelectedChat = useChatStore((state) => state.changeSelectedChat);
+  const router = useRouter();
   return (
     <AnimatePresence mode="wait">
       <motion.div
@@ -57,6 +59,8 @@ export default function ChatMessageToast(props): JSX {
               email: message.senderEmail,
             });
             toast.dismiss(t.id);
+            if (router.asPath === "/") return;
+            router.push("/");
           }}
         >
           <FontAwesomeIcon icon={faReply} size={"lg"} className="text-bell" />
