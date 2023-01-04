@@ -1,19 +1,18 @@
 import dayjs from "dayjs";
 import Image from "next/image";
 import { useChatStore } from "../../lib/store";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import OptionsMenu from "./optionsmenu";
 import { useMemo } from "react";
 import MutedActiveChatIcon from "./mutedactivechaticon";
+import ConnectionStatusIcon from "./connectionStatusIcon";
 
 export default function ActiveChat(props): JSX {
-  const { activeChat, mutedUsers } = props;
+  const { activeChat } = props;
 
   const selectedChat = useChatStore((state) => state.selectedChat);
   const changeSelectedChat = useChatStore((state) => state.changeSelectedChat);
-  const isUserMutedMemoized = useMemo(() => {
-    return mutedUsers.includes(activeChat.id);
-  }, [mutedUsers, activeChat.id]);
+
 
   return (
     <motion.div
@@ -52,9 +51,9 @@ export default function ActiveChat(props): JSX {
             >
               {activeChat.name} {activeChat.lastName}
             </p>
+            <ConnectionStatusIcon activeChat={activeChat} />
             <MutedActiveChatIcon
               activeChat={activeChat}
-              isUserMutedMemoized={isUserMutedMemoized}
             />
           </div>
           <div className="flex flex-row">
@@ -69,19 +68,27 @@ export default function ActiveChat(props): JSX {
             </p>
             <OptionsMenu
               activeChat={activeChat}
-              isUserMutedMemoized={isUserMutedMemoized}
             />
           </div>
         </div>
-        <p
-          className={`ml-5 max-w-2xl ${
-            selectedChat.id === activeChat.id ? "text-background2" : "text-bell"
-          }`}
-        >
-          {activeChat.lastMessage?.content.length > 50
-            ? activeChat.lastMessage?.content.substring(0, 50) + "..."
-            : activeChat.lastMessage?.content}
-        </p>
+        <AnimatePresence mode={"wait"}>>
+          <motion.p
+            key={activeChat.lastMessage?.id}
+            initial={{ opacity: 0 }}
+            animate={{
+              opacity: 1
+            }}
+            transition={{ duration: 0.3 }}
+            exit={{ opacity: 0 }}
+            className={`ml-5 max-w-2xl ${
+              selectedChat.id === activeChat.id ? "text-background2" : "text-bell"
+            }`}
+          >
+            {activeChat.lastMessage?.content.length > 50
+              ? activeChat.lastMessage?.content.substring(0, 50) + "..."
+              : activeChat.lastMessage?.content}
+          </motion.p>
+        </AnimatePresence>
       </div>
     </motion.div>
   );

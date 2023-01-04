@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useQuery } from "react-query";
 
-const useActiveChats = () =>
+const useActiveChats = ({ status }) =>
   useQuery(
     "activeChats",
     () => {
@@ -10,6 +10,7 @@ const useActiveChats = () =>
     },
     {
       staleTime: 1000 * 60 * 5,
+      enabled: status === "authenticated",
     }
   );
 

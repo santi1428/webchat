@@ -1,23 +1,17 @@
 import Image from "next/image";
 import { useSession } from "next-auth/react";
-import { useQuery } from "react-query";
-import axios from "axios";
 import ActiveChat from "./activechat";
 import ActiveChatsFilter from "./activeChatsFilter";
 import { useChatStore, useSocketStore } from "../../lib/store";
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import useActiveChats from "../hooks/useActiveChats";
 import { AnimatePresence, motion } from "framer-motion";
-import useMutedUsers from "../hooks/useMutedUsers";
 
 export default function ActiveChats(props): JSX {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const activeChatsFilter = useChatStore((state) => state.activeChatsFilter);
 
-  const { data } = useActiveChats();
-  const { data: mutedUsers } = useMutedUsers();
-
-  console.log("mutedUsers", mutedUsers);
+  const { data } = useActiveChats({ status });
 
   const memoizedActiveChatsFiltered = useMemo(() => {
     return [...new Map(data?.data.map((item) => [item["id"], item])).values()]
@@ -91,11 +85,7 @@ export default function ActiveChats(props): JSX {
       {/*Seccion de lista de chats*/}
 
       {memoizedActiveChatsFiltered.map((chat) => (
-        <ActiveChat
-          key={chat.id}
-          activeChat={chat}
-          mutedUsers={mutedUsers.data}
-        />
+        <ActiveChat key={chat.id} activeChat={chat} />
       ))}
 
       {data?.data.length === 0 && (

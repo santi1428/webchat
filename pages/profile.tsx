@@ -54,7 +54,7 @@ const reloadSession = () => {
 export default function Profile() {
   const router = useRouter();
   const { data: session, status } = useSession();
-  const { data, isFetched } = useActiveChats();
+  const { data, isFetched } = useActiveChats({ status });
   useJoinRooms({ data, isFetched });
 
   const formik = useFormik({

@@ -56,6 +56,10 @@ const useSocketStore = create((set) => ({
   setHasJoinedRooms: (hasJoinedRooms: boolean) => {
     set((state) => ({ hasJoinedRooms: hasJoinedRooms }));
   },
+  usersConnectionStatus: [],
+  setUsersConnectionStatus: (usersConnectionStatus) => {
+    set((state) => ({ usersConnectionStatus: usersConnectionStatus }));
+  },
 }));
 
 export { useChatStore, useNotificationStore, useSocketStore };

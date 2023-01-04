@@ -11,19 +11,49 @@ import useOnClickOutside from "../hooks/useOnClickOutside";
 import axios from "axios";
 import { useMutation, useQueryClient } from "react-query";
 import toast from "react-hot-toast";
+import useMutedUsers from "../hooks/useMutedUsers";
+import useIsUserMuted from "../hooks/useIsUserMuted";
+import { useSession } from "next-auth/react";
 
 export default function OptionsMenu(props): JSX {
   const selectedChat = useChatStore((state) => state.selectedChat);
-  const { activeChat, isUserMutedMemoized } = props;
+  const { activeChat } = props;
+  const { status } = useSession();
 
   const [showOptionsMenu, setShowOptionsMenu] = useState(false);
   const optionsMenuButtonRef = useRef(null);
 
   const queryClient = useQueryClient();
 
+  const { data: mutedUsers } = useMutedUsers({ status });
+
+  const isUserMuted = useIsUserMuted({
+    mutedUsers: mutedUsers.data,
+    activeChatId: activeChat.id,
+  });
+
   useOnClickOutside(optionsMenuButtonRef, () => {
     setShowOptionsMenu(false);
   });
+
+  const showMutingNotification = (isUserMuted, name) => {
+    toast(
+      !isUserMuted
+        ? `You will now receive notifications from ${name}.`
+        : `You will no longer receive notifications from ${name}.`,
+      {
+        icon: !isUserMuted ? "🔔" : "🔕",
+        duration: 3000,
+        position: "bottom-center",
+        style: {
+          borderRadius: "1rem",
+          marginBottom: "40px",
+          fontSize: "1rem",
+          maxWidth: "28rem",
+        },
+      }
+    );
+  };
 
   const { mutate: muteUser } = useMutation(
     () =>
@@ -33,14 +63,9 @@ export default function OptionsMenu(props): JSX {
     {
       onSuccess: async () => {
         queryClient.invalidateQueries("mutedUsers");
-        toast("Chat is muted", {
-          icon: "🔕",
-          position: "bottom-center",
-        });
+        showMutingNotification(true, activeChat.name);
       },
-      onError: async () => {
-        queryClient.invalidateQueries("mutedUsers");
-      },
+      onError: async () => {},
     }
   );
 
@@ -54,13 +79,14 @@ export default function OptionsMenu(props): JSX {
     {
       onSuccess: async () => {
         queryClient.invalidateQueries("mutedUsers");
+        showMutingNotification(false, activeChat.name);
       },
     }
   );
 
   return (
     <div
-      className="relative z-50"
+      className="relative"
       onClick={(e) => {
         e.stopPropagation();
       }}
@@ -90,7 +116,7 @@ export default function OptionsMenu(props): JSX {
             exit={{ opacity: 0, scale: 0 }}
             key={showOptionsMenu ? 1 : 0}
             onClick={(e) => {
-              if (isUserMutedMemoized) {
+              if (isUserMuted) {
                 unMuteUser();
               } else {
                 muteUser();
@@ -104,7 +130,7 @@ export default function OptionsMenu(props): JSX {
             } w-48`}
           >
             <FontAwesomeIcon
-              icon={isUserMutedMemoized ? faBell : faBellSlash}
+              icon={isUserMuted ? faBell : faBellSlash}
               className={`py-4 pl-3
                 ${
                   selectedChat.id === activeChat.id
@@ -114,9 +140,7 @@ export default function OptionsMenu(props): JSX {
                   `}
             />
             <p className="capitalize py-3 px-2 w-auto">
-              {isUserMutedMemoized
-                ? "Unmute notifications"
-                : "Mute notifications"}
+              {isUserMuted ? "Unmute notifications" : "Mute notifications"}
             </p>
           </motion.div>
         )}

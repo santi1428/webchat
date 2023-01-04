@@ -2,6 +2,7 @@ import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
+import MutedActiveChatIcon from "../activechats/mutedactivechaticon";
 
 export default function ChatHeader(props): JSX {
   const { selectedChatUser, resetSelectedChat } = props;
@@ -20,8 +21,11 @@ export default function ChatHeader(props): JSX {
           alt="NoImage"
         />
       </div>
-      <p className="self-center text-bell pl-3 text-lg font-bold self-center">
-        {selectedChatUser.name} {selectedChatUser.lastName}
+      <p className="flex flex-row  self-center text-bell pl-3 text-lg font-bold self-center">
+        <span>
+          {selectedChatUser.name} {selectedChatUser.lastName}
+        </span>
+        <MutedActiveChatIcon activeChat={selectedChatUser} iconColor="bell" />
       </p>
       <FontAwesomeIcon
         icon={faCircleXmark}

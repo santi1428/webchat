@@ -19,6 +19,12 @@ const SocketHandler = async (req, res) => {
             await socket.join(room);
           }
         }
+        socket.emit("joinedRooms");
+      });
+
+      socket.on("broadcastConnectionStatus", async (user) => {
+        console.log("Broadcasting connection status for userId", user);
+        socket.broadcast.emit("userConnectionStatus", user);
       });
 
       socket.on("sendMessage", async (message) => {

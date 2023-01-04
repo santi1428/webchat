@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useQuery } from "react-query";
 
-const useMutedUsers = () =>
+const useMutedUsers = ({ status }) =>
   useQuery(
     "mutedUsers",
     () => {
@@ -10,6 +10,7 @@ const useMutedUsers = () =>
     },
     {
       staleTime: 1000 * 60 * 5,
+      enabled: status === "authenticated",
     }
   );
 

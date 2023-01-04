@@ -5,9 +5,11 @@ import Chat from "../components/chat/chat";
 import ActiveChats from "../components/activechats/activechats";
 import useActiveChats from "../components/hooks/useActiveChats";
 import useJoinRooms from "../components/hooks/useJoinRooms";
+import { useSession } from "next-auth/react";
 
 export default function Home() {
-  const { data, isFetched } = useActiveChats();
+  const { status } = useSession();
+  const { data, isFetched } = useActiveChats({ status });
   useJoinRooms({ data, isFetched });
 
   return (

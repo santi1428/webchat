@@ -27,7 +27,7 @@ export default function ProfilePhoto() {
   const [uploadingProfilePhoto, setUploadingProfilePhoto] = useState(false);
   const { data: session, status } = useSession();
 
-  const { data, isFetched } = useActiveChats();
+  const { data, isFetched } = useActiveChats({ status });
   useJoinRooms({ data, isFetched });
 
   const validateFile = () => {

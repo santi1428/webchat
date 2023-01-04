@@ -17,7 +17,7 @@ const addMutedUser = async (
       userId,
     },
   });
-  return res.status(200).end();
+  res.status(200).end();
 };
 
 const deleteMutedUser = async (
@@ -34,7 +34,7 @@ const deleteMutedUser = async (
       userId,
     },
   });
-  return res.status(200).end();
+  res.status(200).end();
 };
 
 const getMutedUsers = async (
@@ -65,11 +65,11 @@ export default async function handler(
   if (session) {
     try {
       if (req.method === "POST") {
-        return await addMutedUser(req, res, session);
+        await addMutedUser(req, res, session);
       } else if (req.method === "GET") {
-        return await getMutedUsers(req, res, session);
+        await getMutedUsers(req, res, session);
       } else if (req.method === "DELETE") {
-        return await deleteMutedUser(req, res, session);
+        await deleteMutedUser(req, res, session);
       }
     } catch (err) {
       console.log(err);

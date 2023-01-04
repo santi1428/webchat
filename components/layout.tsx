@@ -10,11 +10,16 @@ import ChatMessageToast from "./chat/chatMessageToast";
 import { useChatStore } from "../lib/store";
 import { useSession } from "next-auth/react";
 import { useEffect } from "react";
+import useBroadcastConnectionStatus from "./hooks/useBroadcastConnectionStatus";
+import useOnUserConnectionStatusSocketEvent from "./hooks/useOnUserConnectionStatusSocketEvent";
+import useMutedUsers from "./hooks/useMutedUsers";
 
 export default function Layout({ children }): JSX.Element {
   const router = useRouter();
 
   const { status } = useSession();
+
+  const { data: mutedUsers } = useMutedUsers({ status });
 
   const selectedChat = useChatStore((state) => state.selectedChat);
 
@@ -34,7 +39,11 @@ export default function Layout({ children }): JSX.Element {
 
   useInitSocket();
 
-  useOnNewMessageSocketEvent({ showMessageToast, selectedChat });
+  useOnNewMessageSocketEvent({ showMessageToast, selectedChat, mutedUsers });
+
+  useBroadcastConnectionStatus();
+
+  useOnUserConnectionStatusSocketEvent();
 
   return (
     <>
