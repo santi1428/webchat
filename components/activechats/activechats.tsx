@@ -15,13 +15,6 @@ export default function ActiveChats(props): JSX {
 
   const memoizedActiveChatsFiltered = useMemo(() => {
     return [...new Map(data?.data.map((item) => [item["id"], item])).values()]
-      .slice(0)
-      .sort((a, b) => {
-        return (
-          new Date(b.lastMessage?.createdAt).getTime() -
-          new Date(a.lastMessage?.createdAt).getTime()
-        );
-      })
       .filter(
         (chat) =>
           chat.id !== session?.user?.id &&
@@ -32,8 +25,15 @@ export default function ActiveChats(props): JSX {
             chat.lastName
               .toLowerCase()
               .includes(activeChatsFilter.toLowerCase()))
-      );
-  }, [data, activeChatsFilter]);
+      )
+      .slice(0)
+      .sort((a, b) => {
+        return (
+          new Date(b.lastMessage?.createdAt).getTime() -
+          new Date(a.lastMessage?.createdAt).getTime()
+        );
+      });
+  }, [JSON.stringify(data?.data), activeChatsFilter]);
 
   return (
     <div className="min-h-[calc(100vh-73.5px)] max-h-[calc(100vh-73.5px)] col-span-4 flex flex-col border-r border-customBorderColor overflow-y-auto overflow-x-hidden scrollbar scrollbar-thin scrollbar-thumb-bell scrollbar-track-background">

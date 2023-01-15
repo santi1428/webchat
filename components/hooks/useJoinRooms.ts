@@ -12,20 +12,12 @@ export default function useJoinRooms(props) {
   const { data: session, status } = useSession();
 
   useEffect(() => {
-    console.log("hasJoinedRooms", hasJoinedRooms);
     if (
       !hasJoinedRooms &&
       socketConnected &&
       status === "authenticated" &&
       isFetched
     ) {
-      console.log("Joining rooms");
-      console.log(
-        "Joining Rooms",
-        data?.data?.map((activeChat) =>
-          getRoomID(session.user.id, activeChat.id)
-        )
-      );
       socket.emit(
         "joinRooms",
         data?.data?.map((activeChat) =>

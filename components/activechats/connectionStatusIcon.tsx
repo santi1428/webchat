@@ -11,11 +11,23 @@ export default function ConnectionStatusIcon(props) {
     (state) => state.usersConnectionStatus
   );
 
-  const userConnectionStatus = useMemo(() => {
+  // const userConnectionStatus = useMemo(() => {
+  //   return usersConnectionStatus.find(
+  //     (userConnectionStatus) => userConnectionStatus.userId === activeChat.id
+  //   );
+  // }, [usersConnectionStatus, activeChat]);
+
+  const userConnectionStatus = () => {
+    console.log(
+      "usersConnectionStatus from connectionStatusIcon.tsx",
+      usersConnectionStatus.find(
+        (userConnectionStatus) => userConnectionStatus.userId === activeChat.id
+      )
+    );
     return usersConnectionStatus.find(
       (userConnectionStatus) => userConnectionStatus.userId === activeChat.id
     );
-  }, [usersConnectionStatus, activeChat]);
+  };
 
   return (
     <AnimatePresence mode={"wait"}>
@@ -28,7 +40,7 @@ export default function ConnectionStatusIcon(props) {
         transition={{ duration: 0.3 }}
         exit={{ opacity: 0 }}
       >
-        {userConnectionStatus?.status === "online" ? (
+        {userConnectionStatus()?.status === "online" ? (
           <FontAwesomeIcon
             icon={faCircle}
             size={"sm"}

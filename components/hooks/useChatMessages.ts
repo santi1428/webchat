@@ -15,7 +15,6 @@ const useChatMessages = () => {
 
   return useInfiniteQuery(["messages", selectedChatUser.id], getMessages, {
     enabled: selectedChatUser.id !== "",
-    staleTime: 1000 * 60 * 5,
     getNextPageParam: (lastPage) => {
       if (lastPage.messages.length < 10) {
         return undefined;

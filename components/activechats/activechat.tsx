@@ -13,6 +13,10 @@ export default function ActiveChat(props): JSX {
   const selectedChat = useChatStore((state) => state.selectedChat);
   const changeSelectedChat = useChatStore((state) => state.changeSelectedChat);
 
+  const checkIfDateIsToday = (date) => {
+    return dayjs(date).isSame(dayjs(), "day");
+  }
+
 
   return (
     <motion.div
@@ -22,7 +26,6 @@ export default function ActiveChat(props): JSX {
       exit={{ opacity: 0 }}
       key={activeChat.id === selectedChat.id ? 1 : 0}
       onClick={() => {
-        console.log("activeChat", activeChat);
         changeSelectedChat(activeChat);
       }}
       className={`flex flex-row py-4 cursor-pointer ${
@@ -45,7 +48,7 @@ export default function ActiveChat(props): JSX {
         <div className="flex flex-row justify-between pb-1">
           <div className="flex flex-row">
             <p
-              className={`ml-5 text-bell font-semibold ${
+              className={`ml-5 text-bell font-semibold capitalize ${
                 selectedChat.id === activeChat.id ? "text-background2" : ""
               }`}
             >
@@ -64,7 +67,7 @@ export default function ActiveChat(props): JSX {
                   : "text-bell"
               }`}
             >
-              {dayjs(activeChat.lastMessage?.createdAt).format("h:mm A")}
+              {checkIfDateIsToday(activeChat.lastMessage?.createdAt) ?  dayjs(activeChat.lastMessage?.createdAt).format("h:mm A") : dayjs(activeChat.lastMessage?.createdAt).format("DD/MM/YYYY")}
             </p>
             <OptionsMenu
               activeChat={activeChat}

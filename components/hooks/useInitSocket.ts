@@ -28,6 +28,5 @@ export default function useInitSocket() {
         setSocketConnected(true);
       });
     }
-    console.log("socket", socket);
   }, [socket, status]);
 }

@@ -16,7 +16,6 @@ const validationScheme = Yup.object({
 
 const checkIfTokenIsValid = async (token: String): Promise<boolean> => {
   if (token.trim()) {
-    console.log("token is not null or empty");
     const res = await prisma.user.findUnique({
       where: {
         resetPasswordToken: token,
@@ -27,7 +26,6 @@ const checkIfTokenIsValid = async (token: String): Promise<boolean> => {
       },
     });
     if (res) {
-      console.log("token exists");
       const currentTime = new Date().getTime();
       if (currentTime <= res.resetPasswordTokenExpiry) {
         console.log("token is valid");

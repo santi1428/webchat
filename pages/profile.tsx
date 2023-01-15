@@ -35,10 +35,8 @@ const validationSchema = Yup.object({
 });
 
 const updateProfile = async (user): Promise<[boolean, null | AxiosError]> => {
-  console.log("submiting profile");
   try {
     const res = await axios.put("/api/profile", user);
-    console.log(res);
     return [true, null];
   } catch (error) {
     return [false, error as AxiosError];
@@ -46,7 +44,6 @@ const updateProfile = async (user): Promise<[boolean, null | AxiosError]> => {
 };
 
 const reloadSession = () => {
-  console.log("reloading session");
   const event = new Event("visibilitychange");
   document.dispatchEvent(event);
 };

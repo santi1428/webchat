@@ -15,10 +15,18 @@ export default function useOnUserConnectionStatusSocketEvent() {
   const { status } = useSession();
 
   const addUsersConnectionStatus = (data) => {
+    console.log("Adding user connection status", data);
     if (!usersConnectionStatus.find((user) => data.userId === user.userId)) {
       setUsersConnectionStatus([...usersConnectionStatus, data]);
     }
   };
+
+  useEffect(() => {
+    console.log(
+      "usersConnectionStatus from useEffect on useOnUserConnectionStatusSocketEvent",
+      usersConnectionStatus
+    );
+  }, [usersConnectionStatus]);
 
   useEffect(() => {
     if (socketConnected && status === "authenticated") {

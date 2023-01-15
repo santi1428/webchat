@@ -57,8 +57,8 @@ const useSocketStore = create((set) => ({
     set((state) => ({ hasJoinedRooms: hasJoinedRooms }));
   },
   usersConnectionStatus: [],
-  setUsersConnectionStatus: (usersConnectionStatus) => {
-    set((state) => ({ usersConnectionStatus: usersConnectionStatus }));
+  setUsersConnectionStatus: (newUsersConnectionStatus) => {
+    set((state) => ({ usersConnectionStatus: newUsersConnectionStatus }));
   },
 }));
 

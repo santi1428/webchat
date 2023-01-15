@@ -5,7 +5,6 @@ const useActiveChats = ({ status }) =>
   useQuery(
     "activeChats",
     () => {
-      console.log("fetching active chats");
       return axios.get("/api/activechats");
     },
     {

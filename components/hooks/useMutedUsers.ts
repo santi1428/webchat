@@ -5,7 +5,6 @@ const useMutedUsers = ({ status }) =>
   useQuery(
     "mutedUsers",
     () => {
-      console.log("fetching muted users");
       return axios.get("/api/muteduser");
     },
     {

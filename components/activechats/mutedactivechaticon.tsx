@@ -15,7 +15,7 @@ export default function MutedActiveChatIcon(props): JSX {
   const { data: mutedUsers } = useMutedUsers({ status });
 
   const isUserMuted = useIsUserMuted({
-    mutedUsers: mutedUsers.data,
+    mutedUsers: mutedUsers?.data,
     activeChatId: activeChat.id,
   });
 

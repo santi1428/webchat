@@ -54,7 +54,6 @@ export default function ProfilePhoto() {
       const res = await axios.put("/api/profilephoto", body, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-      console.log(res);
       return [true, null];
     } catch (error) {
       return [false, error as AxiosError];

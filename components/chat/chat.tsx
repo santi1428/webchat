@@ -43,8 +43,6 @@ export default function Chat(): JSX.Element {
 
   useEffect(() => {
     if (scrollMessagesToBottom) {
-      console.log("scrollMessagesToBottom", scrollMessagesToBottom);
-      console.log("data", JSON.stringify(data)?.length);
       setTimeout(() => {
         scrollBottomRef.current?.scrollIntoView();
       }, 250);

@@ -50,6 +50,14 @@ export default function SendMessageInput(props): JSX {
     });
   };
 
+  const checkIfChatIsAlreadyInActiveChats = () => {
+    const activeChats = queryClient.getQueryData("activeChats");
+    const chat = activeChats?.data.find(
+      (chat) => chat.id === selectedChatUser.id
+    );
+    return chat !== undefined;
+  };
+
   const { mutate } = useMutation(
     () =>
       axios.post("/api/message/addmessage", {
@@ -58,8 +66,12 @@ export default function SendMessageInput(props): JSX {
       }),
     {
       onSuccess: async () => {
-        console.log("mutation success");
-        console.log(["messages", selectedChatUser.id]);
+        if (!checkIfChatIsAlreadyInActiveChats()) {
+          await queryClient.invalidateQueries("activeChats");
+          socket.emit("joinRooms", [
+            getRoomID(session.user.id, selectedChatUser.id),
+          ]);
+        }
         await queryClient.invalidateQueries(["messages", selectedChatUser.id]);
         sendSocketMessage();
         setScrollMessagesToBottom(true);

@@ -13,18 +13,27 @@ import { useEffect } from "react";
 import useBroadcastConnectionStatus from "./hooks/useBroadcastConnectionStatus";
 import useOnUserConnectionStatusSocketEvent from "./hooks/useOnUserConnectionStatusSocketEvent";
 import useMutedUsers from "./hooks/useMutedUsers";
+import useSound from "use-sound";
+import { useQueryClient } from "react-query";
 
 export default function Layout({ children }): JSX.Element {
   const router = useRouter();
 
   const { status } = useSession();
 
-  const { data: mutedUsers } = useMutedUsers({ status });
+  const queryClient = useQueryClient();
 
   const selectedChat = useChatStore((state) => state.selectedChat);
 
+  const [play] = useSound("/sound/message-notification-sound.mp3", {
+    volume: 0.25,
+  });
+
   const showMessageToast = (message) => {
-    console.log("message", message);
+    const mutedUsersFromQueryClient =
+      queryClient.getQueryData("mutedUsers")?.data;
+    if (mutedUsersFromQueryClient.includes(message.senderId)) return;
+    console.log("message from showMessageToast", message);
     toast.custom(
       // @ts-ignore
       (t) => {
@@ -35,11 +44,12 @@ export default function Layout({ children }): JSX.Element {
         duration: 5000,
       }
     );
+    play();
   };
 
   useInitSocket();
 
-  useOnNewMessageSocketEvent({ showMessageToast, selectedChat, mutedUsers });
+  useOnNewMessageSocketEvent({ showMessageToast, selectedChat });
 
   useBroadcastConnectionStatus();
 

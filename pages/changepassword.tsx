@@ -24,7 +24,6 @@ const updatePassword = async (
 ): Promise<[boolean, null | AxiosError]> => {
   try {
     const res = await axios.put("/api/changepassword", fields);
-    console.log(res);
     return [true, null];
   } catch (error) {
     return [false, error as AxiosError];
@@ -64,7 +63,6 @@ export default function Register() {
           formik.errors.oldPassword = error.response.data[0] as string;
         }
       } else {
-        console.log("updated password successfully");
         toast.success("Your password has been updated.", {
           position: "bottom-center",
           duration: 7000,

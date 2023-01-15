@@ -2,6 +2,11 @@ import { Server } from "Socket.IO";
 import { authOptions } from "./auth/[...nextauth]";
 import { unstable_getServerSession } from "next-auth";
 
+const getLoggedUserID = (req, res) => {
+  const session = unstable_getServerSession(req, res, authOptions);
+  return session;
+};
+
 const SocketHandler = async (req, res) => {
   if (res.socket.server.io) {
     console.log("Socket is already running");
@@ -34,6 +39,10 @@ const SocketHandler = async (req, res) => {
         );
         // @ts-ignore
         socket.broadcast.to(message.roomID).emit("newMessage", message);
+      });
+
+      socket.on("disconnecting", () => {
+        console.log("Socket disconnected", socket.id);
       });
     });
   }

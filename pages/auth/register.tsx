@@ -16,7 +16,6 @@ import { useState } from "react";
 const registerUser = async (user): Promise<[boolean, null | AxiosError]> => {
   try {
     const res = await axios.post("/api/register", user);
-    console.log(res);
     return [true, null];
   } catch (error) {
     return [false, error as AxiosError];
@@ -88,7 +87,9 @@ export default function Register() {
           className="w-96 border-1 border-customBorderColor rounded-3xl py-5 px-8"
           onSubmit={formik.handleSubmit}
         >
-          <h5 className='text-center capitalize text-bell font-semibold text-lg py-4'>Sign Up</h5>
+          <h5 className="text-center capitalize text-bell font-semibold text-lg py-4">
+            Sign Up
+          </h5>
           <div className="flex flex-col">
             <label htmlFor="name" className="text-bell text-base mb-2">
               Name:
