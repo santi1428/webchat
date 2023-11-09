@@ -6,6 +6,7 @@ async function main() {
   await prisma.user.createMany({
     data: users,
   });
+  // console.log("prisma", prisma);
 }
 
 main()

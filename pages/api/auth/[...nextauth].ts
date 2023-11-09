@@ -2,7 +2,6 @@ import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { comparePassword } from "../../../lib/bcrypt";
 import { prisma } from "../../../lib/prisma";
-import { User } from "../../../utils/types";
 
 const checkLoginCredentials = async (
   email: string,
