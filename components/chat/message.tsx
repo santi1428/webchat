@@ -23,18 +23,18 @@ export default function Message(props) {
           >
             <div className="flex flex-col relative">
               <div className="flex flex-row justify-end">
-                <span className="self-center text-xs text-bell self-center">
+                <span className="self-center text-xs text-bell">
                   {dayjs(message.createdAt).format("MMM D YYYY")}
                 </span>
                 <p className="self-center text-sm text-bell font-semibold mr-6 ml-3">
                   {selectedChatUser.name} {selectedChatUser.lastName}
                 </p>
               </div>
-              <div className="flex flex-col rounded-l-3xl rounded-br-3xl bg-bell px-9 pt-6 pb-4  mt-2 mr-4  ml-5 min-w-max">
-                <p className="text-justify break-words  max-w-xs text-sm">
+              <div className="flex flex-col rounded-l-3xl rounded-br-3xl bg-bell px-5 md:px-9 md:pt-6 pt-3 pb-4  mt-2 mr-4  ml-5 min-w-max">
+                <p className="text-justify break-words  max-w-xs  text-xs md:text-sm text">
                   {message.content}
                 </p>
-                <p className="text-xs font-semibold text-background self-end pt-1">
+                <p className="text-xs font-semibold text-background self-end md:text-sm pt-1">
                   {dayjs(message.createdAt).format("hh:mm A")}
                 </p>
               </div>
@@ -91,11 +91,11 @@ export default function Message(props) {
                   {dayjs(message.createdAt).format("MMM D YYYY")}
                 </time>
               </div>
-              <div className="flex flex-col rounded-bl-3xl rounded-tr-3xl rounded-br-3xl bg-bell px-9 pt-6 pb-4  mt-2 mr-4  ml-5">
-                <p className="text-justify break-words min-w-xs max-w-lg  text-sm">
+              <div className="flex flex-col rounded-bl-3xl rounded-tr-3xl rounded-br-3xl bg-bell px-5  md:px-9 md:pt-6 pt-3 pb-4  mt-2 mr-4  ml-5">
+                <p className="text-justify break-words min-w-xs max-w-lg text-xs  md:text-sm">
                   {message.content}
                 </p>
-                <p className="text-xs font-semibold text-background self-end pt-1">
+                <p className="text-xs md:text-sm font-semibold text-background self-end pt-1">
                   {dayjs(message.createdAt).format("hh:mm A")}
                 </p>
               </div>

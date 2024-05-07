@@ -3,7 +3,6 @@ import { useNotificationStore, useSocketStore } from "../../lib/store";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useQueryClient } from "react-query";
-import useSound from "use-sound";
 
 export default function useOnNewMessageSocketEvent(props) {
   const { selectedChat } = props;
@@ -40,5 +39,5 @@ export default function useOnNewMessageSocketEvent(props) {
         socket.off("newMessage");
       };
     }
-  }, [socketConnected, router.asPath, selectedChat]);
+  }, [socketConnected, router.asPath, selectedChat, socket]);
 }

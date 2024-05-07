@@ -6,11 +6,13 @@ import axios from "axios";
 import { useMutation, useQueryClient } from "react-query";
 import { useChatStore, useNotificationStore } from "../../lib/store";
 import { useSession } from "next-auth/react";
+import useDebounce from "../hooks/useDebounce";
 
 export default function SendMessageInput(props): JSX {
   const { selectedChatUser, socket } = props;
   const [message, setMessage] = useState("");
   const { data: session, status } = useSession();
+  const debouncedTypingEvent = useDebounce(message, 50);
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -31,7 +33,7 @@ export default function SendMessageInput(props): JSX {
 
   useEffect(() => {
     if (focusedMessageInput) {
-      inputRef.current?.focus();
+      inputRef.current?.focus({ preventScroll: true });
       inputRef.current?.click();
     }
     setFocusedMessageInput(false);
@@ -89,19 +91,41 @@ export default function SendMessageInput(props): JSX {
     setMessage("");
   };
 
+  const emitTypingEvent = () => {
+    socket.emit("typing", {
+      roomID: getRoomID(session.user.id, selectedChatUser.id),
+      senderId: session.user.id,
+      senderName: session.user.name,
+    });
+  };
+
+  const textInputOnChange = (e) => {
+    setMessage(e.target.value);
+  };
+
+  useEffect(() => {
+    if (debouncedTypingEvent) {
+      emitTypingEvent();
+    }
+  }, [debouncedTypingEvent]);
+
   return (
     <form
       onSubmit={sendMessage}
-      className="flex flex-row w-12/12 px-16 border-customBorderColor pb-10 pt-5"
+      className="flex flex-row w-12/12 px-6 md:px-16 border-customBorderColor md:pb-10 md:pt-5 fixed md:relative"
     >
       <motion.input
         ref={inputRef}
+        onFocus={(e) => {
+          e.target.focus({ preventScroll: true });
+        }}
+        
         whileTap={{ scale: 1.01 }}
         type="text"
         name="name"
-        className="rounded-2xl w-full pl-4 py-3 pr-2 bg-background2 border border-customBorderColor focus:outline-none text-bell"
+        className="rounded-2xl w-full md:pl-4 md:py-3 md:pr-2 py-1 pl-2 pr-1 bg-background2 border border-customBorderColor focus:outline-none text-bell md:text-base text-sm"
         placeholder="Write something"
-        onChange={(e) => setMessage(e.target.value)}
+        onChange={textInputOnChange}
         value={message}
       />
       <motion.button

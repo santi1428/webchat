@@ -3,9 +3,9 @@ import Image from "next/image";
 import { useChatStore } from "../../lib/store";
 import { AnimatePresence, motion } from "framer-motion";
 import OptionsMenu from "./optionsmenu";
-import { useMemo } from "react";
 import MutedActiveChatIcon from "./mutedactivechaticon";
 import ConnectionStatusIcon from "./connectionStatusIcon";
+import TypingStatusText from "./typingStatusText";
 
 export default function ActiveChat(props): JSX {
   const { activeChat } = props;
@@ -24,15 +24,15 @@ export default function ActiveChat(props): JSX {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.4 }}
       exit={{ opacity: 0 }}
-      key={activeChat.id === selectedChat.id ? 1 : 0}
+      key={activeChat.id}
       onClick={() => {
         changeSelectedChat(activeChat);
       }}
-      className={`flex flex-row py-4 cursor-pointer ${
+      className={`flex flex-col py-3 md:flex-row md:py-4 cursor-pointer ${
         activeChat.id === selectedChat.id ? "bg-bell text-background2" : ""
       }`}
     >
-      <div className="ml-7 inline-block h-12 w-12 relative">
+      <div className="self-center md:self-auto md:ml-6 inline-block h-10  w-10 md:h-12 md:w-12 relative">
         <Image
           layout="fill"
           src={
@@ -45,23 +45,24 @@ export default function ActiveChat(props): JSX {
         />
       </div>
       <div className="flex flex-col w-full">
-        <div className="flex flex-row justify-between pb-1">
-          <div className="flex flex-row">
+        <div className="flex flex-col md:flex-row md:justify-between md:pb-1">
+          <div className="flex flex-row justify-center md:justify-normal">
             <p
-              className={`ml-5 text-bell font-semibold capitalize ${
-                selectedChat.id === activeChat.id ? "text-background2" : ""
+              className={`font-semibold capitalize text-sm md:text-lg md:ml-5 text-center md:text-left  ${
+                selectedChat.id === activeChat.id ? "text-background2" : "text-bell"
               }`}
             >
               {activeChat.name} {activeChat.lastName}
             </p>
             <ConnectionStatusIcon activeChat={activeChat} />
+            <TypingStatusText activeChat={activeChat} style={`${selectedChat.id !== activeChat.id ? 'text-white' : 'text-background2 font-bold'} text-xs md:text-base md:ml-2`} />
             <MutedActiveChatIcon
               activeChat={activeChat}
             />
           </div>
-          <div className="flex flex-row">
+          <div className="flex flex-row justify-center md:justify-normal">
             <p
-              className={`mr-4 ${
+              className={`md:mr-4 text-sm md:text-md ${
                 selectedChat.id === activeChat.id
                   ? "text-background2"
                   : "text-bell"
@@ -83,7 +84,7 @@ export default function ActiveChat(props): JSX {
             }}
             transition={{ duration: 0.3 }}
             exit={{ opacity: 0 }}
-            className={`ml-5 max-w-2xl ${
+            className={`md:ml-5 text-center text-sm sm:text-md md:text-start max-w-2xl ${
               selectedChat.id === activeChat.id ? "text-background2" : "text-bell"
             }`}
           >

@@ -44,7 +44,10 @@ export default function Chat(): JSX.Element {
   useEffect(() => {
     if (scrollMessagesToBottom) {
       setTimeout(() => {
-        scrollBottomRef.current?.scrollIntoView();
+        scrollBottomRef.current?.scrollIntoView({
+          block: "end",
+          inline: "nearest",
+        });
       }, 250);
     }
   });
@@ -76,7 +79,7 @@ export default function Chat(): JSX.Element {
       <AnimatePresence mode={"wait"}>
         {selectedChatUser.id === "" ? (
           <motion.div
-            className="col-span-8 flex flex-col justify-center items-center h-full"
+            className="col-span-8 flex flex-col justify-center items-center h-[calc(100vh-100vh*0.3)]"
             key={selectedChatUser.id}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -90,7 +93,9 @@ export default function Chat(): JSX.Element {
               <span className="mr-4">
                 <FontAwesomeIcon icon={faMessage} size={"xl"} />
               </span>
-              <span className="underline">Start a new conversation.</span>
+              <span className="underline text-sm md:text-lg">
+                Start a new conversation.
+              </span>
             </div>
           </motion.div>
         ) : (
@@ -100,18 +105,20 @@ export default function Chat(): JSX.Element {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.2 }}
             exit={{ opacity: 0 }}
-            className="col-span-8 flex flex-col"
+            className="col-span-8 flex flex-col justify-start"
           >
             <ChatHeader
               selectedChatUser={selectedChatUser}
               resetSelectedChat={resetSelectedChat}
             />
             {/*Chat*/}
-            <div className="flex flex-col h-[calc(100vh-145px)]">
+            {/* <div className="flex flex-col h-[calc(100vh-100vh*0.5)] md:h-[calc(100vh-145px)]"> */}
+            <div className="flex flex-col h-96 md:h-[calc(100vh-145px)]">
+
               <div
                 ref={scrollParentRef}
                 onScroll={handleScroll}
-                className="h-full overflow-y-auto scrollbar scrollbar-thin scrollbar-thumb-bell scrollbar-track-background overflow-x-hidden"
+                className="h-full scrollbar-thin scrollbar-thumb-bell scrollbar-track-background overflow-x-hidden"
               >
                 <InfiniteScroll
                   pageStart={0}
@@ -132,7 +139,7 @@ export default function Chat(): JSX.Element {
                       />
                     </div>
                   }
-                  className="flex flex-col h-full"
+                  className="flex flex-col"
                   useWindow={false}
                   threshold={50}
                   initialLoad={false}
@@ -147,7 +154,7 @@ export default function Chat(): JSX.Element {
                   <div ref={scrollBottomRef}></div>
                 </InfiniteScroll>
               </div>
-              <div>
+              <div className="">
                 <SendMessageInput
                   selectedChatUser={selectedChatUser}
                   socket={socket}

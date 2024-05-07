@@ -1,4 +1,6 @@
-import create from "zustand";
+import { create } from "zustand";
+import { mountStoreDevtool } from 'simple-zustand-devtools';
+
 
 const initialSelectedChatState = {
   id: "",
@@ -26,6 +28,7 @@ const useChatStore = create((set) => ({
   setActiveChatsFilter: (activeChatsFilter) =>
     set((state) => ({ activeChatsFilter: activeChatsFilter })),
   reset: () => set((state) => ({ selectedChat: initialSelectedChatState })),
+
 }));
 
 const useNotificationStore = create((set) => ({
@@ -60,6 +63,18 @@ const useSocketStore = create((set) => ({
   setUsersConnectionStatus: (newUsersConnectionStatus) => {
     set((state) => ({ usersConnectionStatus: newUsersConnectionStatus }));
   },
+  usersTypingStatus: [],
+  setUsersTypingStatus: (newUsersTypingStatus) => {
+    set((state) => ({ usersTypingStatus: newUsersTypingStatus }));
+  },
+  timeToRefreshConnectionStatus: 10000,
+  timeToRefreshTypingStatus: 1000,
 }));
+
+if (process.env.NODE_ENV === 'development') {
+  mountStoreDevtool('ChatStore', useChatStore );
+  mountStoreDevtool('NotificationStore', useNotificationStore );
+  mountStoreDevtool('SocketStore', useSocketStore );
+}
 
 export { useChatStore, useNotificationStore, useSocketStore };

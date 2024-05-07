@@ -27,7 +27,7 @@ export default function Messages(props): JSX {
           transition={{ duration: 0.2 }}
           exit={{ scale: 0 }}
         >
-          <div className="flex flex-row  cursor-pointer text-bell text-lg self-center">
+          <div className="flex flex-row  cursor-pointer text-bell text-md md:text-lg self-center">
             <span
               className="underline"
               onClick={() => {

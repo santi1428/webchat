@@ -33,13 +33,13 @@ export default function SearchBar() {
   }, [focusedSearchInput]);
 
   const getUsers = async (debouncedSearch) => {
-    console.log("debouncedSearch", debouncedSearch);
+    // console.log("debouncedSearch", debouncedSearch);
     if (!debouncedSearch) {
       return [];
     }
     const res = await axios.get(`/api/users/${debouncedSearch}`);
     const users: User[] = res.data;
-    console.log("Requesting data...");
+    // console.log("Requesting data...");
     return users;
   };
 
@@ -55,7 +55,7 @@ export default function SearchBar() {
   // console.log("status", status);
 
   return (
-    <form className="relative mr-10 lg:ml-10 w-64 lg:w-96 relative max-h-80">
+    <form className="order-3 md:order-2 relative ml-2 md:mr-10 md:ml-10 w-3/4 md:w-96  max-h-80">
       <motion.input
         whileTap={{ scale: 0.95 }}
         whileFocus={{ scale: 1.03 }}
@@ -66,7 +66,6 @@ export default function SearchBar() {
         onClick={() => {
           setShowUsersList(true);
         }}
-        type="text"
         name="name"
         className="rounded-2xl w-full pl-4 pt-2 pb-2 pr-2 bg-background2 border border-customBorderColor focus:outline-none text-bell"
         placeholder="Enter the name or email"
@@ -74,6 +73,7 @@ export default function SearchBar() {
           setSearch(e.target.value);
         }}
         value={search}
+        autoComplete="new-password"
       />
       <AnimatePresence mode="wait">
         <motion.button

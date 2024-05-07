@@ -55,6 +55,8 @@ export default function OptionsMenu(props): JSX {
     );
   };
 
+
+  
   const { mutate: muteUser } = useMutation(
     () =>
       axios.post("/api/muteduser", {
@@ -86,14 +88,14 @@ export default function OptionsMenu(props): JSX {
 
   return (
     <div
-      className="relative"
+      className="relative left-4 md:left-0 block"
       onClick={(e) => {
         e.stopPropagation();
       }}
     >
       <div
         ref={optionsMenuButtonRef}
-        className="cursor-pointer pl-2"
+        className="cursor-pointer md:pl-2"
         onClick={(e) => {
           e.stopPropagation();
           setShowOptionsMenu(!showOptionsMenu);
@@ -102,7 +104,7 @@ export default function OptionsMenu(props): JSX {
         <FontAwesomeIcon
           icon={faEllipsisVertical}
           size="xl"
-          className={`pr-6 ${
+          className={`md:pr-6 ${
             selectedChat.id === activeChat.id ? "text-background2" : "text-bell"
           }`}
         />
@@ -123,7 +125,7 @@ export default function OptionsMenu(props): JSX {
               }
               e.stopPropagation();
             }}
-            className={`absolute right-8 top-6 flex flex-row rounded-l-md rounded-br-md drop-shadow-2xl ${
+            className={`absolute max-w-28 md:max-w-44 py-2 pr-2 md:py-0 -right-1 md:right-8 md:top-6 flex flex-row rounded-l-md rounded-br-md drop-shadow-2xl z-10 ${
               selectedChat.id === activeChat.id
                 ? "bg-background2 text-bell"
                 : "bg-bell text-background2"
@@ -131,7 +133,7 @@ export default function OptionsMenu(props): JSX {
           >
             <FontAwesomeIcon
               icon={isUserMuted ? faBell : faBellSlash}
-              className={`py-4 pl-3
+              className={`py-3 md:py-3 pl-2 md:pl-3
                 ${
                   selectedChat.id === activeChat.id
                     ? "text-bell"
@@ -139,7 +141,7 @@ export default function OptionsMenu(props): JSX {
                 }
                   `}
             />
-            <p className="capitalize py-3 px-2 w-auto">
+            <p className="capitalize md:py-3 px-1 md:px-2 w-auto md:text-sm text-xs">
               {isUserMuted ? "Unmute notifications" : "Mute notifications"}
             </p>
           </motion.div>

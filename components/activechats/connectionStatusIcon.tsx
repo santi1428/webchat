@@ -2,53 +2,94 @@ import { AnimatePresence, motion } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircle } from "@fortawesome/free-solid-svg-icons";
 import { useSocketStore } from "../../lib/store";
-import { useMemo } from "react";
+import { Tooltip } from 'react-tooltip'
+import { useEffect, useState } from "react";
+
+
 
 export default function ConnectionStatusIcon(props) {
   const { activeChat } = props;
+  const [onlineUser, setOnlineUser] = useState({
+    userId: activeChat.id,
+    isOnline: false,
+  });
 
   const usersConnectionStatus = useSocketStore(
     (state) => state.usersConnectionStatus
   );
 
-  // const userConnectionStatus = useMemo(() => {
-  //   return usersConnectionStatus.find(
-  //     (userConnectionStatus) => userConnectionStatus.userId === activeChat.id
-  //   );
-  // }, [usersConnectionStatus, activeChat]);
 
-  const userConnectionStatus = () => {
-    console.log(
-      "usersConnectionStatus from connectionStatusIcon.tsx",
-      usersConnectionStatus.find(
-        (userConnectionStatus) => userConnectionStatus.userId === activeChat.id
-      )
-    );
-    return usersConnectionStatus.find(
-      (userConnectionStatus) => userConnectionStatus.userId === activeChat.id
-    );
-  };
+  const timeToRefreshConnectionStatus = useSocketStore(
+    (state) => state.timeToRefreshConnectionStatus
+  );
+
+
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const userConnectionStatus = usersConnectionStatus.find(
+        (userConnectionStatus) => userConnectionStatus.userId == activeChat.id
+      );
+      if (!userConnectionStatus) {
+        console.log("user is offline", userConnectionStatus)
+        setOnlineUser({
+          userId: activeChat.id,
+          isOnline: false,
+        });
+        return;
+      }
+
+      if (Date.now() - userConnectionStatus.time <= timeToRefreshConnectionStatus) {
+        // console.log("user is online")
+        setOnlineUser({
+          userId: activeChat.id,
+          isOnline: true,
+        });
+      } else {
+        // console.log("user is offline")
+        setOnlineUser({
+          userId: activeChat.id,
+          isOnline: false,
+        });
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [setOnlineUser, usersConnectionStatus, activeChat.id, timeToRefreshConnectionStatus, onlineUser.isOnline]);
+
+
+
+
 
   return (
-    <AnimatePresence mode={"wait"}>
+    <AnimatePresence mode={"wait"}
+    >
       <motion.div
-        key={userConnectionStatus?.userId}
-        initial={{ opacity: 0 }}
-        animate={{
-          opacity: 1,
-        }}
-        transition={{ duration: 0.3 }}
+        initial={{ opacity: 1 }}
         exit={{ opacity: 0 }}
+        transition={{ duration: 1 }}
+        key={activeChat.id}
+
       >
-        {userConnectionStatus()?.status === "online" ? (
-          <FontAwesomeIcon
-            icon={faCircle}
-            size={"sm"}
-            className="ml-2 text-green"
-            fade={true}
-          />
+        {onlineUser.isOnline ? (
+          <div>
+            <a
+              data-tooltip-id="status-connection-tooltip"
+              data-tooltip-content="Online"
+              data-tooltip-place="top"
+            >
+
+              <FontAwesomeIcon
+                icon={faCircle}
+                size={"sm"}
+                className="ml-1 md:ml-2 text-green"
+              />
+            </a>
+            <Tooltip id="status-connection-tooltip" />
+          </div>
         ) : null}
       </motion.div>
-    </AnimatePresence>
+
+    </AnimatePresence >
   );
 }

@@ -2,24 +2,20 @@ import Navbar from "./navbar";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/router";
 import toast, { Toaster } from "react-hot-toast";
-import useActiveChats from "./hooks/useActiveChats";
-import useJoinRooms from "./hooks/useJoinRooms";
 import useInitSocket from "./hooks/useInitSocket";
 import useOnNewMessageSocketEvent from "./hooks/useOnNewMessageSocketEvent";
 import ChatMessageToast from "./chat/chatMessageToast";
 import { useChatStore } from "../lib/store";
 import { useSession } from "next-auth/react";
-import { useEffect } from "react";
 import useBroadcastConnectionStatus from "./hooks/useBroadcastConnectionStatus";
 import useOnUserConnectionStatusSocketEvent from "./hooks/useOnUserConnectionStatusSocketEvent";
-import useMutedUsers from "./hooks/useMutedUsers";
 import useSound from "use-sound";
 import { useQueryClient } from "react-query";
+import { useSocketStore } from "../lib/store";
+import useOnUserTypingEvent from "./hooks/useOnUserTypingEvent";
 
 export default function Layout({ children }): JSX.Element {
   const router = useRouter();
-
-  const { status } = useSession();
 
   const queryClient = useQueryClient();
 
@@ -29,11 +25,22 @@ export default function Layout({ children }): JSX.Element {
     volume: 0.25,
   });
 
+  const socket = useSocketStore((state) => state.socket);
+  const socketConnected = useSocketStore((state) => state.socketConnected);
+  const setUsersConnectionStatus = useSocketStore(
+    (state) => state.setUsersConnectionStatus
+  );
+  const usersConnectionStatus = useSocketStore(
+    (state) => state.usersConnectionStatus
+  );
+
+  const { data: session, status } = useSession();
+
   const showMessageToast = (message) => {
     const mutedUsersFromQueryClient =
       queryClient.getQueryData("mutedUsers")?.data;
     if (mutedUsersFromQueryClient.includes(message.senderId)) return;
-    console.log("message from showMessageToast", message);
+    // console.log("message from showMessageToast", message);
     toast.custom(
       // @ts-ignore
       (t) => {
@@ -51,14 +58,21 @@ export default function Layout({ children }): JSX.Element {
 
   useOnNewMessageSocketEvent({ showMessageToast, selectedChat });
 
-  useBroadcastConnectionStatus();
+  useBroadcastConnectionStatus({ session, status, socket, socketConnected });
 
-  useOnUserConnectionStatusSocketEvent();
+  useOnUserConnectionStatusSocketEvent({
+    socket,
+    setUsersConnectionStatus,
+    usersConnectionStatus,
+    socketConnected,
+  });
+
+  useOnUserTypingEvent({ socket, socketConnected });
 
   return (
     <>
       <div className="bg-background3" onClick={(e) => e.type}>
-        <div className="scale-x-90 scale-y-95 rounded-3xl min-h-screen bg-background bg-cover bg-center relative">
+        <div className="md:scale-x-90 md:scale-y-95 sm:scale-x-100 sm:scale-y-100 md:rounded-3xl min-h-screen bg-background bg-cover bg-center relative overflow-y-hidden">
           <Navbar />
           <AnimatePresence mode="wait">
             <motion.div

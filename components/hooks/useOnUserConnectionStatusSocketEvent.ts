@@ -2,23 +2,18 @@ import { useChatStore, useSocketStore } from "../../lib/store";
 import { useSession } from "next-auth/react";
 import { useEffect } from "react";
 
-export default function useOnUserConnectionStatusSocketEvent() {
-  const socket = useSocketStore((state) => state.socket);
-  const socketConnected = useSocketStore((state) => state.socketConnected);
-  const setUsersConnectionStatus = useSocketStore(
-    (state) => state.setUsersConnectionStatus
-  );
-  const usersConnectionStatus = useSocketStore(
-    (state) => state.usersConnectionStatus
-  );
-
+export default function useOnUserConnectionStatusSocketEvent(props) {
   const { status } = useSession();
+  const { socket, socketConnected, setUsersConnectionStatus, usersConnectionStatus } = props;
 
   const addUsersConnectionStatus = (data) => {
-    console.log("Adding user connection status", data);
-    if (!usersConnectionStatus.find((user) => data.userId === user.userId)) {
-      setUsersConnectionStatus([...usersConnectionStatus, data]);
-    }
+    let newUsersConnectionStatus = [...usersConnectionStatus.filter((user) => user.userId !== data.userId), {
+      userId: data.userId,
+      status: data.status,
+      name: data.name,
+      time: Date.now(),
+    }];
+    setUsersConnectionStatus(newUsersConnectionStatus);
   };
 
   useEffect(() => {
@@ -29,14 +24,12 @@ export default function useOnUserConnectionStatusSocketEvent() {
   }, [usersConnectionStatus]);
 
   useEffect(() => {
-    if (socketConnected && status === "authenticated") {
+    if (socketConnected) {
       socket.on("userConnectionStatus", (data) => {
-        console.log(
-          "userConnectionStatus from useOnUserConnectionStatusSocketEvent",
-          data
-        );
-        addUsersConnectionStatus(data);
+        if (status === "authenticated") {
+          addUsersConnectionStatus(data);
+        }
       });
     }
-  }, [socketConnected, status]);
+  }, [socketConnected, status, usersConnectionStatus]);
 }

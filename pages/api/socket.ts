@@ -1,9 +1,9 @@
 import { Server } from "Socket.IO";
 import { authOptions } from "./auth/[...nextauth]";
-import { unstable_getServerSession } from "next-auth";
+import { getServerSession } from "next-auth";
 
 const getLoggedUserID = (req, res) => {
-  const session = unstable_getServerSession(req, res, authOptions);
+  const session = getServerSession(req, res, authOptions);
   return session;
 };
 
@@ -28,7 +28,7 @@ const SocketHandler = async (req, res) => {
       });
 
       socket.on("broadcastConnectionStatus", async (user) => {
-        console.log("Broadcasting connection status for userId", user);
+        console.log(`${user.name} is broadcasting connection status`);
         socket.broadcast.emit("userConnectionStatus", user);
       });
 
@@ -39,6 +39,12 @@ const SocketHandler = async (req, res) => {
         );
         // @ts-ignore
         socket.broadcast.to(message.roomID).emit("newMessage", message);
+      });
+
+      socket.on("typing", async (data) => {
+        console.log("User is typing", data);
+        // @ts-ignore
+        socket.broadcast.to(data.roomID).emit("userTyping", data);
       });
 
       socket.on("disconnecting", () => {

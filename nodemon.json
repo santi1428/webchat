@@ -7,5 +7,5 @@
     "pages/api/**/*"
   ],
   "ext": "js json ts tsx",
-  "exec": "next dev"
+  "exec": "next dev -H 192.168.1.2"
 }

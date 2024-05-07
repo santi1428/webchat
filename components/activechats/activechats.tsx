@@ -36,10 +36,12 @@ export default function ActiveChats(props): JSX {
   }, [JSON.stringify(data?.data), activeChatsFilter]);
 
   return (
-    <div className="min-h-[calc(100vh-73.5px)] max-h-[calc(100vh-73.5px)] col-span-4 flex flex-col border-r border-customBorderColor overflow-y-auto overflow-x-hidden scrollbar scrollbar-thin scrollbar-thumb-bell scrollbar-track-background">
+    <div className="min-h-[calc(100vh-73.5px)] max-h-[calc(100vh-73.5px)] col-span-4 flex flex-col border-r border-customBorderColor overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-thumb-bell scrollbar-track-background">
       <ActiveChatsFilter />
-      <h3 className="ml-7 mt-6 text-bell text-lg font-semibold">Active now</h3>
-      <div className="grid grid-cols-5 justify-items-center mt-5 pl-0 pb-5 border-b border-customBorderColor">
+      <h3 className="hidden md:block ml-7 mt-6 text-bell text-lg font-semibold ">
+        Active now
+      </h3>
+      <div className="hidden md:grid grid-cols-5 justify-items-center mt-5 pl-0 pb-5 border-b border-customBorderColor ">
         <div className="inline-block h-12 w-12 relative">
           <Image
             layout="fill"
@@ -93,7 +95,7 @@ export default function ActiveChats(props): JSX {
           <h3 className="text-bell text-lg font-semibold">
             No active chats found
           </h3>
-          <h3 className="text-bell text-lg font-semibold">
+          <h3 className="text-bell text-sm md:text-lg font-semibold">
             Start a new conversation
           </h3>
         </div>

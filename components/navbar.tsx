@@ -33,8 +33,8 @@ export default function Navbar() {
   });
 
   return (
-    <div className="flex flex-row justify-between pt-4 pb-3 border-b-1 border-customBorderColor ">
-      <div className="ml-5">
+    <div className="flex flex-col md:flex-row items-center space-y-4 md:justify-between pt-4 pb-3 border-b-1 border-customBorderColor">
+      <div className="self-start ml-6 mb-2 md:mb-0 md:ml-5 md:self-auto  md:order-1">
         <Link href="/">
           <a>
             <div className="flex flex-row">
@@ -45,7 +45,7 @@ export default function Navbar() {
                 width={40}
                 alt="Logo"
               />
-              <h5 className="self-center text-xl ml-3 text-bell inline capitalize">
+              <h5 className="self-center text-xl ml-3  text-bell inline capitalize">
                 Open source chat
               </h5>
             </div>
@@ -55,7 +55,7 @@ export default function Navbar() {
       {session && session?.user && <SearchBar />}
 
       {status !== "loading" && (
-        <div className="flex flex-row mr-5">
+        <div className="order-2 md:order-3 flex flex-row mr-5">
           {status === "unauthenticated" ? (
             <>
               <AnimatePresence mode="wait">
@@ -148,7 +148,7 @@ export default function Navbar() {
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.3 }}
                     exit={{ scale: 0 }}
-                    className="flex flex-col mr-10 relative"
+                    className="flex flex-col md:mr-10 relative"
                   >
                     <div className="flex flex-row">
                       <AnimatePresence mode="wait">
@@ -190,7 +190,7 @@ export default function Navbar() {
                             animate={{ opacity: 1, scale: 1 }}
                             transition={{ duration: 0.3 }}
                             exit={{ scale: 0 }}
-                            className="flex flex-col items-center w-72 absolute top-16 px-5 pb-3 rounded-b-2xl right-0 full-rounded bg-background border-b-1 border-l-1 border-r-1 border-customBorderColor text-sm"
+                            className="flex flex-col items-center w-72 z-10 absolute top-16 px-5 pb-3 rounded-b-2xl right-0 full-rounded bg-background border-b-1 border-l-1 border-r-1 border-customBorderColor text-sm"
                           >
                             <motion.div
                               whileHover={{ scale: 1.05 }}
@@ -201,7 +201,7 @@ export default function Navbar() {
                               }}
                               transition={{ duration: 0.1 }}
                               exit={{ scale: 0 }}
-                              className="capitalize w-auto   pt-3 pb-3"
+                              className="capitalize w-auto z-10 pt-3 pb-3"
                             >
                               <Link href="/profile">
                                 <a
