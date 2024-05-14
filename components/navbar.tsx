@@ -201,7 +201,7 @@ export default function Navbar() {
                               }}
                               transition={{ duration: 0.1 }}
                               exit={{ scale: 0 }}
-                              className="capitalize w-auto z-10 pt-3 pb-3"
+                              className="capitalize w-auto  pt-3 pb-3"
                             >
                               <Link href="/profile">
                                 <a

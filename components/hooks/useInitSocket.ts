@@ -1,18 +1,20 @@
-import { useSocketStore } from "../../lib/store";
 import io from "socket.io-client";
 import { useEffect } from "react";
-import { useSession } from "next-auth/react";
+
 import toast from "react-hot-toast";
 
-
-export default function useInitSocket() {
-  const socket = useSocketStore((state) => state.socket);
-  const setSocket = useSocketStore((state) => state.setSocket);
-  const setSocketConnected = useSocketStore(
-    (state) => state.setSocketConnected
-  );
-  const socketConnected = useSocketStore((state) => state.socketConnected);
-  const { status } = useSession();
+export default function useInitSocket(props) {
+  const {
+    socket,
+    socketConnected,
+    setSocket,
+    setSocketConnected,
+    status,
+    isFetched,
+    data,
+    getRoomID,
+    session
+  } = props;
 
   const socketInitializer = async () => {
     await fetch("/api/socket");
@@ -20,39 +22,41 @@ export default function useInitSocket() {
   };
 
   useEffect(() => {
-    if (!socket && !socketConnected && status === "authenticated") {
+    if (!socket && status === "authenticated" && isFetched) {
       socketInitializer();
       // console.log("Socket Initialized");
     }
+  }, [socket, status, isFetched]);
 
+  useEffect(() => {
     if (socket) {
       socket.on("connect", (s) => {
-        // console.log("connected");
         setSocketConnected(true);
-        // console.log("connected");
+        socket.emit(
+          "joinRooms",
+          data?.data?.map((activeChat) =>
+            getRoomID(session.user.id, activeChat.id)
+          )
+        );
+      });
+
+      socket.on("reconnect", () => {
+        toast.success("Reconnected to the server.", {
+          duration: 10000
+        });
+
       });
 
       socket.on("disconnect", () => {
-        // console.log("disconnected");
         setSocketConnected(false);
       });
-
-    }
-  }, [socket, status, setSocketConnected, socketConnected]);
-
-  useEffect(() => {
-    if (socketConnected){
-      toast.success(`Connected to server status:${status} socket:${socket}`, {
-        duration: 10000,
-      });
-    }else{
-      toast.error(`Disconnected from server status:${status} socket:${socket}`, {
-        duration: 10000,
-      });
     }
 
-  }, [socketConnected]);
-
-
-
+    return () => {
+      if (socket) {
+        socket.off("connect");
+        socket.off("disconnect");
+      }
+    };
+  }, [socket]);
 }

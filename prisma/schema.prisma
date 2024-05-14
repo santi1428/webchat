@@ -25,6 +25,8 @@ model User {
   receiver          Message[] @relation("Receiver")
   user              MutedUser[]    @relation("User")
   mutedUser         MutedUser[]    @relation("MutedUser")
+  user2             BlockedUser[]  @relation("User")
+  blockedUser       BlockedUser[]  @relation("BlockedUser")
   @@map(name: "users")
 }
 
@@ -50,3 +52,16 @@ model MutedUser {
   mutedUser         User      @relation(name: "MutedUser", fields: [mutedUserId], references: [id])
   @@map(name: "muted_users")
 }
+
+
+model BlockedUser {
+  id                BigInt    @default(autoincrement()) @id
+  createdAt         DateTime  @default(now()) @map(name: "created_at")
+  updatedAt         DateTime  @updatedAt @map(name: "updated_at")
+  userId            String
+  blockedUserId     String
+  user              User      @relation(name: "User", fields: [userId], references: [id])
+  blockedUser       User      @relation(name: "BlockedUser", fields: [blockedUserId], references: [id])
+  @@map(name: "blocked_users")
+}
+

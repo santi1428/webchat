@@ -29,7 +29,7 @@ export default function UsersList(props) {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.2 }}
             exit={{ scale: 0 }}
-            className="absolute left-1/2 text-background2 text-center -mb-3 -mt-1 z-50"
+            className="absolute left-1/2 text-background2 text-center -mb-3 -mt-1 z-10"
           >
             <FontAwesomeIcon icon={faCaretUp} size={"2xl"} />
           </motion.div>
@@ -41,7 +41,7 @@ export default function UsersList(props) {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.2 }}
             exit={{ scale: 0 }}
-            className="absolute top-14 bg-background2 rounded-b-2xl rounded-t-xl w-full z-40"
+            className="absolute top-14 bg-background2 rounded-b-2xl rounded-t-xl w-full z-10"
           >
             <ul className="px-4 pb-4" ref={usersListRef}>
               {data?.length === 0 && search.length > 0 && (

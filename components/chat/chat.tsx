@@ -67,11 +67,14 @@ export default function Chat(): JSX.Element {
 
   const scrollParentRef = useRef<HTMLDivElement>(null);
 
+
   const handleScroll = (e) => {
-    // check if scroll is at bottom
-    if (e.target.scrollTop + e.target.offsetHeight === e.target.scrollHeight) {
-      setScrollMessagesToBottom(false);
-    }
+    setScrollMessagesToBottom(false);
+
+    // // check if scroll is at bottom
+    // if (e.target.scrollTop + e.target.offsetHeight === e.target.scrollHeight) {
+    //   window.scrollBy(0, 10);
+    // }
   };
 
   return (
@@ -114,7 +117,6 @@ export default function Chat(): JSX.Element {
             {/*Chat*/}
             {/* <div className="flex flex-col h-[calc(100vh-100vh*0.5)] md:h-[calc(100vh-145px)]"> */}
             <div className="flex flex-col h-96 md:h-[calc(100vh-145px)]">
-
               <div
                 ref={scrollParentRef}
                 onScroll={handleScroll}

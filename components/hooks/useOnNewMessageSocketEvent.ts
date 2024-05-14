@@ -1,26 +1,25 @@
-import { useEffect, useCallback, useState } from "react";
-import { useNotificationStore, useSocketStore } from "../../lib/store";
-import { useSession } from "next-auth/react";
+import { useEffect, useCallback } from "react";
 import { useRouter } from "next/router";
-import { useQueryClient } from "react-query";
 
 export default function useOnNewMessageSocketEvent(props) {
-  const { selectedChat } = props;
-  const socket = useSocketStore((state) => state.socket);
-  const socketConnected = useSocketStore((state) => state.socketConnected);
-  const setScrollMessagesToBottom = useNotificationStore(
-    (state) => state.setScrollMessagesToBottom
-  );
+  const {
+    selectedChat,
+    socket,
+    socketConnected,
+    setScrollMessagesToBottom,
+    queryClient,
+    mutedUsers
+  } = props;
 
-  const { status } = useSession();
-  const { showMessageToast } = props;
+  const { showMessageToast, session, status } = props;
   const router = useRouter();
-
-  const queryClient = useQueryClient();
 
   const showChatMessage = useCallback(
     (message) => {
-      if (selectedChat.id !== message.senderId || router.asPath !== "/") {
+      if (
+        (selectedChat.id !== message.senderId || router.asPath !== "/") &&
+        session.user.id !== message.senderId
+      ) {
         showMessageToast(message);
       }
     },
@@ -28,16 +27,24 @@ export default function useOnNewMessageSocketEvent(props) {
   );
 
   useEffect(() => {
-    if (socketConnected && status === "authenticated") {
+    if (socketConnected && socket && status === "authenticated") {
+      // console.log("socket connected", socketConnected);
+      // console.log("status", status);
       socket.on("newMessage", (message) => {
-        showChatMessage(message);
+        console.log("newMessage", message);
+        if (!mutedUsers.data.data.includes(message.senderId)) {
+          showChatMessage(message);
+        }    
         queryClient.invalidateQueries(["messages", message.senderId]);
+        queryClient.invalidateQueries(["messages", selectedChat.id]);
         queryClient.invalidateQueries("activeChats");
         setScrollMessagesToBottom(true);
       });
-      return () => {
-        socket.off("newMessage");
-      };
     }
-  }, [socketConnected, router.asPath, selectedChat, socket]);
+    return () => {
+      if (socket) {
+        socket.off("newMessage");
+      }
+    };
+  }, [socketConnected, router.asPath, selectedChat, socket, mutedUsers]);
 }

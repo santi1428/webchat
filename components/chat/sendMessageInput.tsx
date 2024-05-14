@@ -69,11 +69,11 @@ export default function SendMessageInput(props): JSX {
     {
       onSuccess: async () => {
         if (!checkIfChatIsAlreadyInActiveChats()) {
-          await queryClient.invalidateQueries("activeChats");
           socket.emit("joinRooms", [
             getRoomID(session.user.id, selectedChatUser.id),
           ]);
         }
+        await queryClient.invalidateQueries("activeChats");
         await queryClient.invalidateQueries(["messages", selectedChatUser.id]);
         sendSocketMessage();
         setScrollMessagesToBottom(true);
@@ -89,6 +89,7 @@ export default function SendMessageInput(props): JSX {
     mutate();
 
     setMessage("");
+    setFocusedMessageInput(true);
   };
 
   const emitTypingEvent = () => {
@@ -112,7 +113,7 @@ export default function SendMessageInput(props): JSX {
   return (
     <form
       onSubmit={sendMessage}
-      className="flex flex-row w-12/12 px-6 md:px-16 border-customBorderColor md:pb-10 md:pt-5 fixed md:relative"
+      className="flex flex-row w-12/12 px-6 md:px-16 border-customBorderColor md:pb-10 md:pt-5 md:relative"
     >
       <motion.input
         ref={inputRef}

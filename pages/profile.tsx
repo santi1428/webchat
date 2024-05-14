@@ -19,7 +19,6 @@ import * as Yup from "yup";
 import isEqual from "lodash.isequal";
 import toast from "react-hot-toast";
 import useActiveChats from "../components/hooks/useActiveChats";
-import useJoinRooms from "../components/hooks/useJoinRooms";
 
 const validationSchema = Yup.object({
   name: Yup.string()
@@ -51,8 +50,6 @@ const reloadSession = () => {
 export default function Profile() {
   const router = useRouter();
   const { data: session, status } = useSession();
-  const { data, isFetched } = useActiveChats({ status });
-  useJoinRooms({ data, isFetched });
 
   const formik = useFormik({
     initialValues: {

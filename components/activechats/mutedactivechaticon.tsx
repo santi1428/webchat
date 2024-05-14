@@ -27,7 +27,7 @@ export default function MutedActiveChatIcon(props): JSX {
         transition={{ duration: 0.2 }}
         exit={{ opacity: 0, scale: 0 }}
         key={isUserMuted ? 1 : 0}
-        className="ml-2"
+        className="ml-2 self-center"
       >
         {isUserMuted ? (
           <FontAwesomeIcon

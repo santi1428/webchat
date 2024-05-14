@@ -17,7 +17,6 @@ const SocketHandler = async (req, res) => {
     // @ts-ignore
     io.on("connect", (socket) => {
       socket.on("joinRooms", async (rooms) => {
-        console.log("This is the test of nodemon");
         for (const room of rooms) {
           if (!socket.rooms.has(room)) {
             console.log("Joining room " + room);
@@ -28,7 +27,7 @@ const SocketHandler = async (req, res) => {
       });
 
       socket.on("broadcastConnectionStatus", async (user) => {
-        console.log(`${user.name} is broadcasting connection status`);
+        // console.log(`${user.name} is broadcasting connection status`);
         socket.broadcast.emit("userConnectionStatus", user);
       });
 
@@ -38,7 +37,7 @@ const SocketHandler = async (req, res) => {
           "to room: " + message.roomID
         );
         // @ts-ignore
-        socket.broadcast.to(message.roomID).emit("newMessage", message);
+        io.to(message.roomID).emit("newMessage", message);
       });
 
       socket.on("typing", async (data) => {

@@ -9,10 +9,14 @@ import { useChatStore } from "../lib/store";
 import { useSession } from "next-auth/react";
 import useBroadcastConnectionStatus from "./hooks/useBroadcastConnectionStatus";
 import useOnUserConnectionStatusSocketEvent from "./hooks/useOnUserConnectionStatusSocketEvent";
-import useSound from "use-sound";
 import { useQueryClient } from "react-query";
 import { useSocketStore } from "../lib/store";
 import useOnUserTypingEvent from "./hooks/useOnUserTypingEvent";
+import useActiveChats from "./hooks/useActiveChats";
+import useMutedUsers from "./hooks/useMutedUsers";
+import { useNotificationStore } from "../lib/store";
+import { useRef } from "react";
+import Modal from 'react-modal';
 
 export default function Layout({ children }): JSX.Element {
   const router = useRouter();
@@ -21,9 +25,15 @@ export default function Layout({ children }): JSX.Element {
 
   const selectedChat = useChatStore((state) => state.selectedChat);
 
-  const [play] = useSound("/sound/message-notification-sound.mp3", {
-    volume: 0.25,
-  });
+  const audioRef = useRef();
+
+  const playAudio = () => {
+    if (audioRef.current) {
+      audioRef.current.play();
+    } else {
+      console.log("AUDIO REF NOT FOUND");
+    }
+  };
 
   const socket = useSocketStore((state) => state.socket);
   const socketConnected = useSocketStore((state) => state.socketConnected);
@@ -33,13 +43,41 @@ export default function Layout({ children }): JSX.Element {
   const usersConnectionStatus = useSocketStore(
     (state) => state.usersConnectionStatus
   );
+  const activeUsers = useSocketStore((state) => state.activeUsers);
+  const setActiveUsers = useSocketStore((state) => state.setActiveUsers);
+  const timeToRefreshConnectionStatus = useSocketStore(
+    (state) => state.timeToRefreshConnectionStatus
+  );
+
+  const usersTypingStatus = useSocketStore((state) => state.usersTypingStatus);
+  const setUsersTypingStatus = useSocketStore(
+    (state) => state.setUsersTypingStatus
+  );
+  const setActiveUsersTyping = useSocketStore(
+    (state) => state.setActiveUsersTyping
+  );
+  const activeUsersTyping = useSocketStore((state) => state.activeUsersTyping);
+  const timeToRefreshTypingStatus = useSocketStore(
+    (state) => state.timeToRefreshTypingStatus
+  );
 
   const { data: session, status } = useSession();
 
+  const setSocket = useSocketStore((state) => state.setSocket);
+  const setSocketConnected = useSocketStore(
+    (state) => state.setSocketConnected
+  );
+  const getRoomID = useChatStore((state) => state.getRoomID);
+
+  const mutedUsers = useMutedUsers({ status });
+
+  const setScrollMessagesToBottom = useNotificationStore(
+    (state) => state.setScrollMessagesToBottom
+  );
+
   const showMessageToast = (message) => {
-    const mutedUsersFromQueryClient =
-      queryClient.getQueryData("mutedUsers")?.data;
-    if (mutedUsersFromQueryClient.includes(message.senderId)) return;
+    playAudio();
+
     // console.log("message from showMessageToast", message);
     toast.custom(
       // @ts-ignore
@@ -51,12 +89,33 @@ export default function Layout({ children }): JSX.Element {
         duration: 5000,
       }
     );
-    play();
   };
 
-  useInitSocket();
+  const { data, isFetched } = useActiveChats({ status });
 
-  useOnNewMessageSocketEvent({ showMessageToast, selectedChat });
+  useInitSocket({
+    socket,
+    setSocket,
+    setSocketConnected,
+    socketConnected,
+    status,
+    data,
+    isFetched,
+    getRoomID,
+    session,
+  });
+
+  useOnNewMessageSocketEvent({
+    showMessageToast,
+    selectedChat,
+    session,
+    status,
+    socket,
+    socketConnected,
+    setScrollMessagesToBottom,
+    queryClient,
+    mutedUsers,
+  });
 
   useBroadcastConnectionStatus({ session, status, socket, socketConnected });
 
@@ -65,12 +124,27 @@ export default function Layout({ children }): JSX.Element {
     setUsersConnectionStatus,
     usersConnectionStatus,
     socketConnected,
+    activeUsers,
+    setActiveUsers,
+    timeToRefreshConnectionStatus,
+    session,
+    status,
   });
 
-  useOnUserTypingEvent({ socket, socketConnected });
+  useOnUserTypingEvent({
+    socket,
+    socketConnected,
+    status,
+    session,
+    usersTypingStatus,
+    setUsersTypingStatus,
+    setActiveUsersTyping,
+    timeToRefreshTypingStatus,
+    activeUsersTyping,
+  });
 
   return (
-    <>
+    <div id="rootModal">
       <div className="bg-background3" onClick={(e) => e.type}>
         <div className="md:scale-x-90 md:scale-y-95 sm:scale-x-100 sm:scale-y-100 md:rounded-3xl min-h-screen bg-background bg-cover bg-center relative overflow-y-hidden">
           <Navbar />
@@ -114,6 +188,10 @@ export default function Layout({ children }): JSX.Element {
           },
         }}
       />
-    </>
+      <audio ref={audioRef} controls className="hidden">
+        <source src="/sound/message-notification-sound.mp3" type="audio/mp3" />
+        Your browser does not support the audio element.
+      </audio>
+    </div>
   );
 }

@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { unstable_getServerSession } from "next-auth";
+import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
 import { prisma } from "../../../lib/prisma";
 import { User } from "../../../utils/types";
@@ -48,7 +48,7 @@ export default async function handler(
   res: NextApiResponse
 ) {
   if (req.method == "GET") {
-    const session = await unstable_getServerSession(req, res, authOptions);
+    const session = await getServerSession(req, res, authOptions);
     if (session) {
       const { search } = req.query;
       console.log("search parameter", search);

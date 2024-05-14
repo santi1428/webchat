@@ -2,7 +2,7 @@ import dayjs from "dayjs";
 import Image from "next/image";
 import { useChatStore } from "../../lib/store";
 import { AnimatePresence, motion } from "framer-motion";
-import OptionsMenu from "./optionsmenu";
+import OptionsMenu from "./optionsmenu/optionsmenu";
 import MutedActiveChatIcon from "./mutedactivechaticon";
 import ConnectionStatusIcon from "./connectionStatusIcon";
 import TypingStatusText from "./typingStatusText";
@@ -30,7 +30,7 @@ export default function ActiveChat(props): JSX {
       }}
       className={`flex flex-col py-3 md:flex-row md:py-4 cursor-pointer ${
         activeChat.id === selectedChat.id ? "bg-bell text-background2" : ""
-      }`}
+      } `}
     >
       <div className="self-center md:self-auto md:ml-6 inline-block h-10  w-10 md:h-12 md:w-12 relative">
         <Image

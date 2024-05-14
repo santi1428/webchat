@@ -1,6 +1,5 @@
 import { create } from "zustand";
-import { mountStoreDevtool } from 'simple-zustand-devtools';
-
+import { mountStoreDevtool } from "simple-zustand-devtools";
 
 const initialSelectedChatState = {
   id: "",
@@ -28,7 +27,6 @@ const useChatStore = create((set) => ({
   setActiveChatsFilter: (activeChatsFilter) =>
     set((state) => ({ activeChatsFilter: activeChatsFilter })),
   reset: () => set((state) => ({ selectedChat: initialSelectedChatState })),
-
 }));
 
 const useNotificationStore = create((set) => ({
@@ -59,22 +57,32 @@ const useSocketStore = create((set) => ({
   setHasJoinedRooms: (hasJoinedRooms: boolean) => {
     set((state) => ({ hasJoinedRooms: hasJoinedRooms }));
   },
+
   usersConnectionStatus: [],
   setUsersConnectionStatus: (newUsersConnectionStatus) => {
     set((state) => ({ usersConnectionStatus: newUsersConnectionStatus }));
+  },
+  activeUsers: [],
+  setActiveUsers: (newActiveUsers) => {
+    set((state) => ({ activeUsers: newActiveUsers }));
   },
   usersTypingStatus: [],
   setUsersTypingStatus: (newUsersTypingStatus) => {
     set((state) => ({ usersTypingStatus: newUsersTypingStatus }));
   },
-  timeToRefreshConnectionStatus: 10000,
+  activeUsersTyping: [],
+  setActiveUsersTyping: (newActiveUsersTyping) => {
+    set((state) => ({ activeUsersTyping: newActiveUsersTyping }));
+  },
+  timeToRefreshConnectionStatus: 5000,
   timeToRefreshTypingStatus: 1000,
+
 }));
 
-if (process.env.NODE_ENV === 'development') {
-  mountStoreDevtool('ChatStore', useChatStore );
-  mountStoreDevtool('NotificationStore', useNotificationStore );
-  mountStoreDevtool('SocketStore', useSocketStore );
+if (process.env.NODE_ENV === "development") {
+  mountStoreDevtool("ChatStore", useChatStore);
+  mountStoreDevtool("NotificationStore", useNotificationStore);
+  mountStoreDevtool("SocketStore", useSocketStore);
 }
 
 export { useChatStore, useNotificationStore, useSocketStore };

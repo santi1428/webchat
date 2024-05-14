@@ -10,6 +10,7 @@ import { AnimatePresence, motion } from "framer-motion";
 export default function ActiveChats(props): JSX {
   const { data: session, status } = useSession();
   const activeChatsFilter = useChatStore((state) => state.activeChatsFilter);
+  const activeUsers = useSocketStore((state) => state.activeUsers);
 
   const { data } = useActiveChats({ status });
 
@@ -17,15 +18,10 @@ export default function ActiveChats(props): JSX {
     return [...new Map(data?.data.map((item) => [item["id"], item])).values()]
       .filter(
         (chat) =>
-          chat.id !== session?.user?.id &&
-          (chat.lastMessage?.content
-            .toLowerCase()
-            .includes(activeChatsFilter.toLowerCase()) ||
-            chat.name.toLowerCase().includes(activeChatsFilter.toLowerCase()) ||
-            chat.lastName
-              .toLowerCase()
-              .includes(activeChatsFilter.toLowerCase()))
+          chat.name.toLowerCase().includes(activeChatsFilter.toLowerCase()) ||
+          chat.lastName.toLowerCase().includes(activeChatsFilter.toLowerCase())
       )
+      .filter((chat) => chat.id !== session?.user?.id)
       .slice(0)
       .sort((a, b) => {
         return (
@@ -41,16 +37,56 @@ export default function ActiveChats(props): JSX {
       <h3 className="hidden md:block ml-7 mt-6 text-bell text-lg font-semibold ">
         Active now
       </h3>
-      <div className="hidden md:grid grid-cols-5 justify-items-center mt-5 pl-0 pb-5 border-b border-customBorderColor ">
-        <div className="inline-block h-12 w-12 relative">
+      <div className="hidden md:flex md:flex-row justify-items-start mt-5 ml-10 pl-0 pb-5 border-b border-customBorderColor ">
+        <AnimatePresence>
+          {activeUsers.length > 0 &&
+            activeUsers
+              .sort((a, b) => a.name.localeCompare(b.name))
+              .map((activeUser) => (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0 }}
+                  transition={{ duration: 0.5 }}
+                  key={activeUser.userId}
+                  className="inline-block h-12 w-12 relative ml-16"
+                >
+                  <Image
+                    layout="fill"
+                    src={
+                      activeUser.profilePhotoName.includes("http")
+                        ? activeUser.profilePhotoName
+                        : "/images/" + activeUser.profilePhotoName
+                    }
+                    className="rounded-full"
+                    alt="NoImage"
+                  />
+                </motion.div>
+              ))}
+
+          {activeUsers.length == 0 && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5 }}
+              className="w-full flex flex-row justify-center items-center"
+            >
+              <p className="text-bell text-base font-bold">
+                No active users found
+              </p>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* <div className="inline-block h-12 w-12 relative">
           <Image
             layout="fill"
             src="/images/selfie1.webp"
             className="rounded-full"
             alt="NoImage"
           />
-        </div>
-        <div className="mr-3 inline-block h-12 w-12 relative">
+        </div> */}
+        {/* <div className="mr-3 inline-block h-12 w-12 relative">
           <Image
             layout="fill"
             src="/images/selfie2.jpeg"
@@ -81,7 +117,7 @@ export default function ActiveChats(props): JSX {
             className="rounded-full"
             alt="NoImage"
           />
-        </div>
+        </div> */}
       </div>
 
       {/*Seccion de lista de chats*/}

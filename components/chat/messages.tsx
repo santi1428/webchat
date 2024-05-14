@@ -20,14 +20,14 @@ export default function Messages(props): JSX {
     <>
       {messages?.length === 0 || messages === null ? (
         <motion.div
-          className="flex flex-col justify-center items-center h-full"
+          className="h-96 md:h-[calc(100vh-300px)] flex flex-col justify-center items-center"
           key={messages?.length}
           initial={{ opacity: 0, scale: 0 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.2 }}
           exit={{ scale: 0 }}
         >
-          <div className="flex flex-row  cursor-pointer text-bell text-md md:text-lg self-center">
+          <div className="cursor-pointer text-bell text-md md:text-lg self-center">
             <span
               className="underline"
               onClick={() => {
