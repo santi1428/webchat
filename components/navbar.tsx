@@ -19,7 +19,7 @@ import useOnClickOutside from "./hooks/useOnClickOutside";
 
 export default function Navbar() {
   const [showDropdownMenu, setShowDropdownMenu] = useState(true);
-  const { data: session, status } = useSession();
+  const { data: session, status } = useSession();  
   const userDropDownMenuRef = useRef();
 
   const router = useRouter();
@@ -28,9 +28,6 @@ export default function Navbar() {
     setShowDropdownMenu(false);
   }, [router.asPath]);
 
-  useOnClickOutside(userDropDownMenuRef, () => {
-    setShowDropdownMenu(false);
-  });
 
   return (
     <div className="flex flex-col md:flex-row items-center space-y-4 md:justify-between pt-4 pb-3 border-b-1 border-customBorderColor">
@@ -148,7 +145,7 @@ export default function Navbar() {
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.3 }}
                     exit={{ scale: 0 }}
-                    className="flex flex-col md:mr-10 relative"
+                    className="flex flex-col md:mr-10 relative z-20"
                   >
                     <div className="flex flex-row">
                       <AnimatePresence mode="wait">
@@ -181,16 +178,15 @@ export default function Navbar() {
                       </div>
 
                       {/*Dropdown Menu*/}
-                      <AnimatePresence mode="wait">
                         {showDropdownMenu && (
-                          <motion.div
+                          <div
                             key="profile"
-                            ref={userDropDownMenuRef}
-                            initial={{ opacity: 0, scale: 0 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            transition={{ duration: 0.3 }}
-                            exit={{ scale: 0 }}
-                            className="flex flex-col items-center w-72 z-10 absolute top-16 px-5 pb-3 rounded-b-2xl right-0 full-rounded bg-background border-b-1 border-l-1 border-r-1 border-customBorderColor text-sm"
+                            // ref={userDropDownMenuRef}
+                            // initial={{ opacity: 0, scale: 0 }}
+                            // animate={{ opacity: 1, scale: 1 }}
+                            // transition={{ duration: 0.3 }}
+                            // exit={{ scale: 0 }}
+                            className="absolute z-50 flex flex-col items-center w-72 top-16 px-5 pb-3 rounded-b-2xl right-0 full-rounded bg-background border-b-1 border-l-1 border-r-1 border-customBorderColor text-sm"
                           >
                             <motion.div
                               whileHover={{ scale: 1.05 }}
@@ -201,13 +197,14 @@ export default function Navbar() {
                               }}
                               transition={{ duration: 0.1 }}
                               exit={{ scale: 0 }}
-                              className="capitalize w-auto  pt-3 pb-3"
+                              className="relative capitalize w-auto  pt-3 pb-3"
                             >
                               <Link href="/profile">
                                 <a
-                                  className="text-bell text-center w-auto font-semibold capitalize  pb-3"
+                                  className=" text-bell text-center w-auto font-semibold capitalize  pb-3"
                                   onClick={() => {
                                     setShowDropdownMenu(false);
+                                    console.log("Clicking edit my profile.")
                                   }}
                                 >
                                   edit my profile
@@ -239,9 +236,8 @@ export default function Navbar() {
                                 Sign Out
                               </span>
                             </motion.button>
-                          </motion.div>
+                          </div>
                         )}
-                      </AnimatePresence>
                     </div>
                     <Link href="/profile">
                       <a className="text-xs text-bell">{session.user.email}</a>

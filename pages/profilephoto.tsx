@@ -1,4 +1,4 @@
-import { unstable_getServerSession } from "next-auth";
+import { getServerSession } from "next-auth";
 import { authOptions } from "./api/auth/[...nextauth]";
 import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
@@ -88,11 +88,6 @@ export default function ProfilePhoto() {
       setUploadingProfilePhoto(false);
     }
   };
-
-  console.log(
-    "latest profile photo name session",
-    session?.user?.profilePhotoName
-  );
 
   return (
     <>
@@ -211,7 +206,7 @@ export default function ProfilePhoto() {
 }
 
 export async function getServerSideProps(context) {
-  const session = await unstable_getServerSession(
+  const session = await getServerSession(
     context.req,
     context.res,
     authOptions as any

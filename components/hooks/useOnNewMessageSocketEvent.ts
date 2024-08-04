@@ -18,7 +18,7 @@ export default function useOnNewMessageSocketEvent(props) {
     (message) => {
       if (
         (selectedChat.id !== message.senderId || router.asPath !== "/") &&
-        session.user.id !== message.senderId
+        session?.user?.id !== message.senderId
       ) {
         showMessageToast(message);
       }

@@ -69,7 +69,7 @@ export default async function handler(
             return res.status(422).json(["This email is already in use."]);
           }
         }
-        await updateUser(session.user.id, user);
+        await updateUser(session?.user?.id, user);
         return res.status(200).end();
       }else{
         return res.status(400).end();

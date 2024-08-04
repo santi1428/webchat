@@ -4,7 +4,25 @@ import { authOptions } from "../auth/[...nextauth]";
 import { prisma } from "../../../lib/prisma";
 import { User } from "../../../utils/types";
 
-const getUsers = async (search: String): Promise<User[]> => {
+const getUsers = async (
+  search: String,
+  userId: String | null
+): Promise<User[]> => {
+  console.log("userId", userId);
+
+  const blockedUsers = await prisma.blockedUser.findMany({
+    where: {
+      userId,
+    },
+    select: {
+      blockedUserId: true,
+    },
+  });
+
+  let blockedUserIds = blockedUsers.map(
+    (blockedUser) => blockedUser.blockedUserId
+  );
+
   const users = await prisma.user.findMany({
     where: {
       OR: [
@@ -27,6 +45,13 @@ const getUsers = async (search: String): Promise<User[]> => {
           },
         },
       ],
+      AND: [
+        {
+          id: {
+            notIn: blockedUserIds,
+          },
+        },
+      ],
     },
     select: {
       id: true,
@@ -45,14 +70,15 @@ const getUsers = async (search: String): Promise<User[]> => {
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
+  session
 ) {
   if (req.method == "GET") {
     const session = await getServerSession(req, res, authOptions);
     if (session) {
       const { search } = req.query;
       console.log("search parameter", search);
-      const users: User[] = await getUsers(search);
+      const users: User[] = await getUsers(search, session?.user?.id);
       return res.status(200).send(users);
     } else {
       return res.status(401).send("ListUser not authorized.");

@@ -6,9 +6,9 @@ import { authOptions } from "../auth/[...nextauth]";
 const handleGet = async (req, res, session) => {
   const { receiverId, cursor } = req.query;
   console.log("receiverId", receiverId);
-  console.log("senderId", session.user.id);
+  console.log("senderId", session?.user?.id);
   console.log("cursor", parseInt(cursor));
-  const senderId = session.user.id;
+  const senderId = session?.user?.id;
   const messages = await prisma.message.findMany({
     take: 10,
     skip: cursor ? 1 : 0,

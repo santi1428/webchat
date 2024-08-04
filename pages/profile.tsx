@@ -4,21 +4,16 @@ import axios, { AxiosError } from "axios";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { unstable_getServerSession } from "next-auth";
+import { getServerSession } from "next-auth";
 import { authOptions } from "./api/auth/[...nextauth]";
 import { signIn, useSession } from "next-auth/react";
 import { useEffect } from "react";
 import Image from "next/image";
-import {
-  faLock,
-  faRefresh,
-  faUserPlus,
-} from "@fortawesome/free-solid-svg-icons";
+import { faLock, faRefresh, faBan } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import * as Yup from "yup";
 import isEqual from "lodash.isequal";
 import toast from "react-hot-toast";
-import useActiveChats from "../components/hooks/useActiveChats";
 
 const validationSchema = Yup.object({
   name: Yup.string()
@@ -233,6 +228,17 @@ export default function Profile() {
             <FontAwesomeIcon className="mr-2" icon={faLock} />{" "}
             <span>Change Password</span>
           </motion.button>
+          <motion.button
+            type="submit"
+            className="rounded-full text-center bg-bell text-base font-bold py-3 px-3 w-full mt-6"
+            whileHover={{ scale: 1.05 }}
+            onClick={() => {
+              router.push("/blockedusers");
+            }}
+          >
+            <FontAwesomeIcon className="mr-2" icon={faBan} />
+            <span>Blocked Users</span>
+          </motion.button>
         </form>
       </div>
     </>
@@ -240,7 +246,7 @@ export default function Profile() {
 }
 
 export async function getServerSideProps(context) {
-  const session = await unstable_getServerSession(
+  const session = await getServerSession(
     context.req,
     context.res,
     authOptions as any

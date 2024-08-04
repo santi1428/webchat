@@ -1,8 +1,9 @@
 import Head from "next/head";
-import { unstable_getServerSession } from "next-auth";
+import { getServerSession } from "next-auth";
 import { authOptions } from "./api/auth/[...nextauth]";
 import Chat from "../components/chat/chat";
 import ActiveChats from "../components/activechats/activechats";
+import BlockUserModal from "../components/blockUserModal";
 
 export default function Home() {
   return (
@@ -17,13 +18,14 @@ export default function Home() {
         <ActiveChats />
         {/*right side*/}
         <Chat />
+        <BlockUserModal />
       </div>
     </>
   );
 }
 
 export async function getServerSideProps(context) {
-  const session = await unstable_getServerSession(
+  const session = await getServerSession(
     context.req,
     context.res,
     authOptions as any

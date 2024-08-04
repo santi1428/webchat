@@ -9,7 +9,6 @@ export default function Message(props) {
       {message.senderId === selectedChatUser.id ? (
         <AnimatePresence mode={"wait"}>
           <motion.div
-            key={message.id}
             initial={{ opacity: 0, x: 100 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{
@@ -18,7 +17,6 @@ export default function Message(props) {
               stiffness: 90,
               delay: 0.1,
             }}
-            exit={{ scale: 0 }}
             className="flex flex-row justify-end mt-7 mr-6"
           >
             <div className="flex flex-col relative">

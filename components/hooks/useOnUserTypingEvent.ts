@@ -16,7 +16,7 @@ export default function useOnUserTypingEvent(props) {
     let newUsersTypingStatus = [
       ...usersTypingStatus.filter(
         (user) =>
-          user.userId !== data.senderId && user.userId !== session.user.id
+          user.userId !== data.senderId && user.userId !== session?.user?.id
       ),
       {
         userId: data.senderId,

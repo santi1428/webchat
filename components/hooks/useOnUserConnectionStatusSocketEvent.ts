@@ -15,7 +15,7 @@ export default function useOnUserConnectionStatusSocketEvent(props) {
   const addUsersConnectionStatus = (data) => {
     let newUsersConnectionStatus = [
       ...usersConnectionStatus.filter(
-        (user) => user.userId !== data.userId && user.userId !== session.user.id
+        (user) => user.userId !== data.userId && user.userId !== session?.user?.id
       ),
       {
         userId: data.userId,
@@ -67,7 +67,7 @@ export default function useOnUserConnectionStatusSocketEvent(props) {
       let newActiveUsers = [];
       usersConnectionStatus.forEach((userConnectionStatus) => {
         if (
-          userConnectionStatus.userId !== session.user.id &&
+          userConnectionStatus.userId !== session?.user?.id &&
           Date.now() - userConnectionStatus.time < timeToRefreshConnectionStatus
         ) {
           newActiveUsers.push({

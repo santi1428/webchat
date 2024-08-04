@@ -10,7 +10,7 @@ const addMutedUser = async (
 ) => {
   console.log("muting user");
   const mutedUserId = req.body.mutedUserId;
-  const userId = session.user.id;
+  const userId = session?.user?.id;
   await prisma.mutedUser.create({
     data: {
       mutedUserId,
@@ -27,7 +27,7 @@ const deleteMutedUser = async (
 ) => {
   console.log("unmuting user");
   const mutedUserId = req.body.mutedUserId;
-  const userId = session.user.id;
+  const userId = session?.user?.id;
   await prisma.mutedUser.deleteMany({
     where: {
       mutedUserId,
@@ -43,7 +43,7 @@ const getMutedUsers = async (
   session
 ) => {
   console.log("getting muted users");
-  const userId = session.user.id;
+  const userId = session?.user?.id;
   const mutedUsers = await prisma.mutedUser.findMany({
     where: {
       userId,

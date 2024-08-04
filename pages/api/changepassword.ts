@@ -69,10 +69,10 @@ export default async function handler(
     if (session) {
       const fieldsValidation = await validateFields(req.body);
       if (fieldsValidation[0]) {
-        const userPassword = await getUserPasswordByID(session.user.id);
+        const userPassword = await getUserPasswordByID(session?.user?.id);
         if (await comparePassword(req.body.oldPassword, userPassword)) {
           const newPasswordHash = await hashPassword(req.body.newPassword);
-          await updateUserPasswordByID(session.user.id, newPasswordHash);
+          await updateUserPasswordByID(session?.user?.id, newPasswordHash);
           return res.status(204).end();
         } else {
           return res.status(422).json(["The password entered is not correct."]);

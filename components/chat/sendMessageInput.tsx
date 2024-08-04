@@ -41,8 +41,8 @@ export default function SendMessageInput(props): JSX {
 
   const sendSocketMessage = () => {
     socket.emit("sendMessage", {
-      roomID: getRoomID(session.user.id, selectedChatUser.id),
-      senderId: session.user.id,
+      roomID: getRoomID(session?.user?.id, selectedChatUser.id),
+      senderId: session?.user?.id,
       message,
       senderProfilePhotoName: session.user.profilePhotoName,
       senderName: session.user.name,
@@ -70,7 +70,7 @@ export default function SendMessageInput(props): JSX {
       onSuccess: async () => {
         if (!checkIfChatIsAlreadyInActiveChats()) {
           socket.emit("joinRooms", [
-            getRoomID(session.user.id, selectedChatUser.id),
+            getRoomID(session?.user?.id, selectedChatUser.id),
           ]);
         }
         await queryClient.invalidateQueries("activeChats");
@@ -94,8 +94,8 @@ export default function SendMessageInput(props): JSX {
 
   const emitTypingEvent = () => {
     socket.emit("typing", {
-      roomID: getRoomID(session.user.id, selectedChatUser.id),
-      senderId: session.user.id,
+      roomID: getRoomID(session?.user?.id, selectedChatUser.id),
+      senderId: session?.user?.id,
       senderName: session.user.name,
     });
   };

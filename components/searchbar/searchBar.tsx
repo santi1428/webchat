@@ -55,7 +55,7 @@ export default function SearchBar() {
   // console.log("status", status);
 
   return (
-    <form className="order-3 md:order-2 relative ml-2 md:mr-10 md:ml-10 w-3/4 md:w-96  max-h-80">
+    <form className="order-3 md:order-2 relative ml-2 md:mr-10 md:ml-10 w-3/4 md:w-96  max-h-80 z-20">
       <motion.input
         whileTap={{ scale: 0.95 }}
         whileFocus={{ scale: 1.03 }}

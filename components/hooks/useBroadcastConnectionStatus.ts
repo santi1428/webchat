@@ -9,7 +9,7 @@ export default function useBroadcastConnectionStatus(props) {
       interval = setInterval(() => {
         // console.log("broadcasting connection status from interval");
         socket.emit("broadcastConnectionStatus", {
-          userId: session.user.id,
+          userId: session?.user?.id,
           name: session.user.name,
           profilePhotoName: session.user.profilePhotoName,
           status: "online",

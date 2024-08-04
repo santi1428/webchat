@@ -11,19 +11,21 @@ export default function ActiveChatsFilter(): JSX {
   const activeChatsFilter = useChatStore((state) => state.activeChatsFilter);
 
   return (
-    <div className="hidden relative md:inline-block md:ml-7 mb-4 md:mb-0 md:w-full w-5/6">
-      <input
-        type="text"
-        className="rounded-2xl md:w-10/12 mt-6 pl-4 pt-2 pb-2 pr-2 bg-background2  border border-customBorderColor text-bell"
-        placeholder="Search"
-        value={activeChatsFilter}
-        onChange={(e) => {
-          setActiveChatsFilter(e.target.value);
-        }}
-      />
-      <AnimatePresence mode={"wait"}>
+    <div className="flex flex-row relative justify-center">
+        <input
+          type="text"
+          className="w-11/12 rounded-2xl mt-6 pl-4 pt-2 pb-2 pr-2 bg-background2  border border-customBorderColor text-bell"
+          placeholder="Search"
+          value={activeChatsFilter}
+          onChange={(e) => {
+            setActiveChatsFilter(e.target.value);
+          }}
+        />
+
+      <AnimatePresence mode="wait">
+
         {activeChatsFilter.trim().length > 0 && (
-          <motion.button
+          <motion.div
             key={activeChatsFilter.trim().length > 0 ? 1 : 0}
             initial={{ opacity: 0, scale: 0 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -32,10 +34,10 @@ export default function ActiveChatsFilter(): JSX {
             onClick={() => {
               setActiveChatsFilter("");
             }}
-            className="absolute top-8 xl:right-32 2xl:right-40 lg:right-28 hidden lg:block"
+            className="self-center absolute top-9 right-12 cursor-pointer"
           >
             <FontAwesomeIcon icon={faXmark} className="text-bell" />
-          </motion.button>
+          </motion.div>
         )}
       </AnimatePresence>
     </div>

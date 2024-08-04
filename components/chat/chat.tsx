@@ -82,7 +82,7 @@ export default function Chat(): JSX.Element {
       <AnimatePresence mode={"wait"}>
         {selectedChatUser.id === "" ? (
           <motion.div
-            className="col-span-8 flex flex-col justify-center items-center h-[calc(100vh-100vh*0.3)]"
+            className="col-span-8 flex flex-col justify-center items-center h-[calc(100vh-100vh*0.3)] -z-0"
             key={selectedChatUser.id}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}

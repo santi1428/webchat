@@ -23,7 +23,7 @@ const handlePost = async (req, res, session) => {
       error: "Message cannot be empty.",
     });
   } else {
-    const senderId = session.user.id;
+    const senderId = session?.user?.id;
     await insertMessage({
       message,
       senderId,

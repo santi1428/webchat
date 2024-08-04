@@ -76,7 +76,29 @@ const useSocketStore = create((set) => ({
   },
   timeToRefreshConnectionStatus: 5000,
   timeToRefreshTypingStatus: 1000,
+}));
 
+const useModalStore = create((set) => ({
+  isBlockUserModalOpen: false,
+  setIsBlockUserModalOpen: (isBlockUserModalOpen) => {
+    set((state) => ({ isBlockUserModalOpen: isBlockUserModalOpen }));
+  },
+  blockUserModalData: {
+    id: "",
+    name: "",
+    lastName: "",
+    profilePhotoName: "",
+    email: "",
+  },
+  setBlockUserModalData: (blockUserModalData) => {
+    set((state) => ({ blockUserModalData: blockUserModalData }));
+  },
+  closeBlockUserModal: () => {
+    set((state) => ({ isBlockUserModalOpen: false }));
+  },
+  openBlockUserModal: () => {
+    set((state) => ({ isBlockUserModalOpen: true }));
+  },
 }));
 
 if (process.env.NODE_ENV === "development") {
@@ -85,4 +107,4 @@ if (process.env.NODE_ENV === "development") {
   mountStoreDevtool("SocketStore", useSocketStore);
 }
 
-export { useChatStore, useNotificationStore, useSocketStore };
+export { useChatStore, useNotificationStore, useSocketStore, useModalStore };

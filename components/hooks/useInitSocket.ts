@@ -35,7 +35,7 @@ export default function useInitSocket(props) {
         socket.emit(
           "joinRooms",
           data?.data?.map((activeChat) =>
-            getRoomID(session.user.id, activeChat.id)
+            getRoomID(session?.user?.id, activeChat.id)
           )
         );
       });

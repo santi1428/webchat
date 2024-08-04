@@ -1,4 +1,3 @@
-import { motion } from "framer-motion";
 import axios from "axios";
 import { useMutation, useQueryClient } from "react-query";
 import { faBell, faBellSlash } from "@fortawesome/free-solid-svg-icons";
@@ -8,7 +7,8 @@ import useMutedUsers from "../../hooks/useMutedUsers";
 import useIsUserMuted from "../../hooks/useIsUserMuted";
 
 export default function MutedUser(props) {
-  const { showOptionsMenu, selectedChat, activeChat } = props;
+
+  const { selectedChat, activeChat } = props;
 
   const queryClient = useQueryClient();
 
@@ -69,7 +69,7 @@ export default function MutedUser(props) {
 
   return (
     <div
-      className="flex flex-row items-center"
+      className="relative flex flex-row items-center"
       onClick={(e) => {
         if (isUserMuted) {
           unMuteUser();
@@ -87,7 +87,7 @@ export default function MutedUser(props) {
           }
             `}
       />
-      <p className="capitalize md:py-3 px-1 md:px-2 w-auto md:text-sm text-xs z-10">
+      <p className="capitalize  md:py-3 px-1 md:px-2 w-auto md:text-sm text-xs">
         {isUserMuted ? "Unmute notifications" : "Mute notifications"}
       </p>
     </div>

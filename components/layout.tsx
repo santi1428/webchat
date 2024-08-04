@@ -10,13 +10,13 @@ import { useSession } from "next-auth/react";
 import useBroadcastConnectionStatus from "./hooks/useBroadcastConnectionStatus";
 import useOnUserConnectionStatusSocketEvent from "./hooks/useOnUserConnectionStatusSocketEvent";
 import { useQueryClient } from "react-query";
-import { useSocketStore } from "../lib/store";
+import { useSocketStore, useModalStore } from "../lib/store";
 import useOnUserTypingEvent from "./hooks/useOnUserTypingEvent";
 import useActiveChats from "./hooks/useActiveChats";
 import useMutedUsers from "./hooks/useMutedUsers";
 import { useNotificationStore } from "../lib/store";
 import { useRef } from "react";
-import Modal from 'react-modal';
+import BlockUserModal from "./blockUserModal";
 
 export default function Layout({ children }): JSX.Element {
   const router = useRouter();
@@ -144,8 +144,8 @@ export default function Layout({ children }): JSX.Element {
   });
 
   return (
-    <div id="rootModal">
-      <div className="bg-background3" onClick={(e) => e.type}>
+    <>
+      <div className="bg-background3" id="rootModal">
         <div className="md:scale-x-90 md:scale-y-95 sm:scale-x-100 sm:scale-y-100 md:rounded-3xl min-h-screen bg-background bg-cover bg-center relative overflow-y-hidden">
           <Navbar />
           <AnimatePresence mode="wait">
@@ -192,6 +192,6 @@ export default function Layout({ children }): JSX.Element {
         <source src="/sound/message-notification-sound.mp3" type="audio/mp3" />
         Your browser does not support the audio element.
       </audio>
-    </div>
+    </>
   );
 }

@@ -37,7 +37,7 @@ export default function ActiveChats(props): JSX {
       <h3 className="hidden md:block ml-7 mt-6 text-bell text-lg font-semibold ">
         Active now
       </h3>
-      <div className="hidden md:flex md:flex-row justify-items-start mt-5 ml-10 pl-0 pb-5 border-b border-customBorderColor ">
+      <div className="hidden md:flex md:flex-row justify-items-start mt-5 pl-10 pb-5 border-b border-customBorderColor ">
         <AnimatePresence>
           {activeUsers.length > 0 &&
             activeUsers
@@ -122,9 +122,11 @@ export default function ActiveChats(props): JSX {
 
       {/*Seccion de lista de chats*/}
 
-      {memoizedActiveChatsFiltered.map((chat) => (
-        <ActiveChat key={chat.id} activeChat={chat} />
-      ))}
+      <AnimatePresence>
+        {memoizedActiveChatsFiltered.map((chat) => (
+          <ActiveChat key={chat.id} activeChat={chat} />
+        ))}
+      </AnimatePresence>
 
       {data?.data.length === 0 && (
         <div className="flex flex-col items-center justify-center h-full ">

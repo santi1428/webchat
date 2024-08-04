@@ -1,10 +1,10 @@
 import { prisma } from "../../lib/prisma";
 import { authOptions } from "./auth/[...nextauth]";
-import { unstable_getServerSession } from "next-auth";
+import { getServerSession } from "next-auth";
 import { NextApiRequest, NextApiResponse } from "next";
 
 const getActiveChats = async (id: String) => {
-  const activeChats = await prisma.message.findMany({
+  let activeChats = await prisma.message.findMany({
     where: {
       OR: [
         {
@@ -28,11 +28,20 @@ const getActiveChats = async (id: String) => {
     distinct: ["senderId", "receiverId"],
   });
 
+  const blockedUsers = await prisma.blockedUser.findMany({
+    where: {
+      userId: id,
+    },
+    select: {
+      blockedUserId: true,
+    },
+  });
+
   BigInt.prototype.toJSON = function () {
     return this.toString();
   };
 
-  return await Promise.all(
+  activeChats = await Promise.all(
     activeChats.map(async (chat) => {
       const lastMessage = await prisma.message.findFirst({
         where: {
@@ -57,6 +66,16 @@ const getActiveChats = async (id: String) => {
       };
     })
   );
+
+  activeChats = activeChats.filter((chat) => {
+    let isInBlockedUsers = blockedUsers.find((blockedUser) => {
+      return chat.id === blockedUser.blockedUserId;
+    });
+
+    return !isInBlockedUsers;
+  });
+
+  return activeChats;
 };
 
 export default async function handler(
@@ -64,9 +83,9 @@ export default async function handler(
   res: NextApiResponse
 ) {
   if (req.method == "GET") {
-    const session = await unstable_getServerSession(req, res, authOptions);
+    const session = await getServerSession(req, res, authOptions);
     if (session) {
-      const activeChats = await getActiveChats(session.user.id);
+      const activeChats = await getActiveChats(session?.user?.id);
       return res.status(200).json(activeChats);
     } else {
       return res.status(401).end();

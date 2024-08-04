@@ -5,12 +5,11 @@ import { useState, useRef } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import useOnClickOutside from "../../hooks/useOnClickOutside";
 import MutedUser from "./muteduser";
-import BlockedUser from "./blockeduser";
-
+import BlockedUser from "./blockuser";
 
 export default function OptionsMenu(props): JSX {
   const selectedChat = useChatStore((state) => state.selectedChat);
-  
+
   const { activeChat } = props;
 
   const [showOptionsMenu, setShowOptionsMenu] = useState(false);
@@ -21,12 +20,7 @@ export default function OptionsMenu(props): JSX {
   });
 
   return (
-    <div
-      className="relative left-4 md:left-0 block"
-      onClick={(e) => {
-        e.stopPropagation();
-      }}
-    >
+    <div className="relative left-4 md:left-0 block z-10">
       <div
         ref={optionsMenuButtonRef}
         className="cursor-pointer md:pl-2"
