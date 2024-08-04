@@ -5,10 +5,10 @@ import { AnimatePresence, motion } from "framer-motion";
 
 export default function ActiveChatsFilter(): JSX {
   const setActiveChatsFilter = useChatStore(
-    (state) => state.setActiveChatsFilter
+    (state : any) => state.setActiveChatsFilter
   );
 
-  const activeChatsFilter = useChatStore((state) => state.activeChatsFilter);
+  const activeChatsFilter = useChatStore((state : any) => state.activeChatsFilter);
 
   return (
     <div className="flex flex-row relative justify-center">
