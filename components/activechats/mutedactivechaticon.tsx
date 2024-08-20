@@ -7,7 +7,7 @@ import useMutedUsers from "../hooks/useMutedUsers";
 import { useSession } from "next-auth/react";
 import useIsUserMuted from "../hooks/useIsUserMuted";
 
-export default function MutedActiveChatIcon(props): JSX {
+export default function MutedActiveChatIcon(props): JSX.Element {
   const { activeChat, iconColor } = props;
   const selectedChat = useChatStore((state) => state.selectedChat);
   const { status } = useSession();

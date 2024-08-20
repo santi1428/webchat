@@ -7,23 +7,26 @@ import { useMemo } from "react";
 import useActiveChats from "../hooks/useActiveChats";
 import { AnimatePresence, motion } from "framer-motion";
 
-export default function ActiveChats(props): JSX {
-  const { data: session, status } = useSession();
+export default function ActiveChats(props): JSX.Element {
+  const sessionData = useSession();
+  const status = sessionData.status;
+  const session: Session = sessionData.data as Session;
   const activeChatsFilter = useChatStore((state) => state.activeChatsFilter);
   const activeUsers = useSocketStore((state) => state.activeUsers);
 
   const { data } = useActiveChats({ status });
 
   const memoizedActiveChatsFiltered = useMemo(() => {
+    console.log("session", session);
     return [...new Map(data?.data.map((item) => [item["id"], item])).values()]
       .filter(
-        (chat) =>
+        (chat: Chat) =>
           chat.name.toLowerCase().includes(activeChatsFilter.toLowerCase()) ||
           chat.lastName.toLowerCase().includes(activeChatsFilter.toLowerCase())
       )
-      .filter((chat) => chat.id !== session?.user?.id)
+      .filter((chat: Chat) => chat.id !== session?.user?.id)
       .slice(0)
-      .sort((a, b) => {
+      .sort((a : Chat, b : Chat) => {
         return (
           new Date(b.lastMessage?.createdAt).getTime() -
           new Date(a.lastMessage?.createdAt).getTime()
@@ -123,7 +126,7 @@ export default function ActiveChats(props): JSX {
       {/*Seccion de lista de chats*/}
 
       <AnimatePresence>
-        {memoizedActiveChatsFiltered.map((chat) => (
+        {memoizedActiveChatsFiltered.map((chat : Chat) => (
           <ActiveChat key={chat.id} activeChat={chat} />
         ))}
       </AnimatePresence>

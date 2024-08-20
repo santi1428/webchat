@@ -67,7 +67,6 @@ export default function Chat(): JSX.Element {
 
   const scrollParentRef = useRef<HTMLDivElement>(null);
 
-
   const handleScroll = (e) => {
     setScrollMessagesToBottom(false);
 
@@ -124,7 +123,11 @@ export default function Chat(): JSX.Element {
               >
                 <InfiniteScroll
                   pageStart={0}
-                  loadMore={!isFetchingNextPage ? fetchNextPage : () => {}}
+                  loadMore={(page: number) => {
+                    if (!isFetchingNextPage) {
+                      fetchNextPage(); // Call fetchNextPage without parameters
+                    }
+                  }}
                   hasMore={
                     data?.pages[data.pages.length - 1].messages.length >= 10
                   }

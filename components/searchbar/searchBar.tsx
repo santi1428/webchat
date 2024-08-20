@@ -3,7 +3,6 @@ import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState, useEffect, useCallback, useRef } from "react";
 import axios, { AxiosError } from "axios";
-import { User } from "../../utils/types";
 import UsersList from "./usersList";
 import { useQuery } from "react-query";
 import useDebounce from "../hooks/useDebounce";
@@ -30,7 +29,7 @@ export default function SearchBar() {
       inputRef.current?.focus();
     }
     setFocusedSearchInput(false);
-  }, [focusedSearchInput]);
+  }, [focusedSearchInput, setFocusedSearchInput]);
 
   const getUsers = async (debouncedSearch) => {
     // console.log("debouncedSearch", debouncedSearch);

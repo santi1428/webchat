@@ -14,7 +14,7 @@ const validationScheme = Yup.object({
     .required("This field is required."),
 });
 
-const checkIfTokenIsValid = async (token: String): Promise<boolean> => {
+const checkIfTokenIsValid = async (token: string): Promise<boolean> => {
   if (token.trim()) {
     const res = await prisma.user.findUnique({
       where: {
@@ -43,8 +43,8 @@ const checkIfTokenIsValid = async (token: String): Promise<boolean> => {
 };
 
 const updateUserPasswordByToken = async (
-  passwordHash: String,
-  token: String
+  passwordHash: string,
+  token: string
 ) => {
   return await prisma.user.update({
     where: {
@@ -56,7 +56,7 @@ const updateUserPasswordByToken = async (
   });
 };
 
-const removeUserResetPasswordToken = async (token: String) => {
+const removeUserResetPasswordToken = async (token: string) => {
   return await prisma.user.update({
     where: {
       resetPasswordToken: token,
@@ -80,7 +80,7 @@ const validateFields = async (
   }
 };
 
-const getSHA256 = (token: String) => {
+const getSHA256 = (token: string) => {
   return crypto.createHash("sha256").update(token, "binary").digest("hex");
 };
 
@@ -94,7 +94,7 @@ export default async function handler(
       const token = getSHA256(req.body.token);
       if (await checkIfTokenIsValid(token)) {
         try {
-          const newPasswordHash: String = await hashPassword(
+          const newPasswordHash: string = await hashPassword(
             req.body.newPassword
           );
           await updateUserPasswordByToken(newPasswordHash, token);

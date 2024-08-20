@@ -8,7 +8,7 @@ import Image from "next/image";
 import { faReply } from "@fortawesome/free-solid-svg-icons";
 import { useRouter } from "next/router";
 
-export default function ChatMessageToast(props): JSX {
+export default function ChatMessageToast(props): JSX.Element {
   const { message, t } = props;
   const changeSelectedChat = useChatStore((state) => state.changeSelectedChat);
   const router = useRouter();

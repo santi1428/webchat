@@ -1,6 +1,5 @@
 import { prisma } from "../../lib/prisma";
 import { NextApiRequest, NextApiResponse } from "next";
-import { User } from "../../utils/types";
 import * as Yup from "yup";
 import { unstable_getServerSession } from "next-auth";
 import { authOptions } from "./auth/[...nextauth]";
@@ -39,7 +38,7 @@ const doesEmailExist = async (email: string): Promise<boolean> => {
   return userCount > 0;
 };
 
-const updateUser = (id: String, user: User) => {
+const updateUser = (id: string, user: User) => {
   console.log("updating user");
   return prisma.user.update({
     where: {
@@ -58,7 +57,7 @@ export default async function handler(
   res: NextApiResponse
 ) {
   if (req.method == "PUT") {
-    const session = await unstable_getServerSession(req, res, authOptions);
+    const session : Session = await unstable_getServerSession(req, res, authOptions);
     if (session) {
       const user: User = req.body;
       const fieldsValidation = await validateFields(user);

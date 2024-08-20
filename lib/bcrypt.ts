@@ -6,7 +6,8 @@ async function hashPassword(password: string): Promise<string> {
 }
 
 async function comparePassword(password: string | number, hash: string) {
-  const match = await bcrypt.compare(password, hash);
+  let p : string = typeof password === "string" ? password : password.toString();
+  const match = await bcrypt.compare(p, hash);
   return match;
 }
 

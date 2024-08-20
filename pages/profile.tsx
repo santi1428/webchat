@@ -44,7 +44,10 @@ const reloadSession = () => {
 
 export default function Profile() {
   const router = useRouter();
-  const { data: session, status } = useSession();
+  const sessionData = useSession();
+  const session = sessionData.data as Session;
+  const status = sessionData.status;
+
 
   const formik = useFormik({
     initialValues: {

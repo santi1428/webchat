@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useSocketStore } from "../../lib/store";
 import { AnimatePresence, motion } from "framer-motion";
 
-export default function TypingStatusText(props): JSX {
+export default function TypingStatusText(props): JSX.Element {
   const { activeChat, style } = props;
 
   const [isTyping, setIsTyping] = useState(false);

@@ -2,11 +2,10 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
 import { prisma } from "../../../lib/prisma";
-import { User } from "../../../utils/types";
 
 const getUsers = async (
-  search: String,
-  userId: String | null
+  search: string,
+  userId: string | null
 ): Promise<User[]> => {
   console.log("userId", userId);
 
@@ -74,9 +73,12 @@ export default async function handler(
   session
 ) {
   if (req.method == "GET") {
-    const session = await getServerSession(req, res, authOptions);
+    const session : Session = await getServerSession(req, res, authOptions);
     if (session) {
-      const { search } = req.query;
+      let { search } = req.query;
+      if (Array.isArray(search)) {
+        search = search.join("");
+      }
       console.log("search parameter", search);
       const users: User[] = await getUsers(search, session?.user?.id);
       return res.status(200).send(users);

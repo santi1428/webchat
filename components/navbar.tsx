@@ -19,7 +19,9 @@ import useOnClickOutside from "./hooks/useOnClickOutside";
 
 export default function Navbar() {
   const [showDropdownMenu, setShowDropdownMenu] = useState(true);
-  const { data: session, status } = useSession();  
+  const sessionData = useSession();  
+  const session: Session = sessionData.data as Session;
+  const status = sessionData.status;
   const userDropDownMenuRef = useRef();
 
   const router = useRouter();

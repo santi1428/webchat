@@ -1,11 +1,10 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "../../lib/prisma";
-import { User } from "../../utils/types";
 import * as crypto from "crypto";
 import nodemailer from "nodemailer";
 import getEmailTemplate from "../../utils/email-template";
 
-const validateEmail = (email: String) => {
+const validateEmail = (email: string) => {
   return String(email)
     .toLowerCase()
     .match(
@@ -31,12 +30,12 @@ const generateResetPasswordToken = () => {
   return crypto.randomBytes(40).toString("hex");
 };
 
-const getSHA256 = (token: String) => {
+const getSHA256 = (token: string) => {
   return crypto.createHash("sha256").update(token, "binary").digest("hex");
 };
 
-const getResetPasswordTokenExpiry = (): BigInt => {
-  Date.prototype.addHours = function (h) {
+const getResetPasswordTokenExpiry = (): number => {
+  Date.prototype.addHours = function (h) : Date {
     this.setTime(this.getTime() + h * 60 * 60 * 1000);
     return this;
   };
@@ -44,9 +43,9 @@ const getResetPasswordTokenExpiry = (): BigInt => {
 };
 
 const updateUserResetTokenByID = async (
-  resetPasswordToken: String,
-  resetPasswordTokenExpiry: BigInt,
-  email: String
+  resetPasswordToken: string,
+  resetPasswordTokenExpiry: number,
+  email: string
 ) => {
   return await prisma.user.update({
     where: {
@@ -60,8 +59,8 @@ const updateUserResetTokenByID = async (
 };
 
 const sendResetPasswordTokenEmail = async (
-  email: String,
-  resetPasswordToken: String
+  email: string,
+  resetPasswordToken: string
 ) => {
   const EMAIL = process.env.EMAIL;
   const EMAIL_PASSWORD = process.env.EMAIL_PASSWORD;
@@ -113,7 +112,7 @@ export default async function handler(
           const sha256Token = getSHA256(generatedResetPasswordToken);
           console.log("sha256Token", sha256Token);
           console.log("sha256Token length", sha256Token.length);
-          const resetPasswordTokenExpiry: BigInt =
+          const resetPasswordTokenExpiry: number =
             getResetPasswordTokenExpiry();
           await updateUserResetTokenByID(
             sha256Token,

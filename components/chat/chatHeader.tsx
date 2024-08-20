@@ -6,7 +6,7 @@ import MutedActiveChatIcon from "../activechats/mutedactivechaticon";
 import ConnectionStatusIcon from "../activechats/connectionStatusIcon";
 import TypingStatusText from "../activechats/typingStatusText";
 
-export default function ChatHeader(props): JSX {
+export default function ChatHeader(props): JSX.Element {
   const { selectedChatUser, resetSelectedChat } = props;
 
   return (

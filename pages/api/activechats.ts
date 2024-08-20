@@ -3,7 +3,7 @@ import { authOptions } from "./auth/[...nextauth]";
 import { getServerSession } from "next-auth";
 import { NextApiRequest, NextApiResponse } from "next";
 
-const getActiveChats = async (id: String) => {
+const getActiveChats = async (id: string) => {
   let activeChats = await prisma.message.findMany({
     where: {
       OR: [
@@ -83,7 +83,7 @@ export default async function handler(
   res: NextApiResponse
 ) {
   if (req.method == "GET") {
-    const session = await getServerSession(req, res, authOptions);
+    const session: Session = await getServerSession(req, res, authOptions);
     if (session) {
       const activeChats = await getActiveChats(session?.user?.id);
       return res.status(200).json(activeChats);

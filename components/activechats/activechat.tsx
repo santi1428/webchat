@@ -7,11 +7,11 @@ import MutedActiveChatIcon from "./mutedactivechaticon";
 import ConnectionStatusIcon from "./connectionStatusIcon";
 import TypingStatusText from "./typingStatusText";
 
-export default function ActiveChat(props): JSX {
+export default function ActiveChat(props): JSX.Element{
   const { activeChat } = props;
 
-  const selectedChat = useChatStore((state) => state.selectedChat);
-  const changeSelectedChat = useChatStore((state) => state.changeSelectedChat);
+  const selectedChat = useChatStore((state : any) => state.selectedChat);
+  const changeSelectedChat = useChatStore((state: any) => state.changeSelectedChat);
 
   const checkIfDateIsToday = (date) => {
     return dayjs(date).isSame(dayjs(), "day");

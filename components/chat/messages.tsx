@@ -5,7 +5,7 @@ import dayjs from "dayjs";
 import "dayjs/locale/es";
 import { useEffect, useMemo } from "react";
 
-export default function Messages(props): JSX {
+export default function Messages(props): JSX.Element {
   const { messages, user, selectedChatUser } = props;
 
   const setFocusedMessageInput = useNotificationStore(

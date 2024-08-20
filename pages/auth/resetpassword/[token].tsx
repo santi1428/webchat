@@ -1,14 +1,11 @@
 import Head from "next/head";
 import { useFormik } from "formik";
 import axios, { AxiosError } from "axios";
-import validationScheme from "../../utils/validation-scheme";
 import { useRouter } from "next/router";
 import { motion, AnimatePresence } from "framer-motion";
 import { unstable_getServerSession } from "next-auth";
 import { authOptions } from "../../api/auth/[...nextauth]";
 import {
-  faArrowLeft,
-  faArrowLeftLong,
   faEye,
   faEyeSlash,
   faLock,
