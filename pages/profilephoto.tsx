@@ -21,10 +21,12 @@ import useActiveChats from "../components/hooks/useActiveChats";
 export default function ProfilePhoto() {
   const router = useRouter();
   const fileInput = useRef(null);
-  const [file, setFile] = useState(Object | null);
-  const [fileError, setFileError] = useState(String);
+  const [file, setFile] = useState<File | null>(null);
+  const [fileError, setFileError] = useState<string>("");
   const [uploadingProfilePhoto, setUploadingProfilePhoto] = useState(false);
-  const { data: session, status } = useSession();
+  const sessionData = useSession();
+  const session = sessionData.data as Session;
+
 
   const validateFile = () => {
     const selectedFile = fileInput.current.files[0];
@@ -69,7 +71,7 @@ export default function ProfilePhoto() {
       });
       setUploadingProfilePhoto(true);
       const body = new FormData();
-      body.append("file", file);
+      body.append("file", file as File);
       const [res, error] = await uploadProfilePhoto(body);
       console.log(res, error);
       if (res) {

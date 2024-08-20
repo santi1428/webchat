@@ -16,7 +16,6 @@ import useActiveChats from "./hooks/useActiveChats";
 import useMutedUsers from "./hooks/useMutedUsers";
 import { useNotificationStore } from "../lib/store";
 import { useRef } from "react";
-import BlockUserModal from "./blockUserModal";
 
 export default function Layout({ children }): JSX.Element {
   const router = useRouter();
@@ -25,7 +24,7 @@ export default function Layout({ children }): JSX.Element {
 
   const selectedChat = useChatStore((state) => state.selectedChat);
 
-  const audioRef = useRef();
+  const audioRef = useRef<HTMLAudioElement>(null);
 
   const playAudio = () => {
     if (audioRef.current) {

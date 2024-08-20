@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { mountStoreDevtool } from "simple-zustand-devtools";
 
-const initialSelectedChatState = {
+const initialSelectedChatState: User = {
   id: "",
   name: "",
   lastName: "",
@@ -9,8 +9,8 @@ const initialSelectedChatState = {
   email: "",
 };
 
-const useChatStore = create((set) => ({
-  getRoomID: (myID, activeChatID) => {
+const useChatStore = create<ChatStore>((set) => ({
+  getRoomID: (myID: string, activeChatID: string): string => {
     let separator = ":";
     if (myID <= activeChatID) {
       return myID + separator + activeChatID;
@@ -29,7 +29,7 @@ const useChatStore = create((set) => ({
   reset: () => set((state) => ({ selectedChat: initialSelectedChatState })),
 }));
 
-const useNotificationStore = create((set) => ({
+const useNotificationStore = create<NotificationStore>((set) => ({
   focusedSearchInput: false,
   focusedMessageInput: false,
   setFocusedSearchInput: (focusedSearchInput) => {
@@ -44,7 +44,7 @@ const useNotificationStore = create((set) => ({
   },
 }));
 
-const useSocketStore = create((set) => ({
+const useSocketStore = create<SocketStore>((set) => ({
   socket: null,
   setSocket: (socket) => {
     set((state) => ({ socket: socket }));
@@ -78,7 +78,7 @@ const useSocketStore = create((set) => ({
   timeToRefreshTypingStatus: 1000,
 }));
 
-const useModalStore = create((set) => ({
+const useModalStore = create<ModalStore>((set) => ({
   isBlockUserModalOpen: false,
   setIsBlockUserModalOpen: (isBlockUserModalOpen) => {
     set((state) => ({ isBlockUserModalOpen: isBlockUserModalOpen }));

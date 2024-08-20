@@ -7,7 +7,7 @@ import useOnClickOutside from "../../hooks/useOnClickOutside";
 import MutedUser from "./muteduser";
 import BlockedUser from "./blockuser";
 
-export default function OptionsMenu(props): JSX {
+export default function OptionsMenu(props): JSX.Element {
   const selectedChat = useChatStore((state) => state.selectedChat);
 
   const { activeChat } = props;

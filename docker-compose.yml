@@ -27,19 +27,19 @@ services:
     volumes:
       - pgadmin-data:/var/lib/pgadmin
 
-    app:
-      container_name: web_chat_container
-      build:
-        context: .
-        dockerfile: Dockerfile
-      restart: always
-      ports:
-        - "8000:8000"
-      volumes:
-        - .:/app
-      depends_on:
-        - db
-        - pgadmin
+  app:
+    container_name: web_chat_container
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+      - pgadmin
 volumes:
   db-data:
   pgadmin-data:

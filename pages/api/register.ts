@@ -2,7 +2,6 @@ import validationScheme from "../../utils/validation-scheme";
 import { prisma } from "../../lib/prisma";
 import { NextApiRequest, NextApiResponse } from "next";
 import { hashPassword } from "../../lib/bcrypt";
-import { User } from "../../utils/types";
 
 const validateFields = (
   newUser: User

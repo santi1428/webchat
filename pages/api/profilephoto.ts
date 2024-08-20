@@ -6,7 +6,6 @@ import cuid from "cuid";
 import { prisma } from "../../lib/prisma";
 import { unstable_getServerSession } from "next-auth";
 import { authOptions } from "./auth/[...nextauth]";
-import { User } from "../../utils/types";
 
 export const config = {
   api: {
@@ -14,15 +13,15 @@ export const config = {
   },
 };
 
-const getFileExtension = (filename: String) => {
+const getFileExtension = (filename: string) => {
   const ext = path.extname(filename);
   return ext;
 };
 
-const saveFile = async (file: File): Promise<String> => {
+const saveFile = async (file): Promise<string> => {
   const data = fs.readFileSync(file.filepath);
-  const fileExt: String = getFileExtension(file.originalFilename);
-  const generateRandomImageName: String = cuid();
+  const fileExt: string = getFileExtension(file.originalFilename);
+  const generateRandomImageName: string = cuid();
   fs.writeFileSync(
     `./public/images/${generateRandomImageName}${fileExt}`,
     data
@@ -36,8 +35,8 @@ const removeFile = (filePath) => {
 };
 
 const updateUserProfilePhotoNameByID = async (
-  id: String,
-  profilePhotoName: String
+  id: string,
+  profilePhotoName: string
 ) => {
   return await prisma.user.update({
     where: {
@@ -49,7 +48,7 @@ const updateUserProfilePhotoNameByID = async (
   });
 };
 
-const validateFile = (file: File): boolean => {
+const validateFile = (file): boolean => {
   if (file) {
     if (!file.originalFilename.match(/\.(jpg|jpeg|png|gif|webp)$/)) {
       console.log("Selected file is not valid.");
@@ -67,7 +66,7 @@ const validateFile = (file: File): boolean => {
   return false;
 };
 
-const uploadFile = (req: NextApiRequest, user: User) => {
+const uploadFile = (req: NextApiRequest, user: User) : Promise<void | string> => {
   const defaultProfilePhotoName = "default-profile-photo.png";
   const form = new formidable.IncomingForm();
   return new Promise(function (resolve, reject) {

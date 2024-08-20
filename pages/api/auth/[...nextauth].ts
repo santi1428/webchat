@@ -1,4 +1,8 @@
-import NextAuth, { NextAuthOptions } from "next-auth";
+import NextAuth, {
+  Awaitable,
+  NextAuthOptions,
+  RequestInternal,
+} from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { comparePassword } from "../../../lib/bcrypt";
 import { prisma } from "../../../lib/prisma";
@@ -48,8 +52,9 @@ export const authOptions: NextAuthOptions = {
   },
   providers: [
     CredentialsProvider({
+      name: "Credentials",
       credentials: {
-        username: {
+        email: {
           label: "Email",
           type: "email",
           placeholder: "Enter your email.",
@@ -61,7 +66,7 @@ export const authOptions: NextAuthOptions = {
         },
       },
       type: "credentials",
-      async authorize(credentials) {
+      async authorize(credentials, req) {
         const [isLoggedIn, user]: [isLoggedIn: boolean, user: User] =
           await checkLoginCredentials(credentials.email, credentials.password);
         if (isLoggedIn) {
@@ -71,10 +76,9 @@ export const authOptions: NextAuthOptions = {
             lastName: user.lastName,
             email: user.email,
             profilePhotoName: user.profilePhotoName,
-          } as User;
-        } else {
-          return null;
-        }
+          };
+        } 
+        return null;
       },
     }),
   ],

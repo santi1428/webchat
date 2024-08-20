@@ -8,10 +8,13 @@ import { useChatStore, useNotificationStore } from "../../lib/store";
 import { useSession } from "next-auth/react";
 import useDebounce from "../hooks/useDebounce";
 
-export default function SendMessageInput(props): JSX {
+export default function SendMessageInput(props): JSX.Element {
   const { selectedChatUser, socket } = props;
   const [message, setMessage] = useState("");
-  const { data: session, status } = useSession();
+  const sessionData = useSession();
+  const session: Session = sessionData.data as Session;
+  const status = sessionData.status;
+
   const debouncedTypingEvent = useDebounce(message, 50);
 
   const inputRef = useRef<HTMLInputElement>(null);
@@ -53,9 +56,10 @@ export default function SendMessageInput(props): JSX {
   };
 
   const checkIfChatIsAlreadyInActiveChats = () => {
-    const activeChats = queryClient.getQueryData("activeChats");
-    const chat = activeChats?.data.find(
-      (chat) => chat.id === selectedChatUser.id
+    const activeChats: any = queryClient.getQueryData("activeChats");
+
+    const chat: Chat = activeChats?.data.find(
+      (chat : Chat) => chat.id === selectedChatUser.id
     );
     return chat !== undefined;
   };
@@ -120,7 +124,6 @@ export default function SendMessageInput(props): JSX {
         onFocus={(e) => {
           e.target.focus({ preventScroll: true });
         }}
-        
         whileTap={{ scale: 1.01 }}
         type="text"
         name="name"

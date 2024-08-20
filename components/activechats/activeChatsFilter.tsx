@@ -3,9 +3,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { AnimatePresence, motion } from "framer-motion";
 
-export default function ActiveChatsFilter(): JSX {
+export default function ActiveChatsFilter(): JSX.Element {
   const setActiveChatsFilter = useChatStore(
-    (state) => state.setActiveChatsFilter
+    (state : any) => state.setActiveChatsFilter
   );
 
   const activeChatsFilter = useChatStore((state) => state.activeChatsFilter);

@@ -4,7 +4,6 @@ import { motion } from "framer-motion";
 import { faCaretUp, faCircleInfo } from "@fortawesome/free-solid-svg-icons";
 import { useRef, useState } from "react";
 import useOnClickOutside from "../hooks/useOnClickOutside";
-import { User } from "../../utils/types";
 import ListUser from "./listUser";
 import { useSession } from "next-auth/react";
 
@@ -13,7 +12,9 @@ export default function UsersList(props) {
 
   const usersListRef = useRef();
 
-  const { data: session, status } = useSession();
+  const sessionData = useSession();
+  const session: Session = sessionData.data as Session;
+  const status = sessionData.status;
 
   useOnClickOutside(usersListRef, () => {
     setShowUsersList(false);
@@ -61,7 +62,7 @@ export default function UsersList(props) {
                 </AnimatePresence>
               )}
               {data
-                ?.filter((user) => user.id !== session?.user?.id)
+                ?.filter((user : User) => user.id !== session?.user?.id)
                 .map((user: User, index: Number) => (
                   <ListUser
                     user={user}
