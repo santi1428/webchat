@@ -1,4 +1,4 @@
-import { Server } from "Socket.IO";
+import { Server } from "socket.io";
 import { authOptions } from "./auth/[...nextauth]";
 import { getServerSession } from "next-auth";
 
