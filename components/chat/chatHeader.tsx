@@ -14,11 +14,7 @@ export default function ChatHeader(props): JSX.Element {
       <div className="md:ml-6 ml-3 inline-block h-8 w-8 md:h-9 md:w-9 relative self-center">
         <Image
           layout="fill"
-          src={
-            selectedChatUser.profilePhotoName.includes("http")
-              ? selectedChatUser.profilePhotoName
-              : "/images/" + selectedChatUser.profilePhotoName
-          }
+          src={selectedChatUser.profilePhotoName}
           className="rounded-full"
           alt="NoImage"
         />
@@ -29,7 +25,10 @@ export default function ChatHeader(props): JSX.Element {
         </span>
         <MutedActiveChatIcon activeChat={selectedChatUser} iconColor="bell" />
         <ConnectionStatusIcon activeChat={selectedChatUser} />
-        <TypingStatusText activeChat={selectedChatUser} style={'ml-2 text-xs md:text-base self-center'}   />
+        <TypingStatusText
+          activeChat={selectedChatUser}
+          style={"ml-2 text-xs md:text-base self-center"}
+        />
       </div>
       <FontAwesomeIcon
         icon={faCircleXmark}

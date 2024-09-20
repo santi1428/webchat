@@ -29,9 +29,7 @@ export default function ChatMessageToast(props): JSX.Element {
               layout="fill"
               className="rounded-full"
               src={
-                message.senderProfilePhotoName.includes("http")
-                  ? message.senderProfilePhotoName
-                  : "/images/" + message.senderProfilePhotoName
+                message.senderProfilePhotoName
               }
               alt=""
             />

@@ -30,9 +30,7 @@ export default function ActiveChat(props): JSX.Element{
         <Image
           layout="fill"
           src={
-            activeChat.profilePhotoName.includes("http")
-              ? activeChat.profilePhotoName
-              : "/images/" + activeChat.profilePhotoName
+            activeChat.profilePhotoName
           }
           className="rounded-full"
           alt="NoImage"

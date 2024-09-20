@@ -27,7 +27,6 @@ export default function ProfilePhoto() {
   const sessionData = useSession();
   const session = sessionData.data as Session;
 
-
   const validateFile = () => {
     const selectedFile = fileInput.current.files[0];
     if (selectedFile) {
@@ -118,20 +117,22 @@ export default function ProfilePhoto() {
               exit={{ scale: 0 }}
               className="h-64 w-64 relative mb-20"
             >
-              <Image
-                alt="NoImage"
-                src={
-                  file && fileError === ""
-                    ? URL.createObjectURL(file)
-                    : `/images/${session?.user?.profilePhotoName}`
-                }
-                layout="fill"
-                objectFit="cover"
-                className="rounded-full self-center cursor-pointer"
-                onClick={() => {
-                  fileInput.current.click();
-                }}
-              />
+              {session?.user?.profilePhotoName && (
+                <Image
+                  alt="NoImage"
+                  src={
+                    file && fileError === ""
+                      ? URL.createObjectURL(file)
+                      : session.user.profilePhotoName
+                  }
+                  layout="fill"
+                  objectFit="cover"
+                  className="rounded-full self-center cursor-pointer"
+                  onClick={() => {
+                    fileInput.current.click();
+                  }}
+                />
+              )}
             </motion.div>
           </AnimatePresence>
           <AnimatePresence>

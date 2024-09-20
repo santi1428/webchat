@@ -33,9 +33,7 @@ export default function ListUser(props) {
           <Image
             layout="fill"
             src={
-              user.profilePhotoName.includes("http")
-                ? user.profilePhotoName
-                : "/images/" + user.profilePhotoName
+              user.profilePhotoName
             }
             className="rounded-full"
             alt="NoImage"

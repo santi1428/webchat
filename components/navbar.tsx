@@ -117,7 +117,7 @@ export default function Navbar() {
                   </a>
                 </motion.div>
               </AnimatePresence>
-              {session.user && (
+              {session?.user && (
                 <div className="flex flex-row">
                   <AnimatePresence mode="wait">
                     <motion.div
@@ -132,7 +132,7 @@ export default function Navbar() {
                         <a>
                           <Image
                             layout="fill"
-                            src={"/images/" + session.user.profilePhotoName}
+                            src={session.user.profilePhotoName}
                             className="rounded-full"
                             alt="NoImage"
                           />

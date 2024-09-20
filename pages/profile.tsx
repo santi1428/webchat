@@ -48,7 +48,6 @@ export default function Profile() {
   const session = sessionData.data as Session;
   const status = sessionData.status;
 
-
   const formik = useFormik({
     initialValues: {
       name: session?.user?.name ?? "",
@@ -118,13 +117,15 @@ export default function Profile() {
             >
               <Link href="/profilephoto">
                 <a>
-                  <Image
-                    alt="NoImage"
-                    src={`/images/${session?.user?.profilePhotoName}`}
-                    layout="fill"
-                    objectFit="cover"
-                    className="rounded-full cursor-pointer"
-                  />
+                  {session?.user?.profilePhotoName && (
+                    <Image
+                      alt="NoImage"
+                      src={session.user.profilePhotoName}
+                      layout="fill"
+                      objectFit="cover"
+                      className="rounded-full cursor-pointer"
+                    />
+                  )}
                 </a>
               </Link>
             </motion.div>
