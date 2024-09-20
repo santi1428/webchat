@@ -57,9 +57,7 @@ export default function ActiveChats(props): JSX.Element {
                   <Image
                     layout="fill"
                     src={
-                      activeUser.profilePhotoName.includes("http")
-                        ? activeUser.profilePhotoName
-                        : "/images/" + activeUser.profilePhotoName
+                      activeUser.profilePhotoURL
                     }
                     className="rounded-full"
                     alt="NoImage"
@@ -80,47 +78,6 @@ export default function ActiveChats(props): JSX.Element {
             </motion.div>
           )}
         </AnimatePresence>
-
-        {/* <div className="inline-block h-12 w-12 relative">
-          <Image
-            layout="fill"
-            src="/images/selfie1.webp"
-            className="rounded-full"
-            alt="NoImage"
-          />
-        </div> */}
-        {/* <div className="mr-3 inline-block h-12 w-12 relative">
-          <Image
-            layout="fill"
-            src="/images/selfie2.jpeg"
-            className="rounded-full"
-            alt="NoImage"
-          />
-        </div>
-        <div className="mr-3 inline-block h-12 w-12 relative">
-          <Image
-            layout="fill"
-            src="/images/selfie3.jpg"
-            className="rounded-full"
-            alt="NoImage"
-          />
-        </div>
-        <div className="mr-3 inline-block h-12 w-12 relative">
-          <Image
-            layout="fill"
-            src="/images/selfie4.webp"
-            className="rounded-full"
-            alt="NoImage"
-          />
-        </div>
-        <div className="mr-3 inline-block h-12 w-12 relative">
-          <Image
-            layout="fill"
-            src="/images/selfie.webp"
-            className="rounded-full"
-            alt="NoImage"
-          />
-        </div> */}
       </div>
 
       {/*Seccion de lista de chats*/}

@@ -58,7 +58,7 @@ export default function useOnUserTypingEvent(props) {
             userId: userTypingStatus.userId,
             name: userTypingStatus.name,
             status: userTypingStatus.status,
-            profilePhotoName: userTypingStatus.profilePhotoName,
+            profilePhotoURL: userTypingStatus.profilePhotoURL,
           });
         }
       });

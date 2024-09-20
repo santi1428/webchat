@@ -11,7 +11,7 @@ export default function useBroadcastConnectionStatus(props) {
         socket.emit("broadcastConnectionStatus", {
           userId: session?.user?.id,
           name: session.user.name,
-          profilePhotoName: session.user.profilePhotoName,
+          profilePhotoURL: session.user.profilePhotoURL,
           status: "online",
         });
       }, 1000);

@@ -1,11 +1,20 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import formidable from "formidable";
-import fs from "fs";
 import path from "path";
 import cuid from "cuid";
 import { prisma } from "../../lib/prisma";
-import { unstable_getServerSession } from "next-auth";
+import { getServerSession } from "next-auth";
 import { authOptions } from "./auth/[...nextauth]";
+import { v2 as cloudinary } from "cloudinary";
+import { extractPublicId } from 'cloudinary-build-url'
+
+
+// Configuration
+cloudinary.config({
+  cloud_name: "dgtwlcw1i",
+  api_key: "483983667889134",
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 export const config = {
   api: {
@@ -19,31 +28,28 @@ const getFileExtension = (filename: string) => {
 };
 
 const saveFile = async (file): Promise<string> => {
-  const data = fs.readFileSync(file.filepath);
-  const fileExt: string = getFileExtension(file.originalFilename);
   const generateRandomImageName: string = cuid();
-  fs.writeFileSync(
-    `./public/images/${generateRandomImageName}${fileExt}`,
-    data
-  );
-  await fs.unlinkSync(file.filepath);
-  return `${generateRandomImageName}${fileExt}`;
+  const uploadResult = await cloudinary.uploader.upload(file.filepath, {
+    public_id: `${generateRandomImageName}`,
+  });
+  return uploadResult.secure_url;
 };
 
-const removeFile = (filePath) => {
-  fs.unlinkSync(filePath);
+const removeFile = async (url: string) => {
+  const publicId : string = extractPublicId(url);
+  await cloudinary.uploader.destroy(publicId);
 };
 
-const updateUserProfilePhotoNameByID = async (
+const updateUserProfilePhotoURLByID = async (
   id: string,
-  profilePhotoName: string
+  profilePhotoURL: string
 ) => {
   return await prisma.user.update({
     where: {
       id,
     },
     data: {
-      profilePhotoName,
+      profilePhotoURL,
     },
   });
 };
@@ -66,18 +72,21 @@ const validateFile = (file): boolean => {
   return false;
 };
 
-const uploadFile = (req: NextApiRequest, user: User) : Promise<void | string> => {
-  const defaultProfilePhotoName = "default-profile-photo.png";
+const uploadFile = (
+  req: NextApiRequest,
+  user: User
+): Promise<void | string> => {
+  const defaultProfilePhotoURL = "https://res.cloudinary.com/dgtwlcw1i/image/upload/v1726787525/vnj59rodfbromdnwomuv.png";
   const form = new formidable.IncomingForm();
   return new Promise(function (resolve, reject) {
     form.parse(req, async function (err, fields, files) {
       const file: File = files.file;
       if (validateFile(file)) {
         try {
-          const fullNewPhotoName = await saveFile(file);
-          await updateUserProfilePhotoNameByID(user.id, fullNewPhotoName);
-          if (user.profilePhotoName !== defaultProfilePhotoName) {
-            removeFile(`./public/images/${user.profilePhotoName}`);
+          const fullNewPhotoURL = await saveFile(file);
+          await updateUserProfilePhotoURLByID(user.id, fullNewPhotoURL);
+          if (user.profilePhotoURL !== defaultProfilePhotoURL) {
+            removeFile(user.profilePhotoURL);
           }
           resolve();
         } catch (err) {
@@ -95,7 +104,7 @@ export default async function handler(
   res: NextApiResponse
 ) {
   if (req.method == "PUT") {
-    const session = await unstable_getServerSession(req, res, authOptions);
+    const session = await getServerSession(req, res, authOptions);
     if (session) {
       const user: User = session?.user;
       try {

@@ -16,7 +16,7 @@ model User {
   lastName          String    @db.VarChar(40)
   email             String    @unique @db.VarChar(255)
   password          String
-  profilePhotoName  String    @db.VarChar(255) @default("default-profile-photo.png")
+  profilePhotoURL  String    @db.VarChar(255) @default("https://res.cloudinary.com/dgtwlcw1i/image/upload/v1726787525/vnj59rodfbromdnwomuv.png")
   resetPasswordToken String?   @unique @db.VarChar(64)
   resetPasswordTokenExpiry  BigInt?   @db.BigInt
   createdAt         DateTime  @default(now()) @map(name: "created_at")

@@ -5,7 +5,7 @@ const initialSelectedChatState: User = {
   id: "",
   name: "",
   lastName: "",
-  profilePhotoName: "",
+  profilePhotoURL: "",
   email: "",
 };
 
@@ -87,7 +87,7 @@ const useModalStore = create<ModalStore>((set) => ({
     id: "",
     name: "",
     lastName: "",
-    profilePhotoName: "",
+    profilePhotoURL: "",
     email: "",
   },
   setBlockUserModalData: (blockUserModalData) => {

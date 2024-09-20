@@ -20,7 +20,7 @@ export default function BlockUser(props) {
           id: activeChat.id,
           name: activeChat.name,
           lastName: activeChat.lastName,
-          profilePhotoName: activeChat.profilePhotoName,
+          profilePhotoURL: activeChat.profilePhotoURL,
         });
         openBlockUserModal();
         e.stopPropagation();

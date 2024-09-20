@@ -71,9 +71,9 @@ export default function BlockUserModal(): JSX.Element {
             <div className="relative h-8 w-8">
               <img
                 src={
-                  blockUserModalData.profilePhotoName.includes("http")
-                    ? blockUserModalData.profilePhotoName
-                    : "/images/" + blockUserModalData.profilePhotoName
+                  blockUserModalData.profilePhotoURL.includes("http")
+                    ? blockUserModalData.profilePhotoURL
+                    : "/images/" + blockUserModalData.profilePhotoURL
                 }
                 className="rounded-full w-full h-full object-cover"
                 alt="NoImage"
