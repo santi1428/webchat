@@ -29,7 +29,7 @@ export default function ChatMessageToast(props): JSX.Element {
               layout="fill"
               className="rounded-full"
               src={
-                message.senderProfilePhotoName
+                message.senderProfilePhotoURL
               }
               alt=""
             />
@@ -53,7 +53,7 @@ export default function ChatMessageToast(props): JSX.Element {
               id: message.senderId,
               name: message.senderName,
               lastName: message.senderLastName,
-              profilePhotoName: message.senderProfilePhotoName,
+              profilePhotoURL: message.senderProfilePhotoURL,
               email: message.senderEmail,
             });
             toast.dismiss(t.id);

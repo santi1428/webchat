@@ -64,7 +64,7 @@ const getBlockedUsers = async (
           name: true,
           lastName: true,
           email: true,
-          profilePhotoName: true,
+          profilePhotoURL: true,
         },
       },
     },

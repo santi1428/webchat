@@ -57,7 +57,7 @@ const getUsers = async (
       email: true,
       name: true,
       lastName: true,
-      profilePhotoName: true,
+      profilePhotoURL: true,
     },
     take: 10,
     orderBy: {

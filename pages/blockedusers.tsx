@@ -66,7 +66,7 @@ export default function BlockedUsers() {
                     <Image
                       layout="fill"
                       src={
-                        blockedUser.profilePhotoName
+                        blockedUser.profilePhotoURL
                       }
                       className="rounded-full"
                       alt="NoImage"

@@ -121,7 +121,7 @@ export default function Navbar() {
                 <div className="flex flex-row">
                   <AnimatePresence mode="wait">
                     <motion.div
-                      key={session.user.profilePhotoName}
+                      key={session.user.profilePhotoURL}
                       initial={{ opacity: 0, scale: 0 }}
                       animate={{ opacity: 1, scale: 1 }}
                       transition={{ duration: 0.3 }}
@@ -132,7 +132,7 @@ export default function Navbar() {
                         <a>
                           <Image
                             layout="fill"
-                            src={session.user.profilePhotoName}
+                            src={session.user.profilePhotoURL}
                             className="rounded-full"
                             alt="NoImage"
                           />

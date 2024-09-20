@@ -39,7 +39,7 @@ const getUserByID = async (id) => {
       email: true,
       name: true,
       lastName: true,
-      profilePhotoName: true,
+      profilePhotoURL: true,
     },
   });
   return user;
@@ -75,7 +75,7 @@ export const authOptions: NextAuthOptions = {
             name: user.name,
             lastName: user.lastName,
             email: user.email,
-            profilePhotoName: user.profilePhotoName,
+            profilePhotoURL: user.profilePhotoURL,
           };
         } 
         return null;

@@ -14,7 +14,7 @@ export default function ChatHeader(props): JSX.Element {
       <div className="md:ml-6 ml-3 inline-block h-8 w-8 md:h-9 md:w-9 relative self-center">
         <Image
           layout="fill"
-          src={selectedChatUser.profilePhotoName}
+          src={selectedChatUser.profilePhotoURL}
           className="rounded-full"
           alt="NoImage"
         />

@@ -117,10 +117,10 @@ export default function Profile() {
             >
               <Link href="/profilephoto">
                 <a>
-                  {session?.user?.profilePhotoName && (
+                  {session?.user?.profilePhotoURL && (
                     <Image
                       alt="NoImage"
-                      src={session.user.profilePhotoName}
+                      src={session.user.profilePhotoURL}
                       layout="fill"
                       objectFit="cover"
                       className="rounded-full cursor-pointer"

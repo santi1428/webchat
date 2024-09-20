@@ -40,16 +40,16 @@ const removeFile = async (url: string) => {
   await cloudinary.uploader.destroy(publicId);
 };
 
-const updateUserProfilePhotoNameByID = async (
+const updateUserProfilePhotoURLByID = async (
   id: string,
-  profilePhotoName: string
+  profilePhotoURL: string
 ) => {
   return await prisma.user.update({
     where: {
       id,
     },
     data: {
-      profilePhotoName,
+      profilePhotoURL,
     },
   });
 };
@@ -76,17 +76,17 @@ const uploadFile = (
   req: NextApiRequest,
   user: User
 ): Promise<void | string> => {
-  const defaultProfilePhotoName = "https://res.cloudinary.com/dgtwlcw1i/image/upload/v1726787525/vnj59rodfbromdnwomuv.png";
+  const defaultProfilePhotoURL = "https://res.cloudinary.com/dgtwlcw1i/image/upload/v1726787525/vnj59rodfbromdnwomuv.png";
   const form = new formidable.IncomingForm();
   return new Promise(function (resolve, reject) {
     form.parse(req, async function (err, fields, files) {
       const file: File = files.file;
       if (validateFile(file)) {
         try {
-          const fullNewPhotoName = await saveFile(file);
-          await updateUserProfilePhotoNameByID(user.id, fullNewPhotoName);
-          if (user.profilePhotoName !== defaultProfilePhotoName) {
-            removeFile(user.profilePhotoName);
+          const fullNewPhotoURL = await saveFile(file);
+          await updateUserProfilePhotoURLByID(user.id, fullNewPhotoURL);
+          if (user.profilePhotoURL !== defaultProfilePhotoURL) {
+            removeFile(user.profilePhotoURL);
           }
           resolve();
         } catch (err) {

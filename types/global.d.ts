@@ -5,7 +5,7 @@ type User = {
   email?: string | null;
   password?: string | null;
   confirmPassword?: string | null;
-  profilePhotoName?: string | null;
+  profilePhotoURL?: string | null;
   resetPasswordToken?: string | null;
   resetPasswordTokenExpiry?: int | null;
 };
@@ -32,7 +32,7 @@ type Chat = {
     id: string;
     name: string;
     lastName: string;
-    profilePhotoName: string;
+    profilePhotoURL: string;
     lastMessage: {
         content: string;
         createdAt: string;

@@ -41,7 +41,7 @@ export default function Message(props) {
             <div className="mr-5 inline-block h-10 w-10 relative">
               <Image
                 layout="fill"
-                src={selectedChatUser.profilePhotoName}
+                src={selectedChatUser.profilePhotoURL}
                 className="rounded-full"
                 alt="NoImage"
               />
@@ -66,7 +66,7 @@ export default function Message(props) {
             <div className="inline-block h-12 w-10 relative">
               <Image
                 layout="fill"
-                src={user.profilePhotoName}
+                src={user.profilePhotoURL}
                 className="rounded-full"
                 alt="NoImage"
               />

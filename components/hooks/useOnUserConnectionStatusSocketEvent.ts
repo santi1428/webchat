@@ -21,7 +21,7 @@ export default function useOnUserConnectionStatusSocketEvent(props) {
         userId: data.userId,
         status: data.status,
         name: data.name,
-        profilePhotoName: data.profilePhotoName,
+        profilePhotoURL: data.profilePhotoURL,
         time: Date.now(),
       },
     ];
@@ -74,7 +74,7 @@ export default function useOnUserConnectionStatusSocketEvent(props) {
             userId: userConnectionStatus.userId,
             name: userConnectionStatus.name,
             status: userConnectionStatus.status,
-            profilePhotoName: userConnectionStatus.profilePhotoName,
+            profilePhotoURL: userConnectionStatus.profilePhotoURL,
           });
         }
       });

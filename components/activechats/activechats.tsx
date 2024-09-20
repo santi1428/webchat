@@ -57,7 +57,7 @@ export default function ActiveChats(props): JSX.Element {
                   <Image
                     layout="fill"
                     src={
-                      activeUser.profilePhotoName
+                      activeUser.profilePhotoURL
                     }
                     className="rounded-full"
                     alt="NoImage"

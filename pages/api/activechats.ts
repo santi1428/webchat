@@ -21,7 +21,7 @@ const getActiveChats = async (id: string) => {
           id: true,
           name: true,
           lastName: true,
-          profilePhotoName: true,
+          profilePhotoURL: true,
         },
       },
     },

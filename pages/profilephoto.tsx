@@ -117,13 +117,13 @@ export default function ProfilePhoto() {
               exit={{ scale: 0 }}
               className="h-64 w-64 relative mb-20"
             >
-              {session?.user?.profilePhotoName && (
+              {session?.user?.profilePhotoURL && (
                 <Image
                   alt="NoImage"
                   src={
                     file && fileError === ""
                       ? URL.createObjectURL(file)
-                      : session.user.profilePhotoName
+                      : session.user.profilePhotoURL
                   }
                   layout="fill"
                   objectFit="cover"

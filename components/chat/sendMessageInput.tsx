@@ -47,7 +47,7 @@ export default function SendMessageInput(props): JSX.Element {
       roomID: getRoomID(session?.user?.id, selectedChatUser.id),
       senderId: session?.user?.id,
       message,
-      senderProfilePhotoName: session.user.profilePhotoName,
+      senderProfilePhotoURL: session.user.profilePhotoURL,
       senderName: session.user.name,
       senderLastName: session.user.lastName,
       senderEmail: session.user.email,
