@@ -2,7 +2,6 @@ import { motion } from "framer-motion";
 import { useNotificationStore } from "../../lib/store";
 import Message from "./message";
 import dayjs from "dayjs";
-import "dayjs/locale/es";
 import { useEffect, useMemo } from "react";
 
 export default function Messages(props): JSX.Element {
@@ -12,9 +11,7 @@ export default function Messages(props): JSX.Element {
     (state) => state.setFocusedMessageInput
   );
 
-  useEffect(() => {
-    dayjs.locale("es");
-  });
+
 
   return (
     <>

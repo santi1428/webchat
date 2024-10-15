@@ -1,8 +1,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBell, faBellSlash } from "@fortawesome/free-solid-svg-icons";
+import { faBellSlash } from "@fortawesome/free-solid-svg-icons";
 import { useChatStore } from "../../lib/store";
-import { useMemo } from "react";
 import useMutedUsers from "../hooks/useMutedUsers";
 import { useSession } from "next-auth/react";
 import useIsUserMuted from "../hooks/useIsUserMuted";

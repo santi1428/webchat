@@ -60,12 +60,19 @@ export default function Layout({ children }): JSX.Element {
     (state) => state.timeToRefreshTypingStatus
   );
 
-  const { data: session, status } = useSession();
+  const sessionData = useSession();
+
+  const session: Session = sessionData.data as Session;
+  const status = sessionData.status;
 
   const setSocket = useSocketStore((state) => state.setSocket);
   const setSocketConnected = useSocketStore(
     (state) => state.setSocketConnected
   );
+
+  const setJoinedRooms = useSocketStore((state) => state.setJoinedRooms);
+  const joinedRooms = useSocketStore((state) => state.joinedRooms);
+
   const getRoomID = useChatStore((state) => state.getRoomID);
 
   const mutedUsers = useMutedUsers({ status });
@@ -102,6 +109,7 @@ export default function Layout({ children }): JSX.Element {
     isFetched,
     getRoomID,
     session,
+    setJoinedRooms,
   });
 
   useOnNewMessageSocketEvent({
@@ -116,7 +124,13 @@ export default function Layout({ children }): JSX.Element {
     mutedUsers,
   });
 
-  useBroadcastConnectionStatus({ session, status, socket, socketConnected });
+  useBroadcastConnectionStatus({
+    session,
+    status,
+    socket,
+    socketConnected,
+    joinedRooms,
+  });
 
   useOnUserConnectionStatusSocketEvent({
     socket,
@@ -145,7 +159,7 @@ export default function Layout({ children }): JSX.Element {
   return (
     <>
       <div className="bg-background3" id="rootModal">
-        <div className="md:scale-x-90 md:scale-y-95 sm:scale-x-100 sm:scale-y-100 md:rounded-3xl min-h-screen bg-background bg-cover bg-center relative overflow-y-hidden">
+        <div className=" min-h-screen bg-background bg-cover bg-center relative overflow-y-hidden">
           <Navbar />
           <AnimatePresence mode="wait">
             <motion.div

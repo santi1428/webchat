@@ -10,10 +10,25 @@ type User = {
   resetPasswordTokenExpiry?: int | null;
 };
 
+type NotificationType = {
+  createdAt: string;
+  id: string;
+  message: string;
+  receiverId: string;
+  senderId: string;
+  updatedAt: string;
+  sender: {
+    id: string;
+    name: string;
+    lastName: string;
+    profilePhotoURL: string;
+  };
+};
+
 type Session = {
-    expires: string;
-    user: User;
-}
+  expires: string;
+  user: User;
+};
 
 interface BigInt {
   toJSON(): string;
@@ -27,22 +42,20 @@ interface CustomFile extends File {
   filepath: string;
 }
 
-
 type Chat = {
+  id: string;
+  name: string;
+  lastName: string;
+  profilePhotoURL: string;
+  lastMessage: {
+    content: string;
+    createdAt: string;
+    senderId: string;
+    receiverId: string;
+    updatedAt: string;
     id: string;
-    name: string;
-    lastName: string;
-    profilePhotoURL: string;
-    lastMessage: {
-        content: string;
-        createdAt: string;
-        senderId: string;
-        receiverId: string;
-        updatedAt: string;
-        id: string;
-    };
-}
-
+  };
+};
 
 type ChatStore = {
   selectedChat: User;
@@ -69,6 +82,8 @@ type SocketStore = {
   setSocketConnected: (socketConnected: boolean) => void;
   hasJoinedRooms: boolean;
   setHasJoinedRooms: (hasJoinedRooms: boolean) => void;
+  joinedRooms: string[];
+  setJoinedRooms: (newJoinedRooms: string[]) => void;
   usersConnectionStatus: any[];
   setUsersConnectionStatus: (newUsersConnectionStatus: any[]) => void;
   activeUsers: any[];

@@ -28,14 +28,29 @@ export default function Chat(): JSX.Element {
     (state) => state.setScrollMessagesToBottom
   );
   const socket = useSocketStore((state) => state.socket);
+  const joinedRooms = useSocketStore((state) => state.joinedRooms);
+  const setJoinedRooms = useSocketStore((state) => state.setJoinedRooms);
+  const hasJoinedRooms = useSocketStore((state) => state.hasJoinedRooms);
+  const getRoomID = useChatStore((state) => state.getRoomID);
 
-  const { data: session } = useSession();
+  const sessionData = useSession();
+  const session: Session = sessionData.data as Session;
 
   const router = useRouter();
 
   const scrollBottomRef = useRef<HTMLDivElement>(null);
 
   const { data, fetchNextPage, isFetchingNextPage } = useChatMessages();
+
+  useEffect(() => {
+    if (selectedChatUser.id !== "" && session?.user?.id && socket) {
+      const roomID = getRoomID(session.user.id, selectedChatUser.id);
+      if (!joinedRooms.includes(roomID)) {
+        socket.emit("joinRooms", [roomID]);
+        setJoinedRooms([...joinedRooms, roomID]);
+      }
+    }
+  }, [selectedChatUser, joinedRooms, session, socket, setJoinedRooms]);
 
   useEffect(() => {
     setScrollMessagesToBottom(true);
@@ -81,7 +96,7 @@ export default function Chat(): JSX.Element {
       <AnimatePresence mode={"wait"}>
         {selectedChatUser.id === "" ? (
           <motion.div
-            className="col-span-8 flex flex-col justify-center items-center h-[calc(100vh-100vh*0.3)] -z-0"
+            className="col-span-8 flex flex-col justify-center items-center h-[calc(100vh-100vh*0.3)]"
             key={selectedChatUser.id}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -107,7 +122,7 @@ export default function Chat(): JSX.Element {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.2 }}
             exit={{ opacity: 0 }}
-            className="col-span-8 flex flex-col justify-start"
+            className="col-span-8 flex flex-col justify-start relative"
           >
             <ChatHeader
               selectedChatUser={selectedChatUser}
@@ -144,7 +159,7 @@ export default function Chat(): JSX.Element {
                       />
                     </div>
                   }
-                  className="flex flex-col"
+                  className="flex flex-col z-0"
                   useWindow={false}
                   threshold={50}
                   initialLoad={false}

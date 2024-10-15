@@ -13,7 +13,8 @@ export default function useInitSocket(props) {
     isFetched,
     data,
     getRoomID,
-    session
+    session,
+    setJoinedRooms,
   } = props;
 
   const socketInitializer = async () => {
@@ -32,19 +33,17 @@ export default function useInitSocket(props) {
     if (socket) {
       socket.on("connect", (s) => {
         setSocketConnected(true);
-        socket.emit(
-          "joinRooms",
-          data?.data?.map((activeChat) =>
-            getRoomID(session?.user?.id, activeChat.id)
-          )
+        const newJoinedRooms = data?.data?.map((activeChat) =>
+          getRoomID(session?.user?.id, activeChat.id)
         );
+        socket.emit("joinRooms", newJoinedRooms);
+        setJoinedRooms(newJoinedRooms);
       });
 
       socket.on("reconnect", () => {
         toast.success("Reconnected to the server.", {
-          duration: 10000
+          duration: 10000,
         });
-
       });
 
       socket.on("disconnect", () => {
