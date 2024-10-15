@@ -38,10 +38,14 @@ export default function useOnNewMessageSocketEvent(props) {
         queryClient.invalidateQueries(["messages", message.senderId]);
         queryClient.invalidateQueries(["messages", selectedChat.id]);
         queryClient.invalidateQueries("activeChats");
-        setTimeout(() => {
-          console.log("invalidating notifications");
-          queryClient.invalidateQueries("notifications");
-        }, 2000);
+        // setTimeout(() => {
+        console.log("invalidating notifications");
+        queryClient.invalidateQueries({
+          queryKey: ["notification"],
+          refetchActive: true,
+          refetchInactive: true,
+        });
+        // }, 500);
         setScrollMessagesToBottom(true);
       });
     }

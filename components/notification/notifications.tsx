@@ -2,15 +2,16 @@ import { AnimatePresence, motion } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBell, faHandMiddleFinger } from "@fortawesome/free-solid-svg-icons";
 import useNotification from "../hooks/useNotification";
+import useDeleteNotification from "../hooks/useDeleteNotification";
 import Notification from "./notification";
 import { useEffect, useState } from "react";
 import { useChatStore } from "../../lib/store";
 
 export default function Notifications(props) {
   const { status } = props;
-  const { notifications, deleteNotification } = useNotification({ status });
-  const { data } = notifications();
-  const notificationsData = data?.data?.notifications || [];
+  const notifications = useNotification({ status });
+  const notificationsData = notifications?.data?.data?.notifications;
+  const { deleteNotification } = useDeleteNotification();
 
   const [showNotifications, setShowNotifications] = useState(false);
   const selectedChat = useChatStore((state) => state.selectedChat);
@@ -31,7 +32,7 @@ export default function Notifications(props) {
         deleteNotification({ id: foundNotification.sender.id, type: "chat" });
       }
     }
-  }, [data?.data, selectedChat.id, deleteNotification]);
+  }, [notifications?.data?.data, selectedChat.id, deleteNotification]);
 
   const container = {
     hidden: { opacity: 0 },
@@ -120,9 +121,9 @@ export default function Notifications(props) {
       >
         <AnimatePresence mode="wait">
           <motion.p
-            key={notificationsDataFiltered.length}
+            key={notificationsDataFiltered?.length}
             className={`${
-              notificationsDataFiltered.length === 0
+              notificationsDataFiltered?.length === 0
                 ? "hidden"
                 : "inline-block bg-blue-300 py-[1px] px-[6px] rounded-full text-xs"
             } font-bold text-dark`}
@@ -131,7 +132,7 @@ export default function Notifications(props) {
             transition={{ duration: 0.2 }}
             exit={{ scale: 0 }}
           >
-            {notificationsDataFiltered.length}
+            {notificationsDataFiltered?.length}
           </motion.p>
         </AnimatePresence>
       </motion.div>
