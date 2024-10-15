@@ -1,11 +1,8 @@
-import { useQueryClient, useMutation} from "react-query";
+import { useQueryClient, useMutation } from "react-query";
 import axios from "axios";
 
 export default function useBlockUser() {
   const queryClient = useQueryClient();
-  
-
-
 
   const {
     mutate: blockUser,
@@ -24,7 +21,11 @@ export default function useBlockUser() {
     }
   );
 
-  const { mutate: unblockUser, isLoading: isUnblockingUser, isSuccess: isUnblockUserSuccess } = useMutation(
+  const {
+    mutate: unblockUser,
+    isLoading: isUnblockingUser,
+    isSuccess: isUnblockUserSuccess,
+  } = useMutation(
     async (userId: string) => {
       await axios.delete("/api/blockeduser", {
         data: {
@@ -40,5 +41,12 @@ export default function useBlockUser() {
     }
   );
 
-  return { blockUser, isBlockUserSuccess, isLoadingBlockUser, unblockUser, isUnblockingUser, isUnblockUserSuccess};
+  return {
+    blockUser,
+    isBlockUserSuccess,
+    isLoadingBlockUser,
+    unblockUser,
+    isUnblockingUser,
+    isUnblockUserSuccess,
+  };
 }

@@ -8,7 +8,7 @@ export default function useOnNewMessageSocketEvent(props) {
     socketConnected,
     setScrollMessagesToBottom,
     queryClient,
-    mutedUsers
+    mutedUsers,
   } = props;
 
   const { showMessageToast, session, status } = props;
@@ -34,10 +34,14 @@ export default function useOnNewMessageSocketEvent(props) {
         console.log("newMessage", message);
         if (!mutedUsers.data.data.includes(message.senderId)) {
           showChatMessage(message);
-        }    
+        }
         queryClient.invalidateQueries(["messages", message.senderId]);
         queryClient.invalidateQueries(["messages", selectedChat.id]);
         queryClient.invalidateQueries("activeChats");
+        setTimeout(() => {
+          console.log("invalidating notifications");
+          queryClient.invalidateQueries("notifications");
+        }, 2000);
         setScrollMessagesToBottom(true);
       });
     }

@@ -7,6 +7,10 @@ const getLoggedUserID = (req, res) => {
   return session;
 };
 
+function isIterable(variable) {
+  return variable != null && typeof variable[Symbol.iterator] === "function";
+}
+
 const SocketHandler = async (req, res) => {
   if (res.socket.server.io) {
     console.log("Socket is already running");
@@ -27,23 +31,32 @@ const SocketHandler = async (req, res) => {
       });
 
       socket.on("broadcastConnectionStatus", async (user) => {
-        // console.log(`${user.name} is broadcasting connection status`);
-        socket.broadcast.emit("userConnectionStatus", user);
+        const joinedRooms = user.joinedRooms;
+        delete user.joinedRooms;
+        if (isIterable(joinedRooms)) {
+          for (const room of joinedRooms) {
+            // console.log(
+            //   `${user.name} is broadcasting connection status to room ${room}`
+            // );
+            socket.to(room).emit("userConnectionStatus", user);
+          }
+        } else {
+          console.log("JoinedRooms are not iterable", typeof joinedRooms);
+        }
       });
 
       socket.on("sendMessage", async (message) => {
-        console.log(
-          "Sending message: " + message.message,
-          "to room: " + message.roomID
-        );
+        // console.log(
+        //   "Sending message: " + message.message,
+        //   "to room: " + message.roomID
+        // );
         // @ts-ignore
         io.to(message.roomID).emit("newMessage", message);
       });
 
       socket.on("typing", async (data) => {
-        console.log("User is typing", data);
-        // @ts-ignore
-        socket.broadcast.to(data.roomID).emit("userTyping", data);
+        // console.log("User is typing", data);
+        socket.to(data.roomID).emit("userTyping", data);
       });
 
       socket.on("disconnecting", () => {

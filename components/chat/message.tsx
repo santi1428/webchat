@@ -61,15 +61,17 @@ export default function Message(props) {
               delay: 0.1,
             }}
             exit={{ scale: 0 }}
-            className="flex flex-row justify-start mt-10 ml-6"
+            className="flex flex-row justify-start mt-10 ml-6 z-0"
           >
             <div className="inline-block h-12 w-10 relative">
-              <Image
-                layout="fill"
-                src={user.profilePhotoURL}
-                className="rounded-full"
-                alt="NoImage"
-              />
+              {user && (
+                <Image
+                  layout="fill"
+                  src={user.profilePhotoURL}
+                  className="rounded-full"
+                  alt="NoImage"
+                />
+              )}
             </div>
 
             <div className="flex flex-col">

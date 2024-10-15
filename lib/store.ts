@@ -11,12 +11,12 @@ const initialSelectedChatState: User = {
 
 const useChatStore = create<ChatStore>((set) => ({
   getRoomID: (myID: string, activeChatID: string): string => {
-    let separator = ":";
-    if (myID <= activeChatID) {
-      return myID + separator + activeChatID;
-    } else {
-      return activeChatID + separator + myID;
-    }
+    let combined = myID + activeChatID;
+
+    // Convert the string into an array of characters, sort them, and join them back
+    let sortedCombined = combined.split("").sort().join("");
+
+    return sortedCombined;
   },
   selectedChat: {
     ...initialSelectedChatState,
@@ -57,7 +57,10 @@ const useSocketStore = create<SocketStore>((set) => ({
   setHasJoinedRooms: (hasJoinedRooms: boolean) => {
     set((state) => ({ hasJoinedRooms: hasJoinedRooms }));
   },
-
+  joinedRooms: Array<string>(),
+  setJoinedRooms: (newJoinedRooms) => {
+    set((state) => ({ joinedRooms: newJoinedRooms }));
+  },
   usersConnectionStatus: [],
   setUsersConnectionStatus: (newUsersConnectionStatus) => {
     set((state) => ({ usersConnectionStatus: newUsersConnectionStatus }));
@@ -74,7 +77,7 @@ const useSocketStore = create<SocketStore>((set) => ({
   setActiveUsersTyping: (newActiveUsersTyping) => {
     set((state) => ({ activeUsersTyping: newActiveUsersTyping }));
   },
-  timeToRefreshConnectionStatus: 5000,
+  timeToRefreshConnectionStatus: 2500,
   timeToRefreshTypingStatus: 1000,
 }));
 

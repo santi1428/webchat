@@ -6,6 +6,7 @@ import { useChatStore, useSocketStore } from "../../lib/store";
 import { useMemo } from "react";
 import useActiveChats from "../hooks/useActiveChats";
 import { AnimatePresence, motion } from "framer-motion";
+import { Tooltip } from "react-tooltip";
 
 export default function ActiveChats(props): JSX.Element {
   const sessionData = useSession();
@@ -13,6 +14,7 @@ export default function ActiveChats(props): JSX.Element {
   const session: Session = sessionData.data as Session;
   const activeChatsFilter = useChatStore((state) => state.activeChatsFilter);
   const activeUsers = useSocketStore((state) => state.activeUsers);
+  const changeSelectedChat = useChatStore((state) => state.changeSelectedChat);
 
   const { data } = useActiveChats({ status });
 
@@ -26,7 +28,7 @@ export default function ActiveChats(props): JSX.Element {
       )
       .filter((chat: Chat) => chat.id !== session?.user?.id)
       .slice(0)
-      .sort((a : Chat, b : Chat) => {
+      .sort((a: Chat, b: Chat) => {
         return (
           new Date(b.lastMessage?.createdAt).getTime() -
           new Date(a.lastMessage?.createdAt).getTime()
@@ -54,14 +56,28 @@ export default function ActiveChats(props): JSX.Element {
                   key={activeUser.userId}
                   className="inline-block h-12 w-12 relative ml-16"
                 >
-                  <Image
-                    layout="fill"
-                    src={
-                      activeUser.profilePhotoURL
-                    }
-                    className="rounded-full"
-                    alt="NoImage"
-                  />
+                  <a
+                    data-tooltip-id="status-connection-tooltip"
+                    data-tooltip-content={`${activeUser.name} is online.`}
+                    data-tooltip-place="top"
+                    className="cursor-pointer inline-block h-12 w-12 relative"
+                    onClick={() => {
+                      changeSelectedChat({
+                        name: activeUser.name,
+                        id: activeUser.userId,
+                        lastName: activeUser.lastName,
+                        profilePhotoURL: activeUser.profilePhotoURL,
+                      });
+                    }}
+                  >
+                    <Image
+                      layout="fill"
+                      src={activeUser.profilePhotoURL}
+                      className="rounded-full"
+                      alt="NoImage"
+                    />
+                  </a>
+                  <Tooltip id="status-connection-tooltip" />
                 </motion.div>
               ))}
 
@@ -83,7 +99,7 @@ export default function ActiveChats(props): JSX.Element {
       {/*Seccion de lista de chats*/}
 
       <AnimatePresence>
-        {memoizedActiveChatsFiltered.map((chat : Chat) => (
+        {memoizedActiveChatsFiltered.map((chat: Chat) => (
           <ActiveChat key={chat.id} activeChat={chat} />
         ))}
       </AnimatePresence>

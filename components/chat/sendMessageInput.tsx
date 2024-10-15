@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { useMutation, useQueryClient } from "react-query";
-import { useChatStore, useNotificationStore } from "../../lib/store";
+import { useChatStore, useNotificationStore, useSocketStore } from "../../lib/store";
 import { useSession } from "next-auth/react";
 import useDebounce from "../hooks/useDebounce";
 
@@ -33,6 +33,9 @@ export default function SendMessageInput(props): JSX.Element {
   const queryClient = useQueryClient();
 
   const getRoomID = useChatStore((state) => state.getRoomID);
+
+  const setJoinedRooms = useSocketStore((state) => state.setJoinedRooms);
+  const joinedRooms = useSocketStore((state) => state.joinedRooms);
 
   useEffect(() => {
     if (focusedMessageInput) {
@@ -73,9 +76,12 @@ export default function SendMessageInput(props): JSX.Element {
     {
       onSuccess: async () => {
         if (!checkIfChatIsAlreadyInActiveChats()) {
+          const roomID = getRoomID(session?.user?.id, selectedChatUser.id);
           socket.emit("joinRooms", [
-            getRoomID(session?.user?.id, selectedChatUser.id),
+            roomID,
           ]);
+          const newJoinedRooms = [...joinedRooms, roomID];
+          setJoinedRooms(newJoinedRooms);
         }
         await queryClient.invalidateQueries("activeChats");
         await queryClient.invalidateQueries(["messages", selectedChatUser.id]);

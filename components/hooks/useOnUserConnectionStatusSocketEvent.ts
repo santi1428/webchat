@@ -9,13 +9,13 @@ export default function useOnUserConnectionStatusSocketEvent(props) {
     setActiveUsers,
     session,
     socketConnected,
-    activeUsers,
   } = props;
 
   const addUsersConnectionStatus = (data) => {
     let newUsersConnectionStatus = [
       ...usersConnectionStatus.filter(
-        (user) => user.userId !== data.userId && user.userId !== session?.user?.id
+        (user) =>
+          user.userId !== data.userId && user.userId !== session?.user?.id
       ),
       {
         userId: data.userId,
@@ -23,6 +23,7 @@ export default function useOnUserConnectionStatusSocketEvent(props) {
         name: data.name,
         profilePhotoURL: data.profilePhotoURL,
         time: Date.now(),
+        lastName: data.lastName,
       },
     ];
     setUsersConnectionStatus(newUsersConnectionStatus);
@@ -75,6 +76,7 @@ export default function useOnUserConnectionStatusSocketEvent(props) {
             name: userConnectionStatus.name,
             status: userConnectionStatus.status,
             profilePhotoURL: userConnectionStatus.profilePhotoURL,
+            lastName: userConnectionStatus.lastName,
           });
         }
       });
