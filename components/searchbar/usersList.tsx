@@ -85,10 +85,9 @@ export default function UsersList(props) {
             {data
               ?.filter((user: User) => user.id !== session?.user?.id)
               .map((user: User, index: Number) => (
-                <motion.div variants={item}>
+                <motion.div variants={item} key={user.id}>
                   <ListUser
                     user={user}
-                    key={user.id}
                     setShowUsersList={setShowUsersList}
                     setSearch={setSearch}
                   />

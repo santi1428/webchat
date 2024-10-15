@@ -37,6 +37,7 @@ const deleteUserNotification = async (
   session: any
 ) => {
   const { id, type } = req.body;
+  console.log("deleting notification", id, type);
   if (type === "all") {
     await prisma.notification.deleteMany({
       where: {
@@ -59,7 +60,7 @@ const deleteUserNotification = async (
         senderId: id,
       },
     });
-    return res.status(200);
+    return res.status(200).json({});
   }
 
   return res.status(400).json({
