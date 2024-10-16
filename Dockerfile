@@ -1,13 +1,12 @@
 FROM node:22.0.0-alpine
 WORKDIR /app
 COPY package*.json ./
-RUN npm install
+RUN npm install --production 
+RUN npm install --global pm2
+RUN npm install @prisma/client
 COPY . .
 RUN npx prisma generate
 RUN npm run build
-# RUN npx prisma db push
-# RUN npx prisma db seed
-CMD ["npm", "run", "start"]
 EXPOSE 8000
-
-
+USER node
+CMD [ "pm2-runtime", "npm", "--", "start" ]

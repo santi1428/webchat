@@ -31,11 +31,31 @@ services:
       context: .
       dockerfile: Dockerfile
     restart: always
-    ports:
-      - "8000:8000"
     depends_on:
       - db
       - pgadmin
+  nginx: 
+     build: ./nginx
+     ports: 
+       - 80:80
+       - 443:443
+     volumes:
+       - certbot-etc:/etc/letsencrypt  # Store certificates here
+       - certbot-var:/var/lib/letsencrypt
+       - ./webroot:/var/www/certbot  # Webroot for Let's Encrypt challenge files
+     depends_on:
+       - app
+  certbot:
+     image: certbot/certbot
+     container_name: certbot_container
+     volumes:
+       - certbot-etc:/etc/letsencrypt
+       - certbot-var:/var/lib/letsencrypt
+       - ./webroot:/var/www/certbot  # Same webroot directory as in Nginx
+     entrypoint: /bin/sh -c "trap exit TERM; while :; do sleep 6h & wait $${!}; certbot renew; done"
+
 volumes:
   db-data:
   pgadmin-data:
+  certbot-etc:
+  certbot-var:
