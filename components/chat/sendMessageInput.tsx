@@ -4,16 +4,20 @@ import { motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { useMutation, useQueryClient } from "react-query";
-import { useChatStore, useNotificationStore, useSocketStore } from "../../lib/store";
+import {
+  useChatStore,
+  useNotificationStore,
+  useSocketStore,
+} from "../../lib/store";
 import { useSession } from "next-auth/react";
 import useDebounce from "../hooks/useDebounce";
 
 export default function SendMessageInput(props): JSX.Element {
   const { selectedChatUser, socket } = props;
-  const [message, setMessage] = useState("");
   const sessionData = useSession();
   const session: Session = sessionData.data as Session;
-  const status = sessionData.status;
+  const message = useChatStore((state) => state.message);
+  const setMessage = useChatStore((state) => state.setMessage);
 
   const debouncedTypingEvent = useDebounce(message, 50);
 
@@ -62,7 +66,7 @@ export default function SendMessageInput(props): JSX.Element {
     const activeChats: any = queryClient.getQueryData("activeChats");
 
     const chat: Chat = activeChats?.data.find(
-      (chat : Chat) => chat.id === selectedChatUser.id
+      (chat: Chat) => chat.id === selectedChatUser.id
     );
     return chat !== undefined;
   };
@@ -77,9 +81,7 @@ export default function SendMessageInput(props): JSX.Element {
       onSuccess: async () => {
         if (!checkIfChatIsAlreadyInActiveChats()) {
           const roomID = getRoomID(session?.user?.id, selectedChatUser.id);
-          socket.emit("joinRooms", [
-            roomID,
-          ]);
+          socket.emit("joinRooms", [roomID]);
           const newJoinedRooms = [...joinedRooms, roomID];
           setJoinedRooms(newJoinedRooms);
         }

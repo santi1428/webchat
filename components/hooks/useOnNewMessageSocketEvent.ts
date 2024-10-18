@@ -45,8 +45,8 @@ export default function useOnNewMessageSocketEvent(props) {
           refetchActive: true,
           refetchInactive: true,
         });
-        // }, 500);
         setScrollMessagesToBottom(true);
+        // }, 500);
       });
     }
     return () => {

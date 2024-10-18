@@ -14,6 +14,8 @@ import { useEffect, useMemo, useRef } from "react";
 import { useRouter } from "next/router";
 import InfiniteScroll from "react-infinite-scroller";
 import useChatMessages from "../hooks/useChatMessages";
+import ResponseSuggestions from "../responseSuggestion/responseSuggestions";
+import { useQueryClient } from "react-query";
 
 export default function Chat(): JSX.Element {
   const selectedChatUser = useChatStore((state) => state.selectedChat);
@@ -35,6 +37,7 @@ export default function Chat(): JSX.Element {
 
   const sessionData = useSession();
   const session: Session = sessionData.data as Session;
+  const status = sessionData?.status;
 
   const router = useRouter();
 
@@ -63,7 +66,7 @@ export default function Chat(): JSX.Element {
           block: "end",
           inline: "nearest",
         });
-      }, 250);
+      }, 200);
     }
   });
 
@@ -90,6 +93,12 @@ export default function Chat(): JSX.Element {
     //   window.scrollBy(0, 10);
     // }
   };
+
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    queryClient.removeQueries(["responseSuggestions"]);
+  }, [selectedChatUser?.id]);
 
   return (
     <>
@@ -171,6 +180,8 @@ export default function Chat(): JSX.Element {
                     user={session?.user}
                     selectedChatUser={selectedChatUser}
                   />
+                  <ResponseSuggestions session={session} status={status} />
+
                   <div ref={scrollBottomRef}></div>
                 </InfiniteScroll>
               </div>

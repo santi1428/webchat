@@ -64,6 +64,8 @@ type ChatStore = {
   setActiveChatsFilter: (activeChatsFilter: string) => void;
   getRoomID: (myID: string, activeChatID: string) => string;
   reset: () => void;
+  message: string;
+  setMessage: (message: string) => void;
 };
 
 type NotificationStore = {
