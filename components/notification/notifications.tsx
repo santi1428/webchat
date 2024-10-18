@@ -19,8 +19,8 @@ export default function Notifications(props) {
   const notificationsDataFiltered = notificationsData;
 
   useEffect(() => {
-    console.log("selectedChat", selectedChat);
-    console.log("notificationsData", notificationsData);
+    // console.log("selectedChat", selectedChat);
+    // console.log("notificationsData", notificationsData);
     if (selectedChat.id && notificationsData?.length >= 0) {
       console.log("entering condition");
       const foundNotification = notificationsData.find(

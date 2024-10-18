@@ -35,8 +35,17 @@ export default function useOnNewMessageSocketEvent(props) {
         if (!mutedUsers.data.data.includes(message.senderId)) {
           showChatMessage(message);
         }
-        queryClient.invalidateQueries(["messages", message.senderId]);
-        queryClient.invalidateQueries(["messages", selectedChat.id]);
+        queryClient.invalidateQueries({
+          queryKey: ["messages", selectedChat.id],
+          refetchActive: true,
+          refetchInactive: true,
+        });
+        queryClient.invalidateQueries({
+          queryKey: ["messages", selectedChat.id],
+          refetchActive: true,
+          refetchInactive: true,
+        });
+
         queryClient.invalidateQueries("activeChats");
         // setTimeout(() => {
         console.log("invalidating notifications");

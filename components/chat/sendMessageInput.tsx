@@ -77,8 +77,39 @@ export default function SendMessageInput(props): JSX.Element {
         message,
         receiverId: selectedChatUser.id,
       }),
+
     {
+      onMutate: async () => {
+        await queryClient.cancelQueries(["messages", selectedChatUser.id]);
+        const previousMessages = queryClient.getQueryData([
+          "messages",
+          selectedChatUser.id,
+        ]);
+        queryClient.setQueryData(
+          ["messages", selectedChatUser.id],
+          (old: any) => {
+            return {
+              pages: [
+                {
+                  messages: [
+                    {
+                      senderId: session?.user?.id,
+                      content: message,
+                      createdAt: new Date().toISOString(),
+                    },
+                    ...old.pages[0].messages,
+                  ],
+                },
+                ...old.pages.slice(1),
+              ],
+            };
+          }
+        );
+        setScrollMessagesToBottom(true);
+        return { previousMessages };
+      },
       onSuccess: async () => {
+        sendSocketMessage();
         if (!checkIfChatIsAlreadyInActiveChats()) {
           const roomID = getRoomID(session?.user?.id, selectedChatUser.id);
           socket.emit("joinRooms", [roomID]);
@@ -87,7 +118,6 @@ export default function SendMessageInput(props): JSX.Element {
         }
         await queryClient.invalidateQueries("activeChats");
         await queryClient.invalidateQueries(["messages", selectedChatUser.id]);
-        sendSocketMessage();
         setScrollMessagesToBottom(true);
       },
     }
@@ -99,7 +129,6 @@ export default function SendMessageInput(props): JSX.Element {
       return;
     }
     mutate();
-
     setMessage("");
     setFocusedMessageInput(true);
   };

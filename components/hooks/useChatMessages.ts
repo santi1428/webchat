@@ -7,6 +7,7 @@ const useChatMessages = () => {
 
   const getMessages = async ({ pageParam = "" }) => {
     // console.log("Fetching messages...");
+    console.log("Fetching messages...");
     const res = await axios.get(
       `/api/message/${selectedChatUser.id}?cursor=${pageParam}`
     );

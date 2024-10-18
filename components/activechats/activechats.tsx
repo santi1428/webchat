@@ -19,7 +19,7 @@ export default function ActiveChats(props): JSX.Element {
   const { data } = useActiveChats({ status });
 
   const memoizedActiveChatsFiltered = useMemo(() => {
-    console.log("session", session);
+    // console.log("session", session);
     return [...new Map(data?.data.map((item) => [item["id"], item])).values()]
       .filter(
         (chat: Chat) =>
