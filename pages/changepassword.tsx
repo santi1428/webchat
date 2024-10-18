@@ -4,7 +4,7 @@ import axios, { AxiosError } from "axios";
 import validationScheme from "../utils/validation-scheme";
 import { useRouter } from "next/router";
 import { motion, AnimatePresence } from "framer-motion";
-import { unstable_getServerSession } from "next-auth";
+import { getServerSession } from "next-auth";
 import { authOptions } from "./api/auth/[...nextauth]";
 import { signIn } from "next-auth/react";
 import {
@@ -253,7 +253,7 @@ export default function Register() {
 }
 
 export async function getServerSideProps(context) {
-  const session = await unstable_getServerSession(
+  const session = await getServerSession(
     context.req,
     context.res,
     authOptions as any

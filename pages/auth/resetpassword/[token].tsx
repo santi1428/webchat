@@ -3,13 +3,9 @@ import { useFormik } from "formik";
 import axios, { AxiosError } from "axios";
 import { useRouter } from "next/router";
 import { motion, AnimatePresence } from "framer-motion";
-import { unstable_getServerSession } from "next-auth";
+import { getServerSession } from "next-auth";
 import { authOptions } from "../../api/auth/[...nextauth]";
-import {
-  faEye,
-  faEyeSlash,
-  faLock,
-} from "@fortawesome/free-solid-svg-icons";
+import { faEye, faEyeSlash, faLock } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import * as Yup from "yup";
 import toast from "react-hot-toast";
@@ -208,7 +204,7 @@ export default function Register() {
 }
 
 export async function getServerSideProps(context) {
-  const session = await unstable_getServerSession(
+  const session = await getServerSession(
     context.req,
     context.res,
     authOptions as any

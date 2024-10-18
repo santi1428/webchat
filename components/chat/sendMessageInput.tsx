@@ -18,6 +18,7 @@ export default function SendMessageInput(props): JSX.Element {
   const session: Session = sessionData.data as Session;
   const message = useChatStore((state) => state.message);
   const setMessage = useChatStore((state) => state.setMessage);
+  const [messageID, setMessageID] = useState(1);
 
   const debouncedTypingEvent = useDebounce(message, 50);
 
@@ -76,8 +77,8 @@ export default function SendMessageInput(props): JSX.Element {
       axios.post("/api/message/addmessage", {
         message,
         receiverId: selectedChatUser.id,
+        id: messageID,
       }),
-
     {
       onMutate: async () => {
         await queryClient.cancelQueries(["messages", selectedChatUser.id]);
@@ -93,6 +94,7 @@ export default function SendMessageInput(props): JSX.Element {
                 {
                   messages: [
                     {
+                      id: messageID,
                       senderId: session?.user?.id,
                       content: message,
                       createdAt: new Date().toISOString(),
@@ -120,6 +122,12 @@ export default function SendMessageInput(props): JSX.Element {
         await queryClient.invalidateQueries(["messages", selectedChatUser.id]);
         setScrollMessagesToBottom(true);
       },
+      onError: (err, variables, context) => {
+        queryClient.setQueryData(
+          ["messages", selectedChatUser.id],
+          context.previousMessages
+        );
+      },
     }
   );
 
@@ -128,6 +136,7 @@ export default function SendMessageInput(props): JSX.Element {
     if (message.trim() === "") {
       return;
     }
+    setMessageID(Math.floor(Math.random() * (1000000 - 100000 + 1)) + 100000);
     mutate();
     setMessage("");
     setFocusedMessageInput(true);

@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { signIn } from "next-auth/react";
 import * as Yup from "yup";
 import { useRouter } from "next/router";
-import { unstable_getServerSession } from "next-auth";
+import { getServerSession } from "next-auth";
 import { authOptions } from "../api/auth/[...nextauth]";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -24,8 +24,7 @@ export default function Login() {
         .email("Email is not valid")
         .max(255, "The email is too large.")
         .required("The email field is required."),
-      password: Yup.string()
-      .required("This field is required."),
+      password: Yup.string().required("This field is required."),
     }),
     onSubmit: async (values) => {
       const { email, password } = values;
@@ -133,8 +132,11 @@ export default function Login() {
           </div>
           <p className="mt-4 text-bell">
             Did you forget your password?
-            <Link href="/auth/forgotpassword">
-              <a className="font-bold cursor-pointer ml-2">Click here.</a>
+            <Link
+              href="/auth/forgotpassword"
+              className="font-bold cursor-pointer ml-2"
+            >
+              Click here.
             </Link>
           </p>
           <motion.button
@@ -146,8 +148,11 @@ export default function Login() {
           </motion.button>
           <p className="mt-4 text-bell text-md">
             Don&apos;t you have an account?
-            <Link href="/auth/register">
-              <a className="font-bold cursor-pointer ml-2">Sign Up here.</a>
+            <Link
+              href="/auth/register"
+              className="font-bold cursor-pointer ml-2"
+            >
+              Sign Up here.
             </Link>
           </p>
         </form>
@@ -157,7 +162,7 @@ export default function Login() {
 }
 
 export async function getServerSideProps(context) {
-  const session = await unstable_getServerSession(
+  const session = await getServerSession(
     context.req,
     context.res,
     authOptions as any

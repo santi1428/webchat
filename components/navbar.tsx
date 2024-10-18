@@ -33,20 +33,18 @@ export default function Navbar() {
     <div className="flex flex-col md:flex-row items-center space-y-4 md:justify-between pt-4 pb-3 border-b-1 border-customBorderColor">
       <div className="self-start ml-6 mb-2 md:mb-0 md:ml-5 md:self-auto  md:order-1">
         <Link href="/">
-          <a>
-            <div className="flex flex-row">
-              <Image
-                className="inline self-center"
-                src="/images/icons8-chat-48.png"
-                height={40}
-                width={40}
-                alt="Logo"
-              />
-              <h5 className="self-center text-xl ml-3  text-bell inline capitalize">
-                Open source chat
-              </h5>
-            </div>
-          </a>
+          <div className="flex flex-row">
+            <Image
+              className="inline self-center"
+              src="/images/icons8-chat-48.png"
+              height={40}
+              width={40}
+              alt="Logo"
+            />
+            <h5 className="self-center text-xl ml-3  text-bell inline capitalize">
+              Open source chat
+            </h5>
+          </div>
         </Link>
       </div>
       {session && session?.user && <SearchBar />}
@@ -65,15 +63,13 @@ export default function Navbar() {
                   exit={{ scale: 0 }}
                 >
                   <Link href="/auth/register" className="self-center">
-                    <a className="self-center">
-                      <FontAwesomeIcon
-                        className="text-bell mr-2"
-                        icon={faUserPlus}
-                      />
-                      <span className="text-lg text-bell  font-semibold cursor-pointer mr-7">
-                        Sign Up
-                      </span>
-                    </a>
+                    <FontAwesomeIcon
+                      className="text-bell mr-2"
+                      icon={faUserPlus}
+                    />
+                    <span className="text-lg text-bell  font-semibold cursor-pointer mr-7">
+                      Sign Up
+                    </span>
                   </Link>
                 </motion.div>
               </AnimatePresence>
@@ -86,7 +82,7 @@ export default function Navbar() {
                   transition={{ duration: 0.3 }}
                   exit={{ scale: 0 }}
                 >
-                  <Link href="/auth/login">
+                  <Link href="/auth/login" className="self-center">
                     <a className="self-center">
                       <FontAwesomeIcon
                         className="text-bell mr-2"
@@ -115,14 +111,12 @@ export default function Navbar() {
                       className="mr-3 inline-block h-10 w-10 relative"
                     >
                       <Link href="/profilephoto">
-                        <a>
-                          <Image
-                            layout="fill"
-                            src={session.user.profilePhotoURL}
-                            className="rounded-full"
-                            alt="NoImage"
-                          />
-                        </a>
+                        <Image
+                          layout="fill"
+                          src={session.user.profilePhotoURL}
+                          className="rounded-full"
+                          alt="NoImage"
+                        />
                       </Link>
                     </motion.div>
                   </AnimatePresence>
@@ -144,10 +138,11 @@ export default function Navbar() {
                           transition={{ duration: 0.3 }}
                           exit={{ scale: 0 }}
                         >
-                          <Link href="/profile">
-                            <a className="text-bell font-semibold capitalize">
-                              {`${session.user.name} ${session.user.lastName}`}
-                            </a>
+                          <Link
+                            href="/profile"
+                            className="text-bell font-semibold capitalize"
+                          >
+                            {`${session.user.name} ${session.user.lastName}`}
                           </Link>
                         </motion.div>
                       </AnimatePresence>
@@ -187,16 +182,15 @@ export default function Navbar() {
                             exit={{ scale: 0 }}
                             className="relative capitalize w-auto  pt-3 pb-3"
                           >
-                            <Link href="/profile">
-                              <a
-                                className=" text-bell text-center w-auto font-semibold capitalize  pb-3"
-                                onClick={() => {
-                                  setShowDropdownMenu(false);
-                                  console.log("Clicking edit my profile.");
-                                }}
-                              >
-                                edit my profile
-                              </a>
+                            <Link
+                              href="/profile"
+                              className=" text-bell text-center w-auto font-semibold capitalize  pb-3"
+                              onClick={() => {
+                                setShowDropdownMenu(false);
+                                console.log("Clicking edit my profile.");
+                              }}
+                            >
+                              edit my profile
                             </Link>
                           </motion.div>
                           <hr className="w-full border-1 border-customBorderColor" />
@@ -227,8 +221,8 @@ export default function Navbar() {
                         </div>
                       )}
                     </div>
-                    <Link href="/profile">
-                      <a className="text-xs text-bell">{session.user.email}</a>
+                    <Link href="/profile" className="text-xs text-bell">
+                      {session.user.email}
                     </Link>
                   </motion.div>
                 </div>
