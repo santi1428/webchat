@@ -18,7 +18,9 @@ export default function SendMessageInput(props): JSX.Element {
   const session: Session = sessionData.data as Session;
   const message = useChatStore((state) => state.message);
   const setMessage = useChatStore((state) => state.setMessage);
-  const [messageID, setMessageID] = useState(1);
+  const [messageID, setMessageID] = useState(
+    Math.floor(Math.random() * (10000000 - 100000 + 1)) + 100000
+  );
 
   const debouncedTypingEvent = useDebounce(message, 50);
 
@@ -136,7 +138,7 @@ export default function SendMessageInput(props): JSX.Element {
     if (message.trim() === "") {
       return;
     }
-    setMessageID(Math.floor(Math.random() * (1000000 - 100000 + 1)) + 100000);
+    setMessageID(Math.floor(Math.random() * (10000000 - 100000 + 1)) + 100000);
     mutate();
     setMessage("");
     setFocusedMessageInput(true);
