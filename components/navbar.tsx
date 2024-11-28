@@ -83,15 +83,13 @@ export default function Navbar() {
                   exit={{ scale: 0 }}
                 >
                   <Link href="/auth/login" className="self-center">
-                    <a className="self-center">
-                      <FontAwesomeIcon
-                        className="text-bell mr-2"
-                        icon={faRightToBracket}
-                      />
-                      <span className="text-lg text-bell font-semibold cursor-pointer mr-7">
-                        Sign In
-                      </span>
-                    </a>
+                    <FontAwesomeIcon
+                      className="text-bell mr-2"
+                      icon={faRightToBracket}
+                    />
+                    <span className="text-lg text-bell font-semibold cursor-pointer mr-7">
+                      Sign In
+                    </span>
                   </Link>
                 </motion.div>
               </AnimatePresence>

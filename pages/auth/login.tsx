@@ -1,6 +1,5 @@
 import Head from "next/head";
 import { useFormik } from "formik";
-import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { signIn } from "next-auth/react";
 import * as Yup from "yup";
@@ -10,6 +9,7 @@ import { authOptions } from "../api/auth/[...nextauth]";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
+import Link from "next/link";
 
 export default function Login() {
   const router = useRouter();
@@ -48,10 +48,14 @@ export default function Login() {
         <title>Sign In</title>
       </Head>
       <div className="flex flex-col justify-center items-center h-[calc(100vh-73.5px)]">
-        <form
-          className="w-96 border-1 border-customBorderColor rounded-3xl p-7"
-          onSubmit={formik.handleSubmit}
-        >
+        <p className="text-xl mb-10 text-center text-bell font-bold">
+          Login to start chatting with other users. <br></br>
+          <br></br> If you don't have an account, you can create one{" "}
+          <Link href="/auth/register" className="underline">
+            here.{" "}
+          </Link>
+        </p>
+        <form className="w-96 p-7" onSubmit={formik.handleSubmit}>
           <p className="text-bell font-semibold text-2xl text-center">
             Sign In
           </p>

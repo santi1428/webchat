@@ -56,7 +56,7 @@ export default function ActiveChats(props): JSX.Element {
                   key={activeUser.userId}
                   className="inline-block h-12 w-12 relative ml-16"
                 >
-                  <a
+                  <Link
                     data-tooltip-id="status-connection-tooltip"
                     data-tooltip-content={`${activeUser.name} is online.`}
                     data-tooltip-place="top"
@@ -76,7 +76,7 @@ export default function ActiveChats(props): JSX.Element {
                       className="rounded-full"
                       alt="NoImage"
                     />
-                  </a>
+                  </Link>
                   <Tooltip id="status-connection-tooltip" />
                 </motion.div>
               ))}
