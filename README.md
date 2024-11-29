@@ -70,6 +70,16 @@
 ### Ingresas tu correo electronico y el sistema te enviara un link de restauración.
 ![alt text](image-15.png)
 
-### Clickeas el link del correo y te lleva a la siguiente pagina: 
+
+### El correo que te debe de llegar es similar a este:
+![alt text](image-17.png)
+
+
+
+### Clickeas el link del correo y te lleva a la siguiente pagina donde puedes reestablecer tu contraseña: 
 
 ![alt text](image-16.png)
+
+
+
+
