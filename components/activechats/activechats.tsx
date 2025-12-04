@@ -7,6 +7,7 @@ import { useMemo } from "react";
 import useActiveChats from "../hooks/useActiveChats";
 import { AnimatePresence, motion } from "framer-motion";
 import { Tooltip } from "react-tooltip";
+import Link from "next/link";
 
 export default function ActiveChats(props): JSX.Element {
   const sessionData = useSession();
@@ -19,7 +20,7 @@ export default function ActiveChats(props): JSX.Element {
   const { data } = useActiveChats({ status });
 
   const memoizedActiveChatsFiltered = useMemo(() => {
-    console.log("session", session);
+    // console.log("session", session);
     return [...new Map(data?.data.map((item) => [item["id"], item])).values()]
       .filter(
         (chat: Chat) =>
@@ -56,7 +57,8 @@ export default function ActiveChats(props): JSX.Element {
                   key={activeUser.userId}
                   className="inline-block h-12 w-12 relative ml-16"
                 >
-                  <a
+                  <Link
+                    href={"#"}
                     data-tooltip-id="status-connection-tooltip"
                     data-tooltip-content={`${activeUser.name} is online.`}
                     data-tooltip-place="top"
@@ -76,7 +78,7 @@ export default function ActiveChats(props): JSX.Element {
                       className="rounded-full"
                       alt="NoImage"
                     />
-                  </a>
+                  </Link>
                   <Tooltip id="status-connection-tooltip" />
                 </motion.div>
               ))}

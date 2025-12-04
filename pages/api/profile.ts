@@ -1,7 +1,7 @@
 import { prisma } from "../../lib/prisma";
 import { NextApiRequest, NextApiResponse } from "next";
 import * as Yup from "yup";
-import { unstable_getServerSession } from "next-auth";
+import { getServerSession } from "next-auth";
 import { authOptions } from "./auth/[...nextauth]";
 
 const validationScheme = Yup.object({
@@ -57,7 +57,7 @@ export default async function handler(
   res: NextApiResponse
 ) {
   if (req.method == "PUT") {
-    const session : Session = await unstable_getServerSession(req, res, authOptions);
+    const session: Session = await getServerSession(req, res, authOptions);
     if (session) {
       const user: User = req.body;
       const fieldsValidation = await validateFields(user);
@@ -70,7 +70,7 @@ export default async function handler(
         }
         await updateUser(session?.user?.id, user);
         return res.status(200).end();
-      }else{
+      } else {
         return res.status(400).end();
       }
     } else {

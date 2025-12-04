@@ -11,8 +11,6 @@ export default function Messages(props): JSX.Element {
     (state) => state.setFocusedMessageInput
   );
 
-
-
   return (
     <>
       {messages?.length === 0 || messages === null ? (

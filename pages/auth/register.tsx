@@ -5,7 +5,7 @@ import validationScheme from "../../utils/validation-scheme";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { unstable_getServerSession } from "next-auth";
+import { getServerSession } from "next-auth";
 import { authOptions } from "../api/auth/[...nextauth]";
 import { signIn } from "next-auth/react";
 import toast from "react-hot-toast";
@@ -257,23 +257,24 @@ export default function Register() {
               </motion.button>
             </AnimatePresence>
             <AnimatePresence>
-              {formik.errors.confirmPassword && formik.touched.confirmPassword && (
-                <motion.p
-                  initial={{ opacity: 0, scale: 0 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.3 }}
-                  className="text-red-600 text-sm mt-2"
-                  exit={{ scale: 0 }}
-                >
-                  {formik.errors.confirmPassword}
-                </motion.p>
-              )}
+              {formik.errors.confirmPassword &&
+                formik.touched.confirmPassword && (
+                  <motion.p
+                    initial={{ opacity: 0, scale: 0 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.3 }}
+                    className="text-red-600 text-sm mt-2"
+                    exit={{ scale: 0 }}
+                  >
+                    {formik.errors.confirmPassword}
+                  </motion.p>
+                )}
             </AnimatePresence>
           </div>
           <p className="mt-4 text-bell">
             Already have an account?
-            <Link href="/auth/login">
-              <a className="font-bold cursor-pointer ml-2">Sign In.</a>
+            <Link href="/auth/login" className="font-bold cursor-pointer ml-2">
+              Sign In.
             </Link>
           </p>
           <motion.button
@@ -294,7 +295,7 @@ export default function Register() {
 }
 
 export async function getServerSideProps(context) {
-  const session = await unstable_getServerSession(
+  const session = await getServerSession(
     context.req,
     context.res,
     authOptions as any

@@ -4,16 +4,23 @@ import { motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { useMutation, useQueryClient } from "react-query";
-import { useChatStore, useNotificationStore, useSocketStore } from "../../lib/store";
+import {
+  useChatStore,
+  useNotificationStore,
+  useSocketStore,
+} from "../../lib/store";
 import { useSession } from "next-auth/react";
 import useDebounce from "../hooks/useDebounce";
 
 export default function SendMessageInput(props): JSX.Element {
   const { selectedChatUser, socket } = props;
-  const [message, setMessage] = useState("");
   const sessionData = useSession();
   const session: Session = sessionData.data as Session;
-  const status = sessionData.status;
+  const message = useChatStore((state) => state.message);
+  const setMessage = useChatStore((state) => state.setMessage);
+  const [messageID, setMessageID] = useState(
+    Math.floor(Math.random() * (10000000 - 100000 + 1)) + 100000
+  );
 
   const debouncedTypingEvent = useDebounce(message, 50);
 
@@ -62,7 +69,7 @@ export default function SendMessageInput(props): JSX.Element {
     const activeChats: any = queryClient.getQueryData("activeChats");
 
     const chat: Chat = activeChats?.data.find(
-      (chat : Chat) => chat.id === selectedChatUser.id
+      (chat: Chat) => chat.id === selectedChatUser.id
     );
     return chat !== undefined;
   };
@@ -72,21 +79,56 @@ export default function SendMessageInput(props): JSX.Element {
       axios.post("/api/message/addmessage", {
         message,
         receiverId: selectedChatUser.id,
+        id: messageID,
       }),
     {
+      onMutate: async () => {
+        await queryClient.cancelQueries(["messages", selectedChatUser.id]);
+        const previousMessages = queryClient.getQueryData([
+          "messages",
+          selectedChatUser.id,
+        ]);
+        queryClient.setQueryData(
+          ["messages", selectedChatUser.id],
+          (old: any) => {
+            return {
+              pages: [
+                {
+                  messages: [
+                    {
+                      id: messageID,
+                      senderId: session?.user?.id,
+                      content: message,
+                      createdAt: new Date().toISOString(),
+                    },
+                    ...old.pages[0].messages,
+                  ],
+                },
+                ...old.pages.slice(1),
+              ],
+            };
+          }
+        );
+        setScrollMessagesToBottom(true);
+        return { previousMessages };
+      },
       onSuccess: async () => {
+        sendSocketMessage();
         if (!checkIfChatIsAlreadyInActiveChats()) {
           const roomID = getRoomID(session?.user?.id, selectedChatUser.id);
-          socket.emit("joinRooms", [
-            roomID,
-          ]);
+          socket.emit("joinRooms", [roomID]);
           const newJoinedRooms = [...joinedRooms, roomID];
           setJoinedRooms(newJoinedRooms);
         }
         await queryClient.invalidateQueries("activeChats");
         await queryClient.invalidateQueries(["messages", selectedChatUser.id]);
-        sendSocketMessage();
         setScrollMessagesToBottom(true);
+      },
+      onError: (err, variables, context) => {
+        queryClient.setQueryData(
+          ["messages", selectedChatUser.id],
+          context.previousMessages
+        );
       },
     }
   );
@@ -96,8 +138,8 @@ export default function SendMessageInput(props): JSX.Element {
     if (message.trim() === "") {
       return;
     }
+    setMessageID(Math.floor(Math.random() * (10000000 - 100000 + 1)) + 100000);
     mutate();
-
     setMessage("");
     setFocusedMessageInput(true);
   };

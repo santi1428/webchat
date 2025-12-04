@@ -27,6 +27,8 @@ const useChatStore = create<ChatStore>((set) => ({
   setActiveChatsFilter: (activeChatsFilter) =>
     set((state) => ({ activeChatsFilter: activeChatsFilter })),
   reset: () => set((state) => ({ selectedChat: initialSelectedChatState })),
+  message: "",
+  setMessage: (message) => set((state) => ({ message: message })),
 }));
 
 const useNotificationStore = create<NotificationStore>((set) => ({

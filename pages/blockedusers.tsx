@@ -65,9 +65,7 @@ export default function BlockedUsers() {
                   <div className="self-center md:self-auto md:ml-6 inline-block h-8 w-8 md:h-12 md:w-12 relative">
                     <Image
                       layout="fill"
-                      src={
-                        blockedUser.profilePhotoURL
-                      }
+                      src={blockedUser.profilePhotoURL}
                       className="rounded-full"
                       alt="NoImage"
                     />

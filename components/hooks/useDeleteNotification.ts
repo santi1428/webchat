@@ -10,7 +10,7 @@ export default function useDeleteNotification() {
     isSuccess: isUserNotificationDeleted,
   } = useMutation(
     async ({ id, type }: { id: string; type: string }) => {
-      console.log("deleting notifications, type: ", type);
+      // console.log("deleting notifications, type: ", type);
 
       await axios.delete("/api/notification", {
         data: {
@@ -21,7 +21,7 @@ export default function useDeleteNotification() {
     },
     {
       onSuccess: async () => {
-        console.log("invalidating notifications");
+        // console.log("invalidating notifications");
         await queryClient.invalidateQueries({
           queryKey: ["notification"],
           refetchActive: true,

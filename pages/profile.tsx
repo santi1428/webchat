@@ -116,17 +116,15 @@ export default function Profile() {
               className="h-48 w-48 relative self-center mb-10"
             >
               <Link href="/profilephoto">
-                <a>
-                  {session?.user?.profilePhotoURL && (
-                    <Image
-                      alt="NoImage"
-                      src={session.user.profilePhotoURL}
-                      layout="fill"
-                      objectFit="cover"
-                      className="rounded-full cursor-pointer"
-                    />
-                  )}
-                </a>
+                {session?.user?.profilePhotoURL && (
+                  <Image
+                    alt="NoImage"
+                    src={session.user.profilePhotoURL}
+                    layout="fill"
+                    objectFit="cover"
+                    className="rounded-full cursor-pointer"
+                  />
+                )}
               </Link>
             </motion.div>
             <label htmlFor="name" className="text-bell text-base mb-2">

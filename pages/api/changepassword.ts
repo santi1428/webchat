@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { hashPassword } from "../../lib/bcrypt";
 import { comparePassword } from "../../lib/bcrypt";
 import * as Yup from "yup";
-import { unstable_getServerSession } from "next-auth";
+import { getServerSession } from "next-auth";
 import { authOptions } from "./auth/[...nextauth]";
 import { prisma } from "../../lib/prisma";
 
@@ -64,18 +64,12 @@ export default async function handler(
   res: NextApiResponse
 ) {
   if (req.method == "PUT") {
-    const session: Session = await unstable_getServerSession(
-      req,
-      res,
-      authOptions
-    );
+    const session: Session = await getServerSession(req, res, authOptions);
     if (session) {
       const fieldsValidation = await validateFields(req.body);
       if (fieldsValidation[0]) {
         const userPassword = await getUserPasswordByID(session?.user?.id);
-        if (
-          await comparePassword(req.body.oldPassword, userPassword)
-        ) {
+        if (await comparePassword(req.body.oldPassword, userPassword)) {
           const newPasswordHash = await hashPassword(req.body.newPassword);
           await updateUserPasswordByID(session?.user?.id, newPasswordHash);
           return res.status(204).end();
