@@ -14,7 +14,7 @@ import { useEffect, useMemo, useRef } from "react";
 import { useRouter } from "next/router";
 import InfiniteScroll from "react-infinite-scroller";
 import useChatMessages from "../hooks/useChatMessages";
-import ResponseSuggestions from "../responseSuggestion/responseSuggestions";
+// import ResponseSuggestions from "../responseSuggestion/responseSuggestions";
 import { useQueryClient } from "react-query";
 
 export default function Chat(): JSX.Element {
@@ -180,7 +180,7 @@ export default function Chat(): JSX.Element {
                     user={session?.user}
                     selectedChatUser={selectedChatUser}
                   />
-                  <ResponseSuggestions session={session} status={status} />
+                  {/* <ResponseSuggestions session={session} status={status} /> */}
 
                   <div ref={scrollBottomRef}></div>
                 </InfiniteScroll>

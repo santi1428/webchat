@@ -7,6 +7,7 @@ import { useMemo } from "react";
 import useActiveChats from "../hooks/useActiveChats";
 import { AnimatePresence, motion } from "framer-motion";
 import { Tooltip } from "react-tooltip";
+import Link from "next/link";
 
 export default function ActiveChats(props): JSX.Element {
   const sessionData = useSession();
@@ -57,6 +58,7 @@ export default function ActiveChats(props): JSX.Element {
                   className="inline-block h-12 w-12 relative ml-16"
                 >
                   <Link
+                    href={"#"}
                     data-tooltip-id="status-connection-tooltip"
                     data-tooltip-content={`${activeUser.name} is online.`}
                     data-tooltip-place="top"
