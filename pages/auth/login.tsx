@@ -50,7 +50,8 @@ export default function Login() {
       <div className="flex flex-col justify-center items-center h-[calc(100vh-73.5px)]">
         <p className="text-xl mb-10 text-center text-bell font-bold">
           Login to start chatting with other users. <br></br>
-          <br></br> {"If you don't have an account, you can create one"}
+          <br></br>
+          {"If you don't have an account, you can create one"}
           <Link href="/auth/register" className="underline">
             here.
           </Link>
