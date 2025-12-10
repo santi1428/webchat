@@ -16,6 +16,7 @@ import useActiveChats from "./hooks/useActiveChats";
 import useMutedUsers from "./hooks/useMutedUsers";
 import { useNotificationStore } from "../lib/store";
 import { useRef } from "react";
+import useBlockedUsers from "./hooks/useBlockedUsers";
 
 export default function Layout({ children }): JSX.Element {
   const router = useRouter();
@@ -64,6 +65,8 @@ export default function Layout({ children }): JSX.Element {
 
   const session: Session = sessionData.data as Session;
   const status = sessionData.status;
+
+  const { data: blockedUsers } = useBlockedUsers({ status });
 
   const setSocket = useSocketStore((state) => state.setSocket);
   const setSocketConnected = useSocketStore(
@@ -142,6 +145,7 @@ export default function Layout({ children }): JSX.Element {
     timeToRefreshConnectionStatus,
     session,
     status,
+    blockedUsers,
   });
 
   useOnUserTypingEvent({

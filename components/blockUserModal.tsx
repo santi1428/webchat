@@ -1,9 +1,11 @@
 import React, { useEffect, useRef } from "react";
+import Image from "next/image";
 import Modal from "react-modal";
-import { useModalStore } from "../lib/store";
+import { useChatStore, useModalStore, useSocketStore } from "../lib/store";
 import { AnimatePresence, motion } from "framer-motion";
 import useBlockUser from "./hooks/useBlockUser";
 import toast from "react-hot-toast";
+import { useSession } from "next-auth/react";
 
 export default function BlockUserModal(): JSX.Element {
   Modal.setAppElement("#rootModal");
@@ -14,6 +16,16 @@ export default function BlockUserModal(): JSX.Element {
   const closeBlockUserModal = useModalStore(
     (state) => state.closeBlockUserModal
   );
+
+  const joinedRooms = useSocketStore((state) => state.joinedRooms);
+  const getRoomID = useChatStore((state) => state.getRoomID);
+  const setJoinedRooms = useSocketStore((state) => state.setJoinedRooms);
+
+  const sessionData = useSession();
+  const session: Session = sessionData.data as Session;
+
+  const selectedChat = useChatStore((state) => state.selectedChat);
+  const reset = useChatStore((state) => state.reset);
 
   const blockUserModalData = useModalStore((state) => state.blockUserModalData);
 
@@ -28,8 +40,31 @@ export default function BlockUserModal(): JSX.Element {
         position: "bottom-center",
         id: blockUserToast.current,
       });
+      if (selectedChat?.id === blockUserModalData.id) {
+        reset();
+      }
+      // Remove any joined room with the blocked user
+      if (session?.user?.id) {
+        const roomID = getRoomID(session?.user?.id, blockUserModalData.id);
+        if (joinedRooms.includes(roomID)) {
+          const updatedJoinedRooms = joinedRooms.filter(
+            (joinedRoomID) => joinedRoomID !== roomID
+          );
+          setJoinedRooms(updatedJoinedRooms);
+        }
+      }
     }
-  }, [isBlockUserSuccess]);
+  }, [
+    isBlockUserSuccess,
+    closeBlockUserModal,
+    blockUserModalData.id,
+    selectedChat?.id,
+    reset,
+    getRoomID,
+    session?.user?.id,
+    joinedRooms,
+    setJoinedRooms,
+  ]);
 
   const customStyles = {
     content: {
@@ -67,22 +102,21 @@ export default function BlockUserModal(): JSX.Element {
           <p className="text-base font-semibold text-bell mt-2">
             Are you sure you want to block this user?
           </p>
-          <div className="flex flex-row justify-center items-center mt-5 mb-3">
-            <div className="relative h-8 w-8">
-              <img
-                src={
-                  blockUserModalData.profilePhotoURL.includes("http")
-                    ? blockUserModalData.profilePhotoURL
-                    : "/images/" + blockUserModalData.profilePhotoURL
-                }
-                className="rounded-full w-full h-full object-cover"
-                alt="NoImage"
-              />
-            </div>
-            <p className="text-base text-bell ml-2">
-              {blockUserModalData.name} {blockUserModalData.lastName}
-            </p>
+          <div className="relative h-8 w-8">
+            <Image
+              src={
+                blockUserModalData.profilePhotoURL.includes("http")
+                  ? blockUserModalData.profilePhotoURL
+                  : "/images/" + blockUserModalData.profilePhotoURL
+              }
+              className="rounded-full w-full h-full object-cover"
+              alt="NoImage"
+              fill
+            />
           </div>
+          <p className="text-base text-bell ml-2">
+            {blockUserModalData.name} {blockUserModalData.lastName}
+          </p>
           <div className="flex flex-row justify-center">
             <button
               className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mt-4 mr-4"

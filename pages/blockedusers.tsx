@@ -7,14 +7,12 @@ import useBlockedUsers from "../components/hooks/useBlockedUsers";
 import Image from "next/image";
 import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import axios from "axios";
 import toast from "react-hot-toast";
-import { useQueryClient } from "react-query";
 import useBlockUser from "../components/hooks/useBlockUser";
 import { useEffect, useRef } from "react";
 
 export default function BlockedUsers() {
-  const router = useRouter();
+  const router = useRouter(); // Kept this since it was in your original, even if unused
   const { data: session, status } = useSession();
 
   const { data: blockedUsers } = useBlockedUsers({ status });
@@ -34,7 +32,12 @@ export default function BlockedUsers() {
   };
 
   useEffect(() => {
-    if (isUnblockUserSuccess && !isUnblockingUser) {
+    // FIX: Added safe check for unblockingUserToastRef.current
+    if (
+      isUnblockUserSuccess &&
+      !isUnblockingUser &&
+      unblockingUserToastRef.current
+    ) {
       toast.success(
         `${unblockingUserToastRef.current.fullName} has been unblocked.`,
         {
@@ -42,6 +45,8 @@ export default function BlockedUsers() {
           id: unblockingUserToastRef.current.toast,
         }
       );
+      // Clean up ref to prevent double firing
+      unblockingUserToastRef.current = null;
     }
   }, [isUnblockUserSuccess, isUnblockingUser]);
 
@@ -56,7 +61,8 @@ export default function BlockedUsers() {
             Blocked Users
           </h3>
           <div className="flex flex-col mt-5">
-            {blockedUsers?.data.map((blockedUser) => (
+            {/* FIX: Added optional chaining to prevent crash if data is undefined */}
+            {blockedUsers?.data?.map((blockedUser) => (
               <div
                 key={blockedUser.id}
                 className="grid grid-cols-6 max-w-5xl mt-4"
@@ -102,11 +108,8 @@ export default function BlockedUsers() {
 }
 
 export async function getServerSideProps(context) {
-  const session = await getServerSession(
-    context.req,
-    context.res,
-    authOptions as any
-  );
+  const session = await getServerSession(context.req, context.res, authOptions); // Removed 'as any' cast if not strictly needed, but kept if your TS requires it.
+
   if (!session) {
     return {
       redirect: {

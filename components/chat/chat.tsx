@@ -53,11 +53,18 @@ export default function Chat(): JSX.Element {
         setJoinedRooms([...joinedRooms, roomID]);
       }
     }
-  }, [selectedChatUser, joinedRooms, session, socket, setJoinedRooms]);
+  }, [
+    selectedChatUser,
+    joinedRooms,
+    session,
+    socket,
+    setJoinedRooms,
+    getRoomID,
+  ]);
 
   useEffect(() => {
     setScrollMessagesToBottom(true);
-  }, [router.asPath, selectedChatUser.id]);
+  }, [router.asPath, selectedChatUser.id, setScrollMessagesToBottom]);
 
   useEffect(() => {
     if (scrollMessagesToBottom) {
@@ -98,7 +105,7 @@ export default function Chat(): JSX.Element {
 
   useEffect(() => {
     queryClient.removeQueries(["responseSuggestions"]);
-  }, [selectedChatUser?.id]);
+  }, [selectedChatUser?.id, queryClient]);
 
   return (
     <>
