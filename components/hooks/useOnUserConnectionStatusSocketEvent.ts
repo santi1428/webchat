@@ -9,25 +9,8 @@ export default function useOnUserConnectionStatusSocketEvent(props) {
     setActiveUsers,
     session,
     socketConnected,
+    blockedUsers,
   } = props;
-
-  const addUsersConnectionStatus = (data) => {
-    let newUsersConnectionStatus = [
-      ...usersConnectionStatus.filter(
-        (user) =>
-          user.userId !== data.userId && user.userId !== session?.user?.id
-      ),
-      {
-        userId: data.userId,
-        status: data.status,
-        name: data.name,
-        profilePhotoURL: data.profilePhotoURL,
-        time: Date.now(),
-        lastName: data.lastName,
-      },
-    ];
-    setUsersConnectionStatus(newUsersConnectionStatus);
-  };
 
   // useEffect(() => {
   //   console.log("usersConnectionStatus", usersConnectionStatus);
@@ -46,6 +29,24 @@ export default function useOnUserConnectionStatusSocketEvent(props) {
   // }, [activeUsers]);
 
   useEffect(() => {
+    const addUsersConnectionStatus = (data) => {
+      let newUsersConnectionStatus = [
+        ...usersConnectionStatus.filter(
+          (user) =>
+            user.userId !== data.userId && user.userId !== session?.user?.id
+        ),
+        {
+          userId: data.userId,
+          status: data.status,
+          name: data.name,
+          profilePhotoURL: data.profilePhotoURL,
+          time: Date.now(),
+          lastName: data.lastName,
+        },
+      ];
+      setUsersConnectionStatus(newUsersConnectionStatus);
+    };
+
     if (socket) {
       socket.on("userConnectionStatus", (data) => {
         addUsersConnectionStatus(data);
@@ -61,15 +62,22 @@ export default function useOnUserConnectionStatusSocketEvent(props) {
     socketConnected,
     setUsersConnectionStatus,
     usersConnectionStatus,
+    session,
   ]);
 
   useEffect(() => {
     const interval = setInterval(() => {
+      console.log("blocked users", blockedUsers);
+
       let newActiveUsers = [];
       usersConnectionStatus.forEach((userConnectionStatus) => {
         if (
           userConnectionStatus.userId !== session?.user?.id &&
-          Date.now() - userConnectionStatus.time < timeToRefreshConnectionStatus
+          Date.now() - userConnectionStatus.time <
+            timeToRefreshConnectionStatus &&
+          !blockedUsers?.data?.some(
+            (blockedUser) => blockedUser.id === userConnectionStatus.userId
+          )
         ) {
           newActiveUsers.push({
             userId: userConnectionStatus.userId,
@@ -83,5 +91,11 @@ export default function useOnUserConnectionStatusSocketEvent(props) {
       setActiveUsers(newActiveUsers);
     }, 500);
     return () => clearInterval(interval);
-  }, [usersConnectionStatus]);
+  }, [
+    usersConnectionStatus,
+    blockedUsers,
+    session?.user?.id,
+    setActiveUsers,
+    timeToRefreshConnectionStatus,
+  ]);
 }
