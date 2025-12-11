@@ -14,20 +14,27 @@ import { useRouter } from "next/router";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import SearchBar from "./searchbar/searchBar";
-import { useRef } from "react";
 import Notifications from "./notification/notifications";
+import { useQueryClient } from "react-query";
 
 export default function Navbar() {
   const [showDropdownMenu, setShowDropdownMenu] = useState(true);
   const sessionData = useSession();
   const session: Session = sessionData.data as Session;
   const status = sessionData.status;
+  const queryClient = useQueryClient();
 
   const router = useRouter();
 
   useEffect(() => {
     setShowDropdownMenu(false);
   }, [router.asPath]);
+
+  useEffect(() => {
+    if (status == "unauthenticated") {
+      queryClient.clear();
+    }
+  }, [status, queryClient]);
 
   return (
     <div className="flex flex-col md:flex-row items-center space-y-4 md:justify-between pt-4 pb-3 border-b-1 border-customBorderColor">
